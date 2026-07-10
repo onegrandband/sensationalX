@@ -1,16 +1,176 @@
-<div class="p-5 text-center">
-    <h2 class="font-bold text-xl">Image to Base64 Encoder</h2>
-    <input type="file" id="imageInput" class="my-4" accept="image/*" onchange="encodeImage()" />
-    <textarea id="base64Output" class="border w-full h-32 p-2" placeholder="Base64 string will appear here..." readonly></textarea>
-</div>
-
-<script>
-    function encodeImage() {
-        const file = document.getElementById('imageInput').files[0];
-        const reader = new FileReader();
-        reader.onloadend = function() {
-            document.getElementById('base64Output').value = reader.result;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiformat Base64 Tool | SX Tools</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
         }
-        if (file) reader.readAsDataURL(file);
-    }
-</script>
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen">
+
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase">
+            <span class="text-[#ff3366]">SX</span> Tools
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="px-[8%] py-12 max-w-4xl mx-auto">
+        <div class="mb-10">
+            <a href="../index.html" class="inline-flex items-center text-sm font-bold text-[#ff3366] hover:text-[#e62e5c] transition-colors mb-4 uppercase tracking-wider">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Back to Tools
+            </a>
+            <h1 class="text-4xl font-black mb-3">Multiformat Base64</h1>
+            <p class="text-gray-500 dark:text-gray-400">Encode files and UTF-8 text to Base64, or decode strings back to text.</p>
+        </div>
+
+        <div class="p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5">
+            
+            <div class="flex gap-2 mb-6 bg-gray-100 dark:bg-[#0b0b0c] p-1 rounded-xl">
+                <button id="tab-text" onclick="switchMode('text')" class="flex-1 py-3 text-sm font-bold rounded-lg transition-all bg-white dark:bg-[#2a2a2e] shadow text-gray-900 dark:text-white">Text Mode</button>
+                <button id="tab-file" onclick="switchMode('file')" class="flex-1 py-3 text-sm font-bold rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">File Mode</button>
+            </div>
+
+            <div id="text-mode" class="space-y-4">
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Input Text or Base64</label>
+                <textarea id="text-input" placeholder="Paste text to encode, or a Base64 string to decode..." class="w-full h-40 p-4 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors resize-none"></textarea>
+                
+                <div class="flex gap-4">
+                    <button onclick="processText('encode')" class="flex-1 py-3 bg-[#ff3366] hover:bg-[#e62e5c] text-white font-bold rounded-xl transition-colors flex justify-center items-center gap-2">
+                        <i data-lucide="lock" class="w-5 h-5"></i> Encode to Base64
+                    </button>
+                    <button onclick="processText('decode')" class="flex-1 py-3 border border-gray-200 dark:border-[#2a2a2e] hover:border-[#ff3366] dark:hover:border-[#ff3366] text-gray-900 dark:text-white font-bold rounded-xl transition-colors flex justify-center items-center gap-2">
+                        <i data-lucide="unlock" class="w-5 h-5"></i> Decode to Text
+                    </button>
+                </div>
+            </div>
+
+            <div id="file-mode" class="space-y-4 hidden">
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Upload File to Encode</label>
+                <div class="w-full relative">
+                    <input type="file" id="file-input" onchange="processFile()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <div class="w-full h-40 border-2 border-dashed border-gray-300 dark:border-[#2a2a2e] rounded-xl flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] group transition-colors">
+                        <i data-lucide="upload-cloud" class="w-10 h-10 text-gray-400 group-hover:text-[#ff3366] transition-colors mb-2"></i>
+                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Click or drag a file here</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-8 border-gray-200 dark:border-[#2a2a2e]">
+
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Output Result</label>
+                    <button onclick="copyOutput()" class="text-xs font-bold text-[#ff3366] hover:text-[#e62e5c] flex items-center gap-1 transition-colors">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Copy
+                    </button>
+                </div>
+                <textarea id="output" readonly placeholder="Result will appear here..." class="w-full h-48 p-4 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none font-mono text-sm resize-none"></textarea>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Icons & Theme
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        });
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        // Tab Switching
+        function switchMode(mode) {
+            const textMode = document.getElementById('text-mode');
+            const fileMode = document.getElementById('file-mode');
+            const tabText = document.getElementById('tab-text');
+            const tabFile = document.getElementById('tab-file');
+
+            if (mode === 'text') {
+                textMode.classList.remove('hidden');
+                fileMode.classList.add('hidden');
+                
+                tabText.classList.add('bg-white', 'dark:bg-[#2a2a2e]', 'shadow', 'text-gray-900', 'dark:text-white');
+                tabText.classList.remove('text-gray-500', 'dark:text-gray-400');
+                
+                tabFile.classList.remove('bg-white', 'dark:bg-[#2a2a2e]', 'shadow', 'text-gray-900', 'dark:text-white');
+                tabFile.classList.add('text-gray-500', 'dark:text-gray-400');
+            } else {
+                fileMode.classList.remove('hidden');
+                textMode.classList.add('hidden');
+                
+                tabFile.classList.add('bg-white', 'dark:bg-[#2a2a2e]', 'shadow', 'text-gray-900', 'dark:text-white');
+                tabFile.classList.remove('text-gray-500', 'dark:text-gray-400');
+                
+                tabText.classList.remove('bg-white', 'dark:bg-[#2a2a2e]', 'shadow', 'text-gray-900', 'dark:text-white');
+                tabText.classList.add('text-gray-500', 'dark:text-gray-400');
+            }
+            document.getElementById('output').value = '';
+        }
+
+        // Processing Logic
+        function processText(action) {
+            const input = document.getElementById('text-input').value;
+            const outputField = document.getElementById('output');
+            if (!input) return;
+
+            try {
+                if (action === 'encode') {
+                    outputField.value = btoa(unescape(encodeURIComponent(input)));
+                } else {
+                    outputField.value = decodeURIComponent(escape(atob(input)));
+                }
+            } catch (e) {
+                outputField.value = "Error: Invalid input or corrupted Base64 string.";
+            }
+        }
+
+        function processFile() {
+            const fileInput = document.getElementById('file-input');
+            const outputField = document.getElementById('output');
+            if (fileInput.files.length === 0) return;
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                outputField.value = event.target.result;
+            };
+            reader.onerror = function() {
+                outputField.value = "Error reading file.";
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('output');
+            output.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
