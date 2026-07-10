@@ -1,0 +1,17 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Random Palette Generator</h2>
+    <div id="paletteBox" class="flex justify-center h-20 my-4 gap-2"></div>
+    <button onclick="generatePalette()" class="bg-[#ff3366] text-white px-4 py-2">Generate Colors</button>
+</div>
+
+<script>
+    function generatePalette() {
+        const box = document.getElementById('paletteBox');
+        box.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+            let color = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            box.innerHTML += `<div class="w-16 h-full flex items-center justify-center text-xs text-white shadow" style="background-color:${color}">${color}</div>`;
+        }
+    }
+    generatePalette();
+</script>
