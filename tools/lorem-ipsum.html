@@ -1,0 +1,14 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Lorem Ipsum Generator</h2>
+    <input type="number" id="paragraphs" value="1" min="1" max="10" class="border p-2 my-2 w-16" />
+    <button onclick="generateLorem()" class="bg-[#ff3366] text-white px-4 py-2">Generate</button>
+    <div id="loremOutput" class="mt-4 text-left text-sm max-w-md mx-auto"></div>
+</div>
+
+<script>
+    function generateLorem() {
+        const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ";
+        let count = document.getElementById('paragraphs').value;
+        document.getElementById('loremOutput').innerHTML = text.repeat(count * 2);
+    }
+</script>
