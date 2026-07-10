@@ -106,15 +106,16 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo">SensationalX</div>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="index.html#artists">Artists</a>
-            <a href="book-demo.html">Book a Demo</a>
-            <a href="bpm-tapper.html">Studio Tools</a>
-            <a href="#about">About</a>
-        </nav>
+    <nav class="flex flex-wrap items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+            <a href="https://sensationalx.com/tools" class="text-[#ff3366] transition-colors">Studio Tools</a>
+            <a href="index.html" class="hover:text-[#ff3366] transition-colors">Home</a>
+            <a href="#catalog" class="hover:text-[#ff3366] transition-colors">Catalog</a>
+            <a href="#artists" class="hover:text-[#ff3366] transition-colors">Artists</a>
+            <a href="https://sensationalx.com/book.html" class="hover:text-[#ff3366] transition-colors">Book a Demo</a>
+            <button onclick="openAuthModal()" id="navAccountBtn" class="hover:text-[#ff3366] transition-colors flex items-center gap-1">
+                <i data-lucide="user" class="w-4 h-4"></i> Account
+            </button>
+          
         <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
     </header>
 
