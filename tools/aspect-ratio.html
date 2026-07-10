@@ -1,0 +1,22 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Aspect Ratio Calculator</h2>
+    <div class="flex justify-center gap-2 my-2">
+        <input type="number" id="width1" value="1920" class="border p-2 w-24" oninput="calcRatio()" /> :
+        <input type="number" id="height1" value="1080" class="border p-2 w-24" oninput="calcRatio()" />
+    </div>
+    <div class="flex justify-center gap-2 my-2">
+        <input type="number" id="width2" placeholder="New W" class="border p-2 w-24" oninput="calcNewHeight()" /> :
+        <input type="number" id="height2" placeholder="New H" class="border p-2 w-24" readonly />
+    </div>
+</div>
+
+<script>
+    function calcNewHeight() {
+        let w1 = document.getElementById('width1').value;
+        let h1 = document.getElementById('height1').value;
+        let w2 = document.getElementById('width2').value;
+        if (w1 && h1 && w2) {
+            document.getElementById('height2').value = Math.round((h1 / w1) * w2);
+        }
+    }
+</script>
