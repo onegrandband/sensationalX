@@ -3,205 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SensationalX Records</title>
     
+    <!-- SEO & Search Engine Optimization Tags -->
+    <title>SensationalX Records | The One Grand Band</title>
+    <meta name="description" content="SensationalX Records - Brought to you by the One Grand Band. Cutting-edge audio, independent talent, and modern sound. Stream the July Fun album and more.">
+    <meta name="keywords" content="SensationalX, One Grand Band, Record Label, July Fun, Indie Music, Studio Beats, Audio Production">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://sensationalx.com/">
+
+    <!-- Tailwind CSS & Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- hCaptcha API -->
+    <script src="https://js.hcaptcha.com/1/api.js?onload=hcaptchaLoaded&render=explicit" async defer></script>
+
     <style>
-        /* Flat, high-contrast theme variables */
-        :root {
-            --bg-color: #ffffff;
-            --surface-color: #f4f4f4;
-            --text-color: #111111;
-            --text-muted: #555555;
-            --accent-color: #d90429;
-            --button-text: #ffffff;
-            --border-color: #dddddd;
+        /* Custom Audio Animations */
+        @keyframes custom-bounce {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        .animate-visualizer-bar {
+            transform-origin: bottom;
+            animation: custom-bounce 1s infinite ease-in-out;
         }
 
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --text-color: #eeeeee;
-            --text-muted: #aaaaaa;
-            --accent-color: #ef233c;
-            --button-text: #ffffff;
-            --border-color: #333333;
+        /* Reader Mode Overrides */
+        body.reader-mode {
+            background-color: #fcfcfc !important;
+            color: #1a1a1a !important;
+            font-family: Georgia, serif !important;
         }
-
-        /* Base styles */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
+        body.reader-mode header, 
+        body.reader-mode #bottomPlayer,
+        body.reader-mode .bg-\[\#1c1c1f\] {
+            background-color: #ffffff !important;
+            border-color: #e5e5e5 !important;
         }
-
-        /* Layout & Typography */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem;
-            background-color: var(--surface-color);
-            border-bottom: 2px solid var(--accent-color);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Navigation */
-        nav {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        nav a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            transition: color 0.2s;
-        }
-
-        nav a:hover { color: var(--accent-color); }
-
-        .theme-toggle {
-            background-color: transparent;
-            color: var(--text-color);
-            border: 2px solid var(--text-color);
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        main {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-
-        section { margin-bottom: 4rem; }
-
-        h1 { font-size: 3rem; margin-bottom: 1rem; line-height: 1.2; }
-        h2 { font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem; }
-        p { font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text-muted); }
-
-        /* Artists Grid */
-        .artists-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .artist-card {
-            display: block;
-            background-color: var(--surface-color);
-            padding: 2rem;
-            text-decoration: none;
-            color: var(--text-color);
-            border-bottom: 4px solid transparent;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .artist-card:hover {
-            transform: translateY(-5px);
-            border-bottom: 4px solid var(--accent-color);
-        }
-
-        .artist-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .artist-card p {
-            font-size: 0.9rem;
-            margin-bottom: 0;
-        }
+        body.reader-mode .text-white { color: #000000 !important; }
+        body.reader-mode .text-gray-400 { color: #4a4a4a !important; }
+        body.reader-mode .opacity-0 { opacity: 1 !important; } /* Show hover buttons by default in reader mode */
     </style>
 </head>
-<body>
+<body class="bg-[#0b0b0c] text-white font-sans antialiased transition-colors duration-300">
 
-    <header>
-        <div class="logo">SensationalX</div>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="#artists">Artists</a>
-            <a href="book-demo.html">Book a Demo</a>
-            <a href="bpm-tapper.html">Studio Tools</a>
-            <a href="#about">About</a>
+    <audio id="audioEngine" preload="auto"></audio>
+
+    <!-- Header Navigation -->
+    <header class="flex flex-wrap items-center justify-between border-b border-[#2a2a2e] bg-[#1c1c1f] px-[8%] py-4 gap-4 sticky top-0 z-50 transition-colors duration-300">
+        <div class="text-xl font-extrabold tracking-widest uppercase">SensationalX</div>
+        
+        <nav class="flex flex-wrap items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-300">
+            <a href="index.html" class="text-[#ff3366] transition-colors">Home</a>
+            <a href="#catalog" class="hover:text-[#ff3366] transition-colors">Catalog</a>
+            <a href="#artists" class="hover:text-[#ff3366] transition-colors">Artists</a>
+            <!-- Updated Book Demo Link -->
+            <a href="https://sensationalx.com/book.html" class="hover:text-[#ff3366] transition-colors">Book a Demo</a>
+            
+            <!-- UI Toggle Controls -->
+            <div class="flex items-center gap-3 ml-4 border-l border-[#2a2a2e] pl-4">
+                <button onclick="toggleTextSize()" class="hover:text-white transition-colors flex items-center gap-1" title="Change Text Size">
+                    <i data-lucide="a-large-small" class="w-5 h-5"></i>
+                </button>
+                <button onclick="toggleReaderMode()" class="hover:text-white transition-colors flex items-center gap-1" title="Reader Mode">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                </button>
+            </div>
         </nav>
-        <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
     </header>
 
-    <main>
-        <section id="hero">
-            <h1>SensationalX Records</h1>
-            <p>Brought to you by the <strong>One Grand Band</strong>. We are an independent label dedicated to cutting-edge audio, raw talent, and breaking the boundaries of modern sound.</p>
+    <!-- Main Content -->
+    <main class="min-h-screen px-[8%] py-16 pb-48">
+        <section id="hero" class="text-center max-w-3xl mx-auto mb-20">
+            <h1 class="text-4xl md:text-5xl font-black mb-6 tracking-tight">SensationalX Records</h1>
+            <p class="text-lg text-gray-400 leading-relaxed">
+                Brought to you by the <strong>One Grand Band</strong>. We are an independent label dedicated to cutting-edge audio, raw talent, and breaking the boundaries of modern sound.
+            </p>
         </section>
 
-        <section id="artists">
-            <h2>Our Roster</h2>
-            <p>Meet the visionary artists shaping the sound of SensationalX.</p>
-            
-            <div class="artists-grid">
-                <a href="https://sensationalx.com/artist/onegrandband" class="artist-card">
-                    <h3>One Grand Band</h3>
-                    <p>Multi-Genre Collective</p>
-                </a>
+        <!-- Catalog Section -->
+        <section id="catalog" class="mb-24 text-center">
+            <h2 class="mb-12 text-3xl font-bold md:text-4xl">
+                The Catalog
+                <span class="mx-auto mt-2.5 block h-1 w-12 rounded-sm bg-[#ff3366]"></span>
+            </h2> 
+            <div id="catalogGrid" class="mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
+        </section>
 
-                <a href="https://sensationalx.com/artist/zesty-fun" class="artist-card">
-                    <h3>Zesty Fun</h3>
-                    <p>Singer/Songwriter</p>
+        <!-- Artists Roster Section (Updated Links) -->
+        <section id="artists" class="border-t border-[#2a2a2e] pt-20 text-center mb-24">
+            <h2 class="mb-4 text-3xl font-bold md:text-4xl">Our Artists</h2>
+            <div class="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-12">
+                <!-- Links changed to remove /artist/ -->
+                <a href="https://sensationalx.com/onegrandband" class="group block bg-[#1c1c1f] border border-[#2a2a2e] hover:border-[#ff3366] p-6 rounded-xl transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gradient-to-br from-[#ff3366] to-[#251124] w-12 h-12 rounded-lg flex items-center justify-center">
+                            <i data-lucide="music" class="text-white w-6 h-6"></i>
+                        </div>
+                        <i data-lucide="external-link" class="text-gray-500 w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight mb-1 group-hover:text-[#ff3366]">One Grand Band</h3>
                 </a>
-
-                <a href="https://sensationalx.com/artist/zexren" class="artist-card">
-                    <h3>Zexren</h3>
-                    <p>Rock</p>
+                <a href="https://sensationalx.com/sonicphantom" class="group block bg-[#1c1c1f] border border-[#2a2a2e] hover:border-[#ff3366] p-6 rounded-xl transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-[#2a2a2e] w-12 h-12 rounded-lg flex items-center justify-center">
+                            <i data-lucide="disc" class="text-gray-400 w-6 h-6"></i>
+                        </div>
+                        <i data-lucide="external-link" class="text-gray-500 w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight mb-1 group-hover:text-[#ff3366]">Sonic Phantom</h3>
+                </a>
+                <a href="https://sensationalx.com/theredlines" class="group block bg-[#1c1c1f] border border-[#2a2a2e] hover:border-[#ff3366] p-6 rounded-xl transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-[#2a2a2e] w-12 h-12 rounded-lg flex items-center justify-center">
+                            <i data-lucide="radio" class="text-gray-400 w-6 h-6"></i>
+                        </div>
+                        <i data-lucide="external-link" class="text-gray-500 w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight mb-1 group-hover:text-[#ff3366]">The Redlines</h3>
                 </a>
             </div>
         </section>
+
+        <!-- Verification Section -->
+        <section class="border-t border-[#2a2a2e] pt-12 text-center max-w-xl mx-auto flex flex-col items-center">
+            <h3 class="text-xl font-bold mb-4">Verify Identity to Connect</h3>
+            <div id="hcaptcha-box"></div>
+        </section>
     </main>
 
-    <script>
-        const btn = document.getElementById('themeBtn');
-        btn.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                btn.textContent = 'Dark Mode';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                btn.textContent = 'Light Mode';
-            }
-        });
+    <!-- Modals & Bottom Player (unchanged structurally from your React build) -->
+    <div id="albumModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+        <div class="relative w-full max-w-2xl overflow-hidden rounded-xl border border-[#2a2a2e] bg-[#1c1c1f] shadow-2xl">
+            <div class="flex items-center justify-between border-b border-[#2a2a2e] bg-[#251124]/30 px-6 py-4">
+                <div class="text-left">
+                    <h3 id="modalTitle" class="text-xl font-bold">Album Title</h3>
+                    <p id="modalLabel" class="text-sm text-[#ff3366]">0 Tracks</p>
+                </div>
+                <button onclick="closeModal()" class="rounded-full p-2 text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="modalTracklist" class="max-h-[60vh] overflow-y-auto px-2 py-2"></div>
+        </div>
+    </div>
+
+    <!-- STICKY BOTTOM PLAYER -->
+    <div id="bottomPlayer" class="fixed bottom-0 left-0 right-0 z-[70] border-t border-[#2a2a2e] bg-[#0b0b0c]/95 px-4 py-4 backdrop-blur-xl transition-transform duration-500 translate-y-full">
+        <!-- Player internals exactly as previous version -->
+        <div class="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6">
+            <div class="flex w-full items-center gap-4 md:w-1/4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#ff3366] to-[#251124]">
+                    <i data-lucide="music" class="text-white/80 w-5 h-5"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 id="playerTrackTitle" class="truncate text-sm font-bold text-white">Track Title</h4>
+                    <p id="playerTrackMeta" class="truncate text-xs text-[#ff3366]">Genre • BPM</p>
+                </div>
+                <div id="visualizerContainer" class="hidden h-4 items-end gap-0.5 opacity-70">
+                    <span class="w-1 h-full bg-[#ff3366] rounded-t-sm animate-visualizer-bar" style="animation-delay: 0.0s;"></span>
+                    <span class="w-1 h-full bg-[#ff3366] rounded-t-sm animate-visualizer-bar" style="animation-delay: 0.2s;"></span>
+                    <span class="w-1 h-full bg-[#ff3366] rounded-t-sm animate-visualizer-bar" style="animation-delay: 0.4s;"></span>
+                </div>
+            </div>
+
+            <div class="flex w-full flex-1 flex-col items-center gap-2">
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <button id="btnPrev" onclick="skipTrack(-1)" class="text-gray-400 hover:text-white disabled:opacity-30"><i data-lucide="skip-back" class="w-5 h-5"></i></button>
+                    <button onclick="skipTime(-10)" class="text-gray-400 hover:text-white"><i data-lucide="rewind" class="w-5 h-5"></i></button>
+                    <button id="playerPlayBtn" onclick="togglePlayback()" class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black hover:bg-[#ff3366] hover:text-white transition-transform hover:scale-105">
+                        <i data-lucide="play" class="w-5 h-5 ml-0.5" id="playerPlayIcon"></i>
+                    </button>
+                    <button onclick="skipTime(10)" class="text-gray-400 hover:text-white"><i data-lucide="fast-forward" class="w-5 h-5"></i></button>
+                    <button id="btnNext" onclick="skipTrack(1)" class="text-gray-400 hover:text-white disabled:opacity-30"><i data-lucide="skip-forward" class="w-5 h-5"></i></button>
+                </div>
+                <div class="flex w-full max-w-xl items-center gap-3 text-xs font-medium text-gray-400">
+                    <span id="currentTimeDisplay" class="w-8 text-right">0:00</span>
+                    <input id="progressSlider" type="range" min="0" max="100" value="0" oninput="handleSeek(event)" class="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-[#2a2a2e] accent-[#ff3366]">
+                    <span id="durationDisplay" class="w-8">0:00</span>
+                </div>
+            </div>
+
+            <div class="hidden w-1/4 justify-end md:flex">
+                <div class="flex w-24 items-center gap-2 text-gray-400">
+                    <i data-lucide="volume-2" class="w-[18px] h-[18px]"></i>
+                    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="1" oninput="handleVolume(event)" class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-[#2a2a2e] accent-[#ff3366]">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8fedCmpIZtKWVvIVcBUlHof4zw78j5Tk",
+            authDomain: "the-grand-band.firebaseapp.com",
+            projectId: "the-grand-band",
+            storageBucket: "the-grand-band.firebasestorage.app",
+            messagingSenderId: "800164147306",
+            appId: "1:800164147306:web:110cb30d1615cd910eda13",
+            measurementId: "G-BQED0D01JZ"
+        };
+        const app = initializeApp(firebaseConfig);
     </script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    <!-- Logic Engine -->
+    <script>
+        // --- OFFLINE SERVICE WORKER REGISTRATION ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('Offline Caching Active', reg.scope);
+                });
+            });
+        }
 
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+        // --- RANDOMIZED hCAPTCHA ---
+        function hcaptchaLoaded() {
+            const hcaptchaKeys = [
+                "700ad886-6702-41f8-b838-b40ad9a03238", 
+                "4448ac7c-b31a-4f32-b800-0a0246a6df44"
+            ];
+            const randomKey = hcaptchaKeys[Math.floor(Math.random() * hcaptchaKeys.length)];
+            hcaptcha.render('hcaptcha-box', { sitekey: randomKey });
+        }
 
-        const app = initializeApp(firebaseConfig);
+        // --- UI TOGGLES ---
+        let currentTextSize = 1; // 1 = 100%, 1.1 = 110%, 1.2 = 120%
+        function toggleTextSize() {
+            currentTextSize += 0.1;
+            if (currentTextSize > 1.2) currentTextSize = 1; // Loop back
+            document.documentElement.style.fontSize = `${currentTextSize * 100}%`;
+        }
+
+        function toggleReaderMode() {
+            document.body.classList.toggle('reader-mode');
+        }
+
+        // --- MUSIC DATA ---
+        const julyFunTracks = [
+            { id: "jf-1", title: "Good Times", genre: "July Fun", bpm: "TBD", musicKey: "TBD", timeSignature: "TBD", streamUrl: "https://files.catbox.moe/kaxem8.wav", downloadUrl: "" },
+            { id: "jf-2", title: "One Grand Afternoon", genre: "July Fun", bpm: "TBD", musicKey: "TBD", timeSignature: "TBD", streamUrl: "https://files.catbox.moe/yijftf.wav", downloadUrl: "" },
+            { id: "jf-5", title: "Flowers for GMA", genre: "July Fun", bpm: "TBD", musicKey: "TBD", timeSignature: "TBD", streamUrl: "https://files.catbox.moe/zl7fq6.wav", downloadUrl: "" },
+            { id: "jf-6", title: "RIBALICIOUS", genre: "July Fun", bpm: "TBD", musicKey: "TBD", timeSignature: "TBD", streamUrl: "https://files.catbox.moe/0uwnjg.wav", downloadUrl: "" },
+            { id: "jf-7", title: "discoparty", genre: "July Fun", bpm: "TBD", musicKey: "TBD", timeSignature: "TBD", streamUrl: "https://files.catbox.moe/4nift9.wav", downloadUrl: "" },
+            { id: "jf-8", title: "where joy lives", genre: "July Fun", bpm: "TBD", musicKey: "TBD", timeSignature: "TBD", streamUrl: "https://files.catbox.moe/u0q0n9.wav", downloadUrl: "" },
+            { id: "jf-9", title: "doodle down", genre: "July Fun", bpm: "TBD", musicKey: "TBD", timeSignature: "TBD", streamUrl: "https://files.catbox.moe/wbzujf.wav", downloadUrl: "" },
+            { id: "jf-11", title: "Relaxed Afternoon", genre: "July Fun", bpm: "110 BPM", musicKey: "C Major", timeSignature: "4/4", streamUrl: "https://files.catbox.moe/ndxt0a.wav", downloadUrl: "https://drive.google.com/uc?export=download&id=1Dbw6uhVxFItVdXpf8WqSh-WmEpuUFX1P" }
+        ];
+
+        const catalog = [
+            { id: "cat-1", title: "El Puerto One Mitad", type: "single", genre: "R&B/Soul", coverLabel: "Single", tracks: [{ id: "t-1", title: "El Puerto One Mitad", genre: "Chillhop", bpm: "85 BPM", musicKey: "B Minor", streamUrl: "https://files.catbox.moe/7nfr9e.wav", downloadUrl: "" }] },
+            { id: "cat-2", title: "Relaxed Afternoon", type: "single", genre: "Chill Out", coverLabel: "Single", tracks: [{ id: "t-2", title: "Relaxed Afternoon", genre: "Chill Out", bpm: "110 BPM", musicKey: "C Major", streamUrl: "https://files.catbox.moe/ndxt0a.wav", downloadUrl: "" }] },
+            { id: "cat-3", title: "Plants of GMA", type: "single", genre: "Acoustic", coverLabel: "Single", tracks: [{ id: "t-3", title: "Plants of GMA", genre: "Acoustic", bpm: "TBD", musicKey: "TBD", streamUrl: "https://files.catbox.moe/7du7pj.wav", downloadUrl: "" }] },
+            { id: "cat-4", title: "July Fun", type: "album", genre: "Acoustic", coverLabel: "11 Tracks", tracks: julyFunTracks }
+        ];
+
+        // Core State
+        let state = { activeQueue: [], activeTrackIndex: 0, isPlaying: false, selectedAlbum: null };
+
+        const audio = document.getElementById('audioEngine');
+        const bottomPlayer = document.getElementById('bottomPlayer');
+        const albumModal = document.getElementById('albumModal');
+
+        function formatTime(t) {
+            if (isNaN(t)) return "0:00";
+            return `${Math.floor(t/60)}:${Math.floor(t%60).toString().padStart(2,"0")}`;
+        }
+
+        function handlePlayRequest(queueJSON, index) {
+            const queue = JSON.parse(decodeURIComponent(queueJSON));
+            const track = queue[index];
+            if (!track || !track.streamUrl) { alert("Track not uploaded yet!"); return; }
+
+            const current = state.activeQueue[state.activeTrackIndex];
+            if (current && current.id === track.id) {
+                togglePlayback();
+            } else {
+                state.activeQueue = queue; state.activeTrackIndex = index;
+                audio.src = track.streamUrl;
+                audio.play();
+                state.isPlaying = true;
+            }
+            updateUI();
+        }
+
+        function togglePlayback() {
+            if (!state.activeQueue.length) return;
+            state.isPlaying ? audio.pause() : audio.play();
+            state.isPlaying = !state.isPlaying;
+            updateUI();
+        }
+
+        function skipTime(amt) { audio.currentTime += amt; }
+        function skipTrack(dir) {
+            const ni = state.activeTrackIndex + dir;
+            if (ni >= 0 && ni < state.activeQueue.length && state.activeQueue[ni].streamUrl) {
+                state.activeTrackIndex = ni;
+                audio.src = state.activeQueue[ni].streamUrl;
+                audio.play();
+                state.isPlaying = true;
+                updateUI();
+            }
+        }
+
+        function handleSeek(e) { audio.currentTime = (e.target.value/100) * (audio.duration||0); }
+        function handleVolume(e) { audio.volume = e.target.value; }
+
+        function openAlbumModal(i) {
+            state.selectedAlbum = catalog[i];
+            document.getElementById('modalTitle').textContent = state.selectedAlbum.title;
+            document.getElementById('modalLabel').textContent = state.selectedAlbum.coverLabel;
+            renderModalTracklist();
+            albumModal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+        function closeModal() { albumModal.classList.add('hidden'); state.selectedAlbum = null; }
+
+        audio.addEventListener('timeupdate', () => {
+            const c = audio.currentTime||0, d = audio.duration||1;
+            document.getElementById('progressSlider').value = (c/d)*100;
+            document.getElementById('currentTimeDisplay').textContent = formatTime(c);
+        });
+        audio.addEventListener('loadedmetadata', () => {
+            document.getElementById('durationDisplay').textContent = formatTime(audio.duration||0);
+        });
+        audio.addEventListener('ended', () => skipTrack(1));
+
+        function renderCatalog() {
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = '';
+            catalog.forEach((item, i) => {
+                const qs = encodeURIComponent(JSON.stringify(item.tracks));
+                const btn = (item.type === 'single') 
+                    ? `<button onclick="handlePlayRequest('${qs}', 0)" class="flex h-16 w-16 items-center justify-center rounded-full bg-[#ff3366] text-white transition-transform hover:scale-105"><i data-lucide="play" class="w-[26px] h-[26px] ml-1"></i></button>`
+                    : `<button onclick="openAlbumModal(${i})" class="flex h-14 items-center gap-2 rounded-full bg-[#ff3366] px-6 text-white font-semibold transition-transform hover:scale-105"><i data-lucide="list-music" class="w-5 h-5"></i> View Album</button>`;
+
+                grid.innerHTML += `
+                    <article class="group overflow-hidden rounded-xl border border-[#2a2a2e] bg-[#1c1c1f]">
+                        <div class="relative flex aspect-square items-center justify-center bg-[#251124]">
+                            <i data-lucide="${item.type==='album'?'list-music':'music'}" class="text-[#ff3366]/70 w-14 h-14"></i>
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">${btn}</div>
+                        </div>
+                        <div class="p-5 text-left">
+                            <h3 class="font-semibold text-lg">${item.title}</h3>
+                            <p class="text-xs text-[#ff3366] mt-1">${item.genre}</p>
+                        </div>
+                    </article>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function renderModalTracklist() {
+            const container = document.getElementById('modalTracklist');
+            container.innerHTML = '';
+            const qs = encodeURIComponent(JSON.stringify(state.selectedAlbum.tracks));
+            state.selectedAlbum.tracks.forEach((t, i) => {
+                const isAvail = t.streamUrl !== "";
+                container.innerHTML += `
+                    <div class="flex items-center gap-4 p-3 rounded-lg hover:bg-[#2a2a2e]/50 ${!isAvail?'opacity-50 grayscale':''}">
+                        <button ${isAvail ? `onclick="handlePlayRequest('${qs}', ${i})"` : 'disabled'} class="h-10 w-10 flex items-center justify-center bg-[#2a2a2e] rounded-full text-white hover:bg-[#ff3366]">
+                            <i data-lucide="play" class="w-4 h-4 ml-0.5"></i>
+                        </button>
+                        <div class="text-left">
+                            <p class="font-medium text-white">${t.title}</p>
+                            <p class="text-xs text-gray-400">${t.bpm} • ${t.musicKey}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function updateUI() {
+            const act = state.activeQueue[state.activeTrackIndex];
+            if (act) {
+                bottomPlayer.classList.remove('translate-y-full');
+                document.getElementById('playerTrackTitle').textContent = act.title;
+                document.getElementById('playerTrackMeta').textContent = `${act.genre} • ${act.bpm}`;
+                const pi = document.getElementById('playerPlayIcon');
+                if (state.isPlaying) {
+                    pi.setAttribute('data-lucide', 'pause'); pi.classList.remove('ml-0.5');
+                    document.getElementById('visualizerContainer').classList.replace('hidden', 'flex');
+                } else {
+                    pi.setAttribute('data-lucide', 'play'); pi.classList.add('ml-0.5');
+                    document.getElementById('visualizerContainer').classList.replace('flex', 'hidden');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        window.addEventListener('DOMContentLoaded', renderCatalog);
     </script>
 </body>
 </html>
