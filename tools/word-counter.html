@@ -1,0 +1,16 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Word & Character Counter</h2>
+    <textarea id="textInput" class="border w-full h-32 p-2 mt-2" oninput="countText()" placeholder="Type here..."></textarea>
+    <p class="mt-2 font-bold text-[#ff3366]">
+        Words: <span id="wordCount">0</span> | Characters: <span id="charCount">0</span>
+    </p>
+</div>
+
+<script>
+    function countText() {
+        const text = document.getElementById('textInput').value;
+        document.getElementById('charCount').innerText = text.length;
+        const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+        document.getElementById('wordCount').innerText = words.length;
+    }
+</script>
