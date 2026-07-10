@@ -1,0 +1,16 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Image to Base64 Encoder</h2>
+    <input type="file" id="imageInput" class="my-4" accept="image/*" onchange="encodeImage()" />
+    <textarea id="base64Output" class="border w-full h-32 p-2" placeholder="Base64 string will appear here..." readonly></textarea>
+</div>
+
+<script>
+    function encodeImage() {
+        const file = document.getElementById('imageInput').files[0];
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            document.getElementById('base64Output').value = reader.result;
+        }
+        if (file) reader.readAsDataURL(file);
+    }
+</script>
