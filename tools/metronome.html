@@ -1,66 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metronome</title>
-    <!-- Tailwind CSS CDN for styling -->
-    <script src="https://jsdelivr.net"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-
-    <!-- Responsive Container -->
-    <div class="w-full max-w-sm bg-white rounded-xl shadow-md p-6 text-center box-border">
-        <h2 class="font-bold text-2xl text-gray-800 mb-4">Metronome</h2>
-        
-        <div class="flex flex-col items-center gap-3">
-            <label for="bpmInput" class="text-sm font-medium text-gray-600">Beats Per Minute (BPM)</label>
-            <input type="number" id="bpmInput" value="120" min="40" max="300" class="w-full max-w-[150px] border border-gray-300 rounded p-2 text-center text-lg focus:outline-none focus:ring-2 focus:ring-[#ff3366]" />
-            
-            <button onclick="toggleMetronome()" id="playBtn" class="w-full max-w-[150px] bg-[#ff3366] hover:bg-[#e02855] text-white font-semibold px-4 py-3 rounded-lg shadow-sm transition-colors mt-2 cursor-pointer">
-                Start
-            </button>
-        </div>
+<div class="p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5 max-w-sm mx-auto text-center">
+    <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-4 mx-auto">
+        <i data-lucide="bell" class="w-6 h-6"></i>
     </div>
+    <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Metronome</h3>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Set your BPM and keep the rhythm.</p>
+    
+    <div class="flex items-center justify-center gap-3 mb-6">
+        <input type="number" id="bpmInput" value="120" min="40" max="250" class="w-24 text-center px-3 py-2 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] font-bold text-xl text-gray-900 dark:text-white" />
+        <span class="text-sm font-bold tracking-wider text-gray-400 uppercase">BPM</span>
+    </div>
+    
+    <button onclick="toggleMetronome()" id="playBtn" class="w-full py-3 bg-[#ff3366] hover:bg-[#e62e5c] text-white font-bold rounded-xl transition-colors flex justify-center items-center gap-2">
+        Start
+    </button>
+</div>
 
-    <script>
-        let audioCtx = null;
-        let isPlaying = false;
-        let timerID;
+<script>
+    let audioCtx = null;
+    let isPlaying = false;
+    let timerID;
 
-        function playClick() {
-            // AudioContext must be resumed or created after a user gesture
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+    function playClick() {
+        if (!audioCtx) return;
+        
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain(); // Added for a smoother sound dropoff
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        osc.frequency.value = 1000; // Frequency in Hz
+        
+        // Simple envelope to avoid harsh clicking sounds
+        gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+        
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.05);
+    }
 
-            const osc = audioCtx.createOscillator();
-            osc.connect(audioCtx.destination);
-            osc.frequency.value = 1000;
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.05);
+    async function toggleMetronome() {
+        // Initialize or resume the AudioContext inside user gesture handler
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
         }
 
-        function toggleMetronome() {
-            isPlaying = !isPlaying;
-            const btn = document.getElementById('playBtn');
-            if (isPlaying) {
-                btn.innerText = "Stop";
-                let bpm = document.getElementById('bpmInput').value || 120;
-                let interval = 60000 / bpm;
-                
-                // Play first click immediately, then start interval
-                playClick(); 
-                timerID = setInterval(playClick, interval);
-            } else {
-                btn.innerText = "Start";
-                clearInterval(timerID);
-            }
+        isPlaying = !isPlaying;
+        const btn = document.getElementById('playBtn');
+        
+        if (isPlaying) {
+            btn.innerText = "Stop";
+            btn.classList.replace('bg-[#ff3366]', 'bg-gray-600'); // Neutral color when playing
+            btn.classList.replace('hover:bg-[#e62e5c]', 'hover:bg-gray-700');
+            
+            let bpm = document.getElementById('bpmInput').value;
+            let interval = 60000 / bpm;
+            
+            // Play instantly on click, then set the interval loop
+            playClick(); 
+            timerID = setInterval(playClick, interval);
+        } else {
+            btn.innerText = "Start";
+            btn.classList.replace('bg-gray-600', 'bg-[#ff3366]');
+            btn.classList.replace('hover:bg-gray-700', 'hover:bg-[#e62e5c]');
+            
+            clearInterval(timerID);
         }
-    </script>
-
-</body>
-</html>
+    }
+</script>
