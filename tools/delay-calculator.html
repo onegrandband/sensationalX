@@ -1,0 +1,18 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Delay Time Calculator</h2>
+    <input type="number" id="calcBpm" placeholder="Enter BPM" class="border p-2 my-2" oninput="calculateDelay()" />
+    <div id="delayResults" class="mt-4 font-mono"></div>
+</div>
+
+<script>
+    function calculateDelay() {
+        const bpm = document.getElementById('calcBpm').value;
+        if (!bpm) return;
+        const quarterNote = 60000 / bpm;
+        document.getElementById('delayResults').innerHTML = `
+            1/4 Note: ${quarterNote.toFixed(2)} ms<br>
+            1/8 Note: ${(quarterNote / 2).toFixed(2)} ms<br>
+            1/16 Note: ${(quarterNote / 4).toFixed(2)} ms
+        `;
+    }
+</script>
