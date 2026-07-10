@@ -73,6 +73,6 @@ const notificationData = {
     "welcome": { title: "Notifications Enabled!", body: "You'll now receive updates from SensationalX.", url: "https://sensationalx.com/" },
     
     "event_1": { title: "One Grand Band Songstats!", body: "Listen to the official song stats of grand band!", url: "songstats.com/search?q=one%20grand%20band" },
-    "event_2": { title: "One Grand Band - Official website", body: "onegrandband.com - website official", url: "onegrandbabd.com" },
+    "event_2": { title: "One Grand Band - Official website", body: "onegrandband.com - website official", url: "onegrandband.com" },
 
 };
