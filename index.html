@@ -55,7 +55,6 @@
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300">
 
-    <!-- hCaptcha Security Site Gate Overlay -->
     <div id="captchaGate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] transition-opacity duration-700">
         <div class="text-center max-w-md p-8 bg-white dark:bg-[#1c1c1f] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#2a2a2e] transition-colors duration-300">
             <div class="flex justify-center mb-6">
@@ -69,7 +68,6 @@
         </div>
     </div>
     
-    <!-- Instant blocking script to prevent the hCaptcha gate from appearing if already verified -->
     <script>
         if (localStorage.getItem('isHuman') === 'true') {
             document.getElementById('captchaGate').style.setProperty('display', 'none', 'important');
@@ -160,7 +158,6 @@
         </section>
     </main>
 
-    <!-- Unified Security Gate Authorization Modal (Sign In / Sign Up / Double-Confirmation Reset) -->
     <div id="authModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
         <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
@@ -184,7 +181,6 @@
                     <input type="password" id="authPassword" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
                 </div>
 
-                <!-- Double Confirmation Reset Password Form Fields Block -->
                 <div id="resetFieldsBlock" class="hidden space-y-4">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Old Password</label>
@@ -204,7 +200,6 @@
                     </div>
                 </div>
 
-                <!-- Custom Optional Verification Fields Layer -->
                 <div id="optionalAuthLayers" class="pt-2 border-t border-gray-100 dark:border-[#2a2a2e] space-y-3">
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Fields</p>
                     <div>
@@ -223,15 +218,35 @@
 
                 <button type="submit" id="authSubmitBtn" class="w-full bg-[#ff3366] text-white font-bold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity mt-2">Sign In</button>
                 
-                <div class="flex flex-col items-center gap-2 pt-2 text-center">
+                <div id="socialAuthBlock" class="mt-4 pt-4 border-t border-gray-100 dark:border-[#2a2a2e]">
+                    <p class="text-[10px] font-bold text-center text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Or continue with</p>
+                    <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                        <button type="button" onclick="handleSocialAuth('google')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="chrome" class="w-3.5 h-3.5"></i> Google
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('apple')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="apple" class="w-3.5 h-3.5"></i> Apple
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('facebook')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="facebook" class="w-3.5 h-3.5"></i> Facebook
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('microsoft')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Microsoft
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('yahoo')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="mail" class="w-3.5 h-3.5"></i> Yahoo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center gap-2 pt-2 mt-2 text-center">
                     <button type="button" id="authToggleBtn" onclick="toggleAuthMode()" class="text-xs text-[#ff3366] hover:underline font-semibold">Don't have an account? Sign Up</button>
-                    <button type="button" id="authResetBtn" onclick="changeToResetMode()" class="text-xs text-gray-400 hover:text-white transition-colors">Forgot Password?</button>
+                    <button type="button" id="authResetBtn" onclick="changeToResetMode()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Forgot Password?</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Secure Profile Modification Engine View Panel Modal -->
     <div id="settingsModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
         <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
@@ -251,7 +266,6 @@
                 </div>
                 <button type="submit" class="w-full bg-[#ff3366] text-white font-bold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity">Save Profile Updates</button>
                 
-                <!-- New Reset Password Button Accessible While Logged In -->
                 <button type="button" onclick="openResetFromSettings()" class="w-full border border-[#ff3366] text-[#ff3366] font-bold py-2 rounded-lg text-sm hover:bg-[#ff3366] hover:text-white transition-colors">Change / Reset Password</button>
                 
                 <button type="button" onclick="triggerSignOut()" class="w-full border border-gray-300 dark:border-[#3a3a3e] text-gray-600 dark:text-gray-300 font-bold py-2 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors mt-2">Sign Out</button>
@@ -317,7 +331,6 @@
         </div>
     </div>
 
-    <!-- Firebase System Management Framework Block -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { 
@@ -330,7 +343,11 @@
             onAuthStateChanged,
             signOut,
             setPersistence,
-            browserLocalPersistence
+            browserLocalPersistence,
+            signInWithPopup,
+            GoogleAuthProvider,
+            FacebookAuthProvider,
+            OAuthProvider
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         
         const firebaseConfig = {
@@ -365,6 +382,29 @@
             }
             if (window.lucide) lucide.createIcons();
         });
+
+        // Handles the Federated Identity Providers via Popup
+        window.handleSocialAuth = async (providerName) => {
+            let provider = null;
+            if (providerName === 'google') provider = new GoogleAuthProvider();
+            else if (providerName === 'facebook') provider = new FacebookAuthProvider();
+            else if (providerName === 'apple') provider = new OAuthProvider('apple.com');
+            else if (providerName === 'microsoft') provider = new OAuthProvider('microsoft.com');
+            else if (providerName === 'yahoo') provider = new OAuthProvider('yahoo.com');
+
+            if (!provider) return;
+
+            try {
+                const result = await signInWithPopup(auth, provider);
+                alert(`Successfully signed in with ${providerName.charAt(0).toUpperCase() + providerName.slice(1)}! Welcome, ${result.user.displayName || result.user.email}`);
+                closeAuthModal();
+            } catch (error) {
+                // Ignore the error if the user just manually closed the login window
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    alert(`Social Auth Error: ${error.message}`);
+                }
+            }
+        };
 
         window.firebaseAuthAction = async (mode, email, password, username, optionalPayload) => {
             try {
@@ -436,6 +476,7 @@
                     
                     // Reset visibility and return to standard sign-in interface
                     document.getElementById('resetFieldsBlock').classList.add('hidden');
+                    document.getElementById('socialAuthBlock').classList.remove('hidden');
                     
                     // Re-enable email field in case it was locked by logged-in state
                     const emailInput = document.getElementById('authEmail');
@@ -607,6 +648,7 @@
             document.getElementById('usernameField').classList.add('hidden');
             document.getElementById('passwordField').classList.add('hidden');
             document.getElementById('optionalAuthLayers').classList.add('hidden');
+            document.getElementById('socialAuthBlock').classList.add('hidden');
             
             document.getElementById('resetFieldsBlock').classList.remove('hidden');
             
@@ -628,6 +670,7 @@
             const userField = document.getElementById('usernameField');
             const passField = document.getElementById('passwordField');
             const optionalLayers = document.getElementById('optionalAuthLayers');
+            const socialBlock = document.getElementById('socialAuthBlock');
             const resetBlock = document.getElementById('resetFieldsBlock');
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
@@ -644,6 +687,7 @@
                 userField.classList.remove('hidden');
                 passField.classList.remove('hidden');
                 optionalLayers.classList.remove('hidden');
+                socialBlock.classList.remove('hidden');
                 resetBlock.classList.add('hidden');
                 submitBtn.textContent = 'Sign Up';
                 toggleBtn.classList.remove('hidden');
@@ -655,6 +699,7 @@
                 userField.classList.add('hidden');
                 passField.classList.remove('hidden');
                 optionalLayers.classList.remove('hidden');
+                socialBlock.classList.remove('hidden');
                 resetBlock.classList.add('hidden');
                 submitBtn.textContent = 'Sign In';
                 toggleBtn.classList.remove('hidden');
