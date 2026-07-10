@@ -24,8 +24,6 @@
         }
     </script>
 
-    <script src="https://js.hcaptcha.com/1/api.js?onload=hcaptchaLoaded&render=explicit" async defer></script>
-
     <style>
         /* Custom Audio Animations */
         @keyframes custom-bounce {
@@ -88,7 +86,7 @@
             <button onclick="openAuthModal()" id="navAccountBtn" class="hover:text-[#ff3366] transition-colors flex items-center gap-1">
                 <i data-lucide="user" class="w-4 h-4"></i> Account
             </button>
-                     
+           
             <div class="flex items-center gap-4 ml-4 border-l border-gray-200 dark:border-[#2a2a2e] pl-4">
                 <button onclick="toggleTheme()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center" title="Toggle Theme">
                     <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
@@ -98,7 +96,7 @@
                     <i data-lucide="a-large-small" class="w-5 h-5"></i>
                     <input id="textSizeSlider" type="range" min="0.8" max="1.3" step="0.05" value="1" oninput="handleTextSizeChange(event)" class="h-1.5 w-16 sm:w-20 cursor-pointer appearance-none rounded-full bg-gray-300 dark:bg-[#2a2a2e] accent-[#ff3366]">
                 </div>
-                 
+                
                 <button onclick="toggleReaderMode()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center" title="Reader Mode">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
                 </button>
@@ -222,19 +220,19 @@
                     <p class="text-[10px] font-bold text-center text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Or continue with</p>
                     <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
                         <button type="button" onclick="handleSocialAuth('google')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
-                            <img src="assets/google.png" alt="Google" class="w-4 h-4 object-contain"> Google
+                            <i data-lucide="chrome" class="w-3.5 h-3.5"></i> Google
                         </button>
                         <button type="button" onclick="handleSocialAuth('apple')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
-                            <img src="assets/apple.png" alt="Apple" class="w-4 h-4 object-contain"> Apple
+                            <i data-lucide="apple" class="w-3.5 h-3.5"></i> Apple
                         </button>
                         <button type="button" onclick="handleSocialAuth('facebook')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
-                            <img src="assets/facebook.png" alt="Facebook" class="w-4 h-4 object-contain"> Facebook
+                            <i data-lucide="facebook" class="w-3.5 h-3.5"></i> Facebook
                         </button>
                         <button type="button" onclick="handleSocialAuth('microsoft')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
-                            <img src="assets/microsoft.png" alt="Microsoft" class="w-4 h-4 object-contain"> Microsoft
+                            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Microsoft
                         </button>
                         <button type="button" onclick="handleSocialAuth('yahoo')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
-                            <img src="assets/yahoo.png" alt="Yahoo" class="w-4 h-4 object-contain"> Yahoo
+                            <i data-lucide="mail" class="w-3.5 h-3.5"></i> Yahoo
                         </button>
                     </div>
                 </div>
@@ -337,39 +335,39 @@
             getAuth, 
             createUserWithEmailAndPassword, 
             signInWithEmailAndPassword, 
-            signOut, 
-            onAuthStateChanged, 
             updateProfile, 
             updateEmail, 
             updatePassword,
+            onAuthStateChanged,
+            signOut,
             setPersistence,
             browserLocalPersistence,
+            signInWithPopup,
             GoogleAuthProvider,
             FacebookAuthProvider,
-            OAuthProvider,
-            signInWithPopup
+            OAuthProvider
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        // --- INTEGRATED SECURE SCHEMA NETWORK CONFIGURATION ENGINE ---
+        // RESTORED: Reset configurations back to original the-grand-band environment 
         const firebaseConfig = {
-            apiKey: "AIzaSyDE6H7Vw7uP7N...",
-            authDomain: "sensationalx-records.firebaseapp.com",
-            projectId: "sensationalx-records",
-            storageBucket: "sensationalx-records.appspot.com",
-            messagingSenderId: "338908350171",
-            appId: "1:338908350171:web:dd61c94d0705a76ae68e82",
-            measurementId: "G-J2F559388B"
+            apiKey: "AIzaSyD8fedCmpIZtKWVvIVcBUlHof4zw78j5Tk",
+            authDomain: "the-grand-band.firebaseapp.com",
+            projectId: "the-grand-band",
+            storageBucket: "the-grand-band.firebasestorage.app",
+            messagingSenderId: "800164147306",
+            appId: "1:800164147306:web:110cb30d1615cd910eda13",
+            measurementId: "G-BQED0D01JZ"
         };
-
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        
+
         // Ensure configuration enforces standard native persistence forever
         setPersistence(auth, browserLocalPersistence).catch(err => console.error("Persistence Engine Fault:", err));
 
         // State validation tracking context variables
         window.currentUserContext = null;
-        
+
         onAuthStateChanged(auth, (user) => {
             const navBtn = document.getElementById('navAccountBtn');
             if (user) {
@@ -392,16 +390,13 @@
             else if (providerName === 'apple') provider = new OAuthProvider('apple.com');
             else if (providerName === 'microsoft') provider = new OAuthProvider('microsoft.com');
             else if (providerName === 'yahoo') provider = new OAuthProvider('yahoo.com');
-            
+
             if (!provider) return;
-            
             try {
-                console.log(`Attempting to sign in with ${providerName}...`);
                 const result = await signInWithPopup(auth, provider);
                 alert(`Successfully signed in with ${providerName.charAt(0).toUpperCase() + providerName.slice(1)}! Welcome, ${result.user.displayName || result.user.email}`);
                 closeAuthModal();
             } catch (error) {
-                console.error(`Firebase Auth Error for ${providerName}:`, error);
                 // Ignore the error if the user just manually closed the login window
                 if (error.code !== 'auth/popup-closed-by-user') {
                     alert(`Social Auth Error: ${error.message}`);
@@ -417,35 +412,33 @@
                         if (username) {
                             await updateProfile(credentials.user, { displayName: username });
                         }
+
                         // Store optional security keys locally mapped to this email for future resets
                         if (optionalPayload.passkey || optionalPayload.authenticator || optionalPayload.passcode) {
                             localStorage.setItem('sec_keys_' + email.toLowerCase(), JSON.stringify(optionalPayload));
                         }
+
                         // Decouple session instantly: force manual sign in mapping context
                         await signOut(auth);
                         alert("Account created successfully! For security, you must now type your details inside Sign In to log in permanently.");
                         toggleAuthMode();
                     } catch (signUpErr) {
                         if (signUpErr.code === 'auth/email-already-in-use') {
-                            alert("Security Halt: User already created an account with this identity...");
+                            alert("Security Halt: User already created an account with this identity block context.");
                         } else {
-                            alert(`Sign Up Fault: ${signUpErr.message}`);
+                            throw signUpErr;
                         }
                     }
                 } else if (mode === 'signin') {
-                    const credentials = await signInWithEmailAndPassword(auth, email, password);
-                    alert(`Welcome back, ${credentials.user.displayName || credentials.user.email}!`);
+                    await signInWithEmailAndPassword(auth, email, password);
+                    alert("Authenticated successfully. Persistent operational state active.");
                     closeAuthModal();
                 } else if (mode === 'reset') {
                     const op1 = document.getElementById('authOldPassword1').value;
                     const op2 = document.getElementById('authOldPassword2').value;
                     const np1 = document.getElementById('authNewPassword1').value;
                     const np2 = document.getElementById('authNewPassword2').value;
-                    
-                    if (!op1 || !op2 || !np1 || !np2) {
-                        alert("Security Error: All password check layers are mandatory for override context mapping schema updates.");
-                        return;
-                    }
+
                     if (op1 !== op2) {
                         alert("Security Error: The old password double-check mapping does not match.");
                         return;
@@ -454,27 +447,28 @@
                         alert("Security Error: The new password double-check mapping does not match.");
                         return;
                     }
-                    
+
                     // Pre-Flight Security Check: Verify Backup Keys if they exist
                     const savedKeysRaw = localStorage.getItem('sec_keys_' + email.toLowerCase());
                     if (savedKeysRaw) {
                         const savedKeys = JSON.parse(savedKeysRaw);
                         if (savedKeys.passkey || savedKeys.authenticator || savedKeys.passcode) {
                             const securityInput = prompt("Advanced Security Detected 🔒\n\nPlease enter your Passkey, Authenticator code, or Backup Passcode to authorize this password reset.\n\nIf you don't remember it, please reach out to us at contact@onegrandband.com to help recover your account.");
-                            if (securityInput !== savedKeys.passkey && securityInput !== savedKeys.authenticator && securityInput !== savedKeys.passcode) {
+                            if (securityInput !== savedKeys.passkey && 
+                                securityInput !== savedKeys.authenticator && 
+                                securityInput !== savedKeys.passcode) {
                                 alert("Security Verification Failed.\n\nSince the backup keys didn't match, the reset was blocked. Please contact contact@onegrandband.com for recovery assistance.");
                                 return;
                             }
                         }
                     }
-                    
+
                     // Authenticate identity context securely via user-provided details
                     const userCredential = await signInWithEmailAndPassword(auth, email, op1);
                     // Rewrite password values inside network schema database records forever
                     await updatePassword(userCredential.user, np1);
                     alert("Password rewritten successfully forever! Session logged out. Please sign in with your brand new credentials.");
                     await signOut(auth);
-                    
                     // Reset visibility and return to standard sign-in interface
                     document.getElementById('resetFieldsBlock').classList.add('hidden');
                     document.getElementById('socialAuthBlock').classList.remove('hidden');
@@ -483,6 +477,7 @@
                     const emailInput = document.getElementById('authEmail');
                     emailInput.disabled = false;
                     emailInput.classList.remove('opacity-50', 'cursor-not-allowed');
+
                     window.internalAuthMode = 'signin';
                     toggleAuthMode();
                 }
@@ -531,36 +526,38 @@
             const isDark = document.documentElement.classList.contains('dark');
             const icon = document.getElementById('themeIcon');
             if (icon) {
-                if (isDark) {
-                    icon.setAttribute('data-lucide', 'sun');
-                } else {
-                    icon.setAttribute('data-lucide', 'moon');
-                }
+                icon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
                 if (window.lucide) lucide.createIcons();
             }
         }
-
+        
         function toggleTheme() {
             const htmlEl = document.documentElement;
             htmlEl.classList.toggle('dark');
             const isDark = htmlEl.classList.contains('dark');
+            
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             updateThemeIcon();
             if (localStorage.getItem('isHuman') !== 'true') {
                 const box = document.getElementById('hcaptcha-box');
-                box.innerHTML = '';
+                box.innerHTML = ''; 
                 renderCaptcha();
             }
         }
+
         document.addEventListener("DOMContentLoaded", updateThemeIcon);
 
         // --- HCAPTCHA VERIFICATION GATE ---
         function renderCaptcha() {
             if (localStorage.getItem('isHuman') === 'true') return;
             const isDark = document.documentElement.classList.contains('dark');
-            const hcaptchaKeys = [ "700ad886-6702-41f8-b838-b40ad9a03238", "4448ac7c-b31a-4f32-b800-0a0246a6df44" ];
+            const hcaptchaKeys = [
+                "700ad886-6702-41f8-b838-b40ad9a03238", 
+                "4448ac7c-b31a-4f32-b800-0a0246a6df44"
+            ];
             const randomKey = hcaptchaKeys[Math.floor(Math.random() * hcaptchaKeys.length)];
-            hcaptcha.render('hcaptcha-box', {
+            
+            hcaptcha.render('hcaptcha-box', { 
                 sitekey: randomKey,
                 theme: isDark ? 'dark' : 'light',
                 callback: function(token) {
@@ -582,9 +579,7 @@
         function unlockGate() {
             const gate = document.getElementById('captchaGate');
             gate.classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                gate.style.setProperty('display', 'none', 'important');
-            }, 700);
+            setTimeout(() => { gate.style.setProperty('display', 'none', 'important'); }, 700);
         }
 
         // --- UI TOGGLES (SLIDER DRIVEN) ---
@@ -599,7 +594,7 @@
 
         // --- INTERACTIVE AUTH UI SCHEDULER ---
         window.internalAuthMode = 'signin';
-
+        
         function openAuthModal() {
             if (window.currentUserContext) {
                 document.getElementById('settingsModal').classList.remove('hidden');
@@ -608,7 +603,9 @@
                 const emailInput = document.getElementById('authEmail');
                 emailInput.disabled = false;
                 emailInput.classList.remove('opacity-50', 'cursor-not-allowed');
+                
                 document.getElementById('authModal').classList.remove('hidden');
+                
                 // If modal was left in reset mode previously, revert to sign-in default
                 if (window.internalAuthMode === 'reset') {
                     toggleAuthMode();
@@ -616,7 +613,7 @@
             }
             if (window.lucide) lucide.createIcons();
         }
-
+        
         function closeAuthModal() {
             document.getElementById('authModal').classList.add('hidden');
         }
@@ -624,11 +621,12 @@
         function closeSettingsModal() {
             document.getElementById('settingsModal').classList.add('hidden');
         }
-
+        
         function openResetFromSettings() {
             closeSettingsModal();
             document.getElementById('authModal').classList.remove('hidden');
             changeToResetMode();
+            
             // Auto-fill and lock their email if they are already logged in
             if (window.currentUserContext) {
                 const emailInput = document.getElementById('authEmail');
@@ -645,10 +643,19 @@
             document.getElementById('passwordField').classList.add('hidden');
             document.getElementById('optionalAuthLayers').classList.add('hidden');
             document.getElementById('socialAuthBlock').classList.add('hidden');
+            
             document.getElementById('resetFieldsBlock').classList.remove('hidden');
-            document.getElementById('authSubmitBtn').textContent = 'Authorize Credentials and Rewrite Password';
-            document.getElementById('authToggleBtn').classList.add('hidden');
-            document.getElementById('authResetBtn').classList.add('hidden');
+            
+            document.getElementById('authSubmitBtn').textContent = 'Confirm Changes';
+            // Hide the toggle button if they are already logged in (no reason to see 'Return to Sign In')
+            if (window.currentUserContext) {
+                document.getElementById('authToggleBtn').classList.add('hidden');
+                document.getElementById('authResetBtn').classList.add('hidden');
+            } else {
+                document.getElementById('authToggleBtn').classList.remove('hidden');
+                document.getElementById('authToggleBtn').textContent = 'Return to Sign In';
+                document.getElementById('authResetBtn').classList.add('hidden');
+            }
         }
 
         function toggleAuthMode() {
@@ -661,8 +668,7 @@
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
             const resetBtn = document.getElementById('authResetBtn');
-            
-            // Re-unlock email field in case it got locked during a logged-in reset attempt
+            // Re-enable email field in case it got locked during a logged-in reset attempt
             const emailInput = document.getElementById('authEmail');
             emailInput.disabled = false;
             emailInput.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -693,7 +699,7 @@
                 resetBtn.classList.remove('hidden');
             }
         }
-
+        
         function handleAuthSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('authEmail').value;
@@ -716,106 +722,70 @@
 
         // --- MUSIC DATA PROFILE MANAGEMENT ---
         const catalog = [
-            {
-                id: "cat-2",
-                title: "Relaxed Afternoon",
-                type: "single",
-                genre: "Chill Out",
-                coverLabel: "Single",
-                tracks: [{
-                    id: "t-2",
-                    title: "Relaxed Afternoon",
-                    genre: "Chill Out",
-                    bpm: "110 BPM",
-                    musicKey: "C Major",
-                    streamUrl: "https://files.catbox.moe/ndxt0a.wav"
-                }]
-            }
+            { id: "cat-2", title: "Relaxed Afternoon", type: "single", genre: "Chill Out", coverLabel: "Single", tracks: [{ id: "t-2", title: "Relaxed Afternoon", genre: "Chill Out", bpm: "110 BPM", musicKey: "C Major", streamUrl: "https://files.catbox.moe/ndxt0a.wav" }] }
         ];
-
-        let state = {
-            activeQueue: [],
-            activeTrackIndex: 0,
-            isPlaying: false,
-            selectedAlbum: null
-        };
+        let state = { activeQueue: [], activeTrackIndex: 0, isPlaying: false, selectedAlbum: null };
 
         const audio = document.getElementById('audioEngine');
+        const bottomPlayer = document.getElementById('bottomPlayer');
+        const albumModal = document.getElementById('albumModal');
 
-        // Fix handleVolume definition:
-        function handleVolume(event) {
-            audio.volume = event.target.value;
+        function formatTime(t) {
+            if (isNaN(t)) return "0:00";
+            return `${Math.floor(t/60)}:${Math.floor(t%60).toString().padStart(2,"0")}`;
         }
 
-        function formatTime(secs) {
-            const m = Math.floor(secs / 60);
-            const s = Math.floor(secs % 60);
-            return `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
+        function handlePlayRequest(queueJSON, index) {
+            const queue = JSON.parse(decodeURIComponent(queueJSON));
+            const track = queue[index];
+            if (!track || !track.streamUrl) { alert("Track asset unmapped!"); return; }
 
-        function handlePlayRequest(encodedTracks, idx) {
-            const tracks = JSON.parse(decodeURIComponent(encodedTracks));
-            state.activeQueue = tracks;
-            state.activeTrackIndex = idx;
-            const track = tracks[idx];
-            audio.src = track.streamUrl;
-            audio.play().then(() => {
-                state.isPlaying = true;
-                updateUI();
-            }).catch(e => console.error("Playback start prevented:", e));
-        }
-
-        function togglePlayback() {
-            if (!state.activeQueue.length && catalog.length) {
-                handlePlayRequest(encodeURIComponent(JSON.stringify(catalog[0].tracks)), 0);
-                return;
-            }
-            if (state.isPlaying) {
-                audio.pause();
-                state.isPlaying = false;
+            const current = state.activeQueue[state.activeTrackIndex];
+            if (current && current.id === track.id) {
+                togglePlayback();
             } else {
-                audio.play().then(() => {
-                    state.isPlaying = true;
-                }).catch(e => console.error(e));
+                state.activeQueue = queue;
+                state.activeTrackIndex = index;
+                audio.src = track.streamUrl;
+                audio.play();
                 state.isPlaying = true;
             }
             updateUI();
         }
 
+        function togglePlayback() {
+            if (!state.activeQueue.length) return;
+            state.isPlaying ? audio.pause() : audio.play();
+            state.isPlaying = !state.isPlaying;
+            updateUI();
+        }
+
+        function skipTime(amt) { audio.currentTime += amt; }
+        
         function skipTrack(dir) {
-            let nextIdx = state.activeTrackIndex + dir;
-            if (nextIdx >= 0 && nextIdx < state.activeQueue.length) {
-                state.activeTrackIndex = nextIdx;
-                audio.src = state.activeQueue[nextIdx].streamUrl;
-                audio.play().then(() => {
-                    state.isPlaying = true;
-                    updateUI();
-                }).catch(e => console.error(e));
+            const ni = state.activeTrackIndex + dir;
+            if (ni >= 0 && ni < state.activeQueue.length && state.activeQueue[ni].streamUrl) {
+                state.activeTrackIndex = ni;
+                audio.src = state.activeQueue[ni].streamUrl;
+                audio.play();
+                state.isPlaying = true;
+                updateUI();
             }
         }
 
-        function skipTime(secs) {
-            audio.currentTime = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + secs));
-        }
+        function handleSeek(e) { audio.currentTime = (e.target.value/100) * (audio.duration||0); }
+        function handleVolume(e) { audio.volume = e.target.value; }
 
-        function handleSeek(event) {
-            const ratio = event.target.value / 100;
-            if (audio.duration) {
-                audio.currentTime = audio.duration * ratio;
-            }
-        }
+        function closeModal() { albumModal.classList.add('hidden'); state.selectedAlbum = null; }
 
         audio.addEventListener('timeupdate', () => {
-            const c = audio.currentTime || 0;
-            const d = audio.duration || 1;
-            document.getElementById('progressSlider').value = (c / d) * 100;
+            const c = audio.currentTime||0, d = audio.duration||1;
+            document.getElementById('progressSlider').value = (c/d)*100;
             document.getElementById('currentTimeDisplay').textContent = formatTime(c);
         });
-
         audio.addEventListener('loadedmetadata', () => {
-            document.getElementById('durationDisplay').textContent = formatTime(audio.duration || 0);
+            document.getElementById('durationDisplay').textContent = formatTime(audio.duration||0);
         });
-
         audio.addEventListener('ended', () => skipTrack(1));
 
         function renderCatalog() {
@@ -824,11 +794,12 @@
             catalog.forEach((item, i) => {
                 const qs = encodeURIComponent(JSON.stringify(item.tracks));
                 const btn = `<button onclick="handlePlayRequest('${qs}', 0)" class="flex h-16 w-16 items-center justify-center rounded-full bg-[#ff3366] text-white transition-transform hover:scale-105 shadow-lg"><i data-lucide="play" class="w-[26px] h-[26px] ml-1"></i></button>`;
+
                 grid.innerHTML += `
-                    <article class="overflow-hidden rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                        <div class="relative aspect-square w-full bg-gradient-to-br from-[#ff3366] to-[#251124] flex flex-col justify-between p-6 text-left">
-                            <span class="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-md self-start">${item.coverLabel}</span>
-                            <div class="flex items-end justify-between">${btn}</div>
+                    <article class="group overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <div class="relative flex aspect-square items-center justify-center bg-gray-100 dark:bg-[#251124]">
+                            <i data-lucide="music" class="text-[#ff3366]/70 w-14 h-14"></i>
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">${btn}</div>
                         </div>
                         <div class="p-5 text-left">
                             <h3 class="font-semibold text-lg text-gray-900 dark:text-white">${item.title}</h3>
@@ -837,7 +808,7 @@
                     </article>
                 `;
             });
-            if (window.lucide) lucide.createIcons();
+            lucide.createIcons();
         }
 
         function updateUI() {
@@ -857,10 +828,12 @@
                     document.getElementById('visualizerContainer').classList.replace('flex', 'hidden');
                 }
             }
-            if (window.lucide) lucide.createIcons();
+            lucide.createIcons();
         }
 
         window.addEventListener('DOMContentLoaded', renderCatalog);
     </script>
+
+    <script src="https://js.hcaptcha.com/1/api.js?onload=hcaptchaLoaded&render=explicit" async defer></script>
 </body>
 </html>
