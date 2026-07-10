@@ -55,7 +55,6 @@
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300">
 
-    <!-- hCaptcha Security Site Gate Overlay -->
     <div id="captchaGate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] transition-opacity duration-700">
         <div class="text-center max-w-md p-8 bg-white dark:bg-[#1c1c1f] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#2a2a2e] transition-colors duration-300">
             <div class="flex justify-center mb-6">
@@ -69,7 +68,6 @@
         </div>
     </div>
     
-    <!-- Instant blocking script to prevent the hCaptcha gate from appearing if already verified -->
     <script>
         if (localStorage.getItem('isHuman') === 'true') {
             document.getElementById('captchaGate').style.setProperty('display', 'none', 'important');
@@ -160,7 +158,6 @@
         </section>
     </main>
 
-    <!-- Unified Security Gate Authorization Modal (Sign In / Sign Up / Reset) -->
     <div id="authModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
         <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
@@ -184,7 +181,25 @@
                     <input type="password" id="authPassword" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
                 </div>
 
-                <!-- Custom Optional Verification Fields Layer -->
+                <div id="resetFieldsBlock" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Old Password</label>
+                        <input type="password" id="authOldPassword1" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Confirm Old Password</label>
+                        <input type="password" id="authOldPassword2" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                    <div class="border-t border-gray-200 dark:border-[#2a2a2e] pt-3">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">New Password</label>
+                        <input type="password" id="authNewPassword1" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Confirm New Password</label>
+                        <input type="password" id="authNewPassword2" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                </div>
+
                 <div id="optionalAuthLayers" class="pt-2 border-t border-gray-100 dark:border-[#2a2a2e] space-y-3">
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Fields</p>
                     <div>
@@ -211,7 +226,6 @@
         </div>
     </div>
 
-    <!-- Secure Profile Modification Engine View Panel Modal -->
     <div id="settingsModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
         <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
@@ -293,7 +307,6 @@
         </div>
     </div>
 
-    <!-- Firebase System Management Framework Block -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { 
@@ -302,7 +315,7 @@
             signInWithEmailAndPassword, 
             updateProfile, 
             updateEmail, 
-            sendPasswordResetEmail, 
+            updatePassword,
             onAuthStateChanged,
             signOut,
             setPersistence,
@@ -345,16 +358,15 @@
         window.firebaseAuthAction = async (mode, email, password, username, optionalPayload) => {
             try {
                 if (mode === 'signup') {
-                    // Sign-Up authentication tracking validation pipeline
                     try {
                         const credentials = await createUserWithEmailAndPassword(auth, email, password);
                         if (username) {
                             await updateProfile(credentials.user, { displayName: username });
                         }
-                        // Instantly decouple session loop: require completely clean manual re-authentication mapping context
+                        // Decouple session instantly: force manual sign in mapping context
                         await signOut(auth);
                         alert("Account created successfully! For security, you must now type your details inside Sign In to log in permanently.");
-                        toggleAuthMode(); // Switch UI context block back to Sign-In display frame
+                        toggleAuthMode();
                     } catch (signUpErr) {
                         if (signUpErr.code === 'auth/email-already-in-use') {
                             alert("Security Halt: User already created an account with this identity block context.");
@@ -367,8 +379,31 @@
                     alert("Authenticated successfully. Persistent operational state active.");
                     closeAuthModal();
                 } else if (mode === 'reset') {
-                    await sendPasswordResetEmail(auth, email);
-                    alert("Secure reset link processed. Check your registered inbox validation maps.");
+                    const op1 = document.getElementById('authOldPassword1').value;
+                    const op2 = document.getElementById('authOldPassword2').value;
+                    const np1 = document.getElementById('authNewPassword1').value;
+                    const np2 = document.getElementById('authNewPassword2').value;
+
+                    if (op1 !== op2) {
+                        alert("Security Error: The old password double-check mapping does not match.");
+                        return;
+                    }
+                    if (np1 !== np2) {
+                        alert("Security Error: The new password double-check mapping does not match.");
+                        return;
+                    }
+
+                    // Authenticate identity context securely via user-provided details
+                    const userCredential = await signInWithEmailAndPassword(auth, email, op1);
+                    // Rewrite password values inside network schema database records forever
+                    await updatePassword(userCredential.user, np1);
+                    
+                    alert("Password rewritten successfully forever! Session logged out. Please sign in with your brand new credentials.");
+                    await signOut(auth);
+                    
+                    // Reset visibility and return to standard sign-in interface
+                    document.getElementById('resetFieldsBlock').classList.add('hidden');
+                    window.internalAuthMode = 'signin';
                     toggleAuthMode();
                 }
             } catch (error) {
@@ -484,7 +519,7 @@
         }
 
         // --- INTERACTIVE AUTH UI SCHEDULER ---
-        let internalAuthMode = 'signin';
+        window.internalAuthMode = 'signin';
         
         function openAuthModal() {
             if (window.currentUserContext) {
@@ -504,12 +539,15 @@
         }
         
         function changeToResetMode() {
-            internalAuthMode = 'reset';
-            document.getElementById('authModalTitle').textContent = 'Reset Password';
+            window.internalAuthMode = 'reset';
+            document.getElementById('authModalTitle').textContent = 'Reset Password Forever';
             document.getElementById('usernameField').classList.add('hidden');
             document.getElementById('passwordField').classList.add('hidden');
             document.getElementById('optionalAuthLayers').classList.add('hidden');
-            document.getElementById('authSubmitBtn').textContent = 'Send Recovery Link';
+            
+            document.getElementById('resetFieldsBlock').classList.remove('hidden');
+            
+            document.getElementById('authSubmitBtn').textContent = 'Confirm Changes';
             document.getElementById('authToggleBtn').textContent = 'Return to Sign In';
         }
 
@@ -518,23 +556,26 @@
             const userField = document.getElementById('usernameField');
             const passField = document.getElementById('passwordField');
             const optionalLayers = document.getElementById('optionalAuthLayers');
+            const resetBlock = document.getElementById('resetFieldsBlock');
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
             
-            if (internalAuthMode === 'signin' || internalAuthMode === 'reset') {
-                internalAuthMode = 'signup';
+            if (window.internalAuthMode === 'signin' || window.internalAuthMode === 'reset') {
+                window.internalAuthMode = 'signup';
                 title.textContent = 'Sign Up';
                 userField.classList.remove('hidden');
                 passField.classList.remove('hidden');
                 optionalLayers.classList.remove('hidden');
+                resetBlock.classList.add('hidden');
                 submitBtn.textContent = 'Sign Up';
                 toggleBtn.textContent = 'Already have an account? Sign In';
             } else {
-                internalAuthMode = 'signin';
+                window.internalAuthMode = 'signin';
                 title.textContent = 'Sign In';
                 userField.classList.add('hidden');
                 passField.classList.remove('hidden');
                 optionalLayers.classList.remove('hidden');
+                resetBlock.classList.add('hidden');
                 submitBtn.textContent = 'Sign In';
                 toggleBtn.textContent = "Don't have an account? Sign Up";
             }
@@ -552,7 +593,7 @@
                 passcode: document.getElementById('authPasscode').value
             };
             
-            window.firebaseAuthAction(internalAuthMode, email, password, username, optionalPayload);
+            window.firebaseAuthAction(window.internalAuthMode, email, password, username, optionalPayload);
         }
 
         function handleSettingsUpdate(e) {
