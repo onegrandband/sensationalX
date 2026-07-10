@@ -55,6 +55,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300">
 
+    <!-- hCaptcha Security Site Gate Overlay -->
     <div id="captchaGate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] transition-opacity duration-700">
         <div class="text-center max-w-md p-8 bg-white dark:bg-[#1c1c1f] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#2a2a2e] transition-colors duration-300">
             <div class="flex justify-center mb-6">
@@ -67,6 +68,13 @@
             <div id="hcaptcha-box" class="flex justify-center min-h-[80px]"></div>
         </div>
     </div>
+    
+    <!-- Instant blocking script to prevent the hCaptcha gate from appearing if already verified -->
+    <script>
+        if (localStorage.getItem('isHuman') === 'true') {
+            document.getElementById('captchaGate').style.setProperty('display', 'none', 'important');
+        }
+    </script>
 
     <audio id="audioEngine" preload="auto"></audio>
 
@@ -79,12 +87,11 @@
             <a href="#catalog" class="hover:text-[#ff3366] transition-colors">Catalog</a>
             <a href="#artists" class="hover:text-[#ff3366] transition-colors">Artists</a>
             <a href="https://sensationalx.com/book.html" class="hover:text-[#ff3366] transition-colors">Book a Demo</a>
-            <button onclick="openAuthModal()" class="hover:text-[#ff3366] transition-colors flex items-center gap-1">
+            <button onclick="openAuthModal()" id="navAccountBtn" class="hover:text-[#ff3366] transition-colors flex items-center gap-1">
                 <i data-lucide="user" class="w-4 h-4"></i> Account
             </button>
             
             <div class="flex items-center gap-4 ml-4 border-l border-gray-200 dark:border-[#2a2a2e] pl-4">
-                
                 <button onclick="toggleTheme()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center" title="Toggle Theme">
                     <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
                 </button>
@@ -153,6 +160,7 @@
         </section>
     </main>
 
+    <!-- Unified Security Gate Authorization Modal (Sign In / Sign Up / Reset) -->
     <div id="authModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
         <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
@@ -167,36 +175,62 @@
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Username</label>
                     <input type="text" id="authUsername" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
                 </div>
-                <div>
+                <div id="emailField">
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Email</label>
                     <input type="email" id="authEmail" required class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
                 </div>
-                <div>
+                <div id="passwordField">
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Password</label>
-                    <input type="password" id="authPassword" required class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    <input type="password" id="authPassword" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
                 </div>
 
-                <div class="pt-2 border-t border-gray-100 dark:border-[#2a2a2e] space-y-3">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Options</p>
+                <!-- Custom Optional Verification Fields Layer -->
+                <div id="optionalAuthLayers" class="pt-2 border-t border-gray-100 dark:border-[#2a2a2e] space-y-3">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Fields</p>
                     <div>
                         <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">Passkey (Optional)</label>
-                        <input type="text" id="authPasskey" placeholder="Credential ID or device passkey mapping" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
+                        <input type="text" id="authPasskey" placeholder="Credential identifier context" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
                     </div>
                     <div>
                         <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">Authenticator (Optional)</label>
-                        <input type="text" id="auth2FA" placeholder="6-digit verification code" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
+                        <input type="text" id="auth2FA" placeholder="6-digit verification sequence" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
                     </div>
                     <div>
                         <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">Backup Passcode (Optional)</label>
-                        <input type="password" id="authPasscode" placeholder="Numeric access passcode" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
+                        <input type="password" id="authPasscode" placeholder="Numeric unlock map context" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
                     </div>
                 </div>
 
                 <button type="submit" id="authSubmitBtn" class="w-full bg-[#ff3366] text-white font-bold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity mt-2">Sign In</button>
                 
-                <div class="text-center pt-2">
+                <div class="flex flex-col items-center gap-2 pt-2 text-center">
                     <button type="button" id="authToggleBtn" onclick="toggleAuthMode()" class="text-xs text-[#ff3366] hover:underline font-semibold">Don't have an account? Sign Up</button>
+                    <button type="button" id="authResetBtn" onclick="changeToResetMode()" class="text-xs text-gray-400 hover:text-white transition-colors">Forgot Password?</button>
                 </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Secure Profile Modification Engine View Panel Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
+        <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Account Settings</h3>
+                <button onclick="closeSettingsModal()" class="rounded-full p-2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="settingsForm" onsubmit="handleSettingsUpdate(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Update Username</label>
+                    <input type="text" id="settingsUsername" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Update Email Address</label>
+                    <input type="email" id="settingsEmail" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                </div>
+                <button type="submit" class="w-full bg-[#ff3366] text-white font-bold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity">Save Profile Updates</button>
+                <button type="button" onclick="triggerSignOut()" class="w-full border border-gray-300 dark:border-[#3a3a3e] text-gray-600 dark:text-gray-300 font-bold py-2 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors">Sign Out</button>
             </form>
         </div>
     </div>
@@ -259,9 +293,21 @@
         </div>
     </div>
 
+    <!-- Firebase System Management Framework Block -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            updateProfile, 
+            updateEmail, 
+            sendPasswordResetEmail, 
+            onAuthStateChanged,
+            signOut,
+            setPersistence,
+            browserLocalPersistence
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyD8fedCmpIZtKWVvIVcBUlHof4zw78j5Tk",
@@ -276,28 +322,80 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Bind core authentication framework behaviors to window scope
+        // Ensure configuration enforces standard native persistence forever
+        setPersistence(auth, browserLocalPersistence).catch(err => console.error("Persistence Engine Fault:", err));
+
+        // State validation tracking context variables
+        window.currentUserContext = null;
+
+        onAuthStateChanged(auth, (user) => {
+            const navBtn = document.getElementById('navAccountBtn');
+            if (user) {
+                window.currentUserContext = user;
+                navBtn.innerHTML = `<i data-lucide="settings" class="w-4 h-4"></i> ${user.displayName || 'Settings'}`;
+                document.getElementById('settingsUsername').value = user.displayName || '';
+                document.getElementById('settingsEmail').value = user.email || '';
+            } else {
+                window.currentUserContext = null;
+                navBtn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> Account`;
+            }
+            if (window.lucide) lucide.createIcons();
+        });
+
         window.firebaseAuthAction = async (mode, email, password, username, optionalPayload) => {
             try {
                 if (mode === 'signup') {
-                    const credentials = await createUserWithEmailAndPassword(auth, email, password);
-                    if (username) {
-                        await updateProfile(credentials.user, { displayName: username });
+                    // Sign-Up authentication tracking validation pipeline
+                    try {
+                        const credentials = await createUserWithEmailAndPassword(auth, email, password);
+                        if (username) {
+                            await updateProfile(credentials.user, { displayName: username });
+                        }
+                        // Instantly decouple session loop: require completely clean manual re-authentication mapping context
+                        await signOut(auth);
+                        alert("Account created successfully! For security, you must now type your details inside Sign In to log in permanently.");
+                        toggleAuthMode(); // Switch UI context block back to Sign-In display frame
+                    } catch (signUpErr) {
+                        if (signUpErr.code === 'auth/email-already-in-use') {
+                            alert("Security Halt: User already created an account with this identity block context.");
+                        } else {
+                            throw signUpErr;
+                        }
                     }
-                    alert("Account registered successfully!");
-                } else {
+                } else if (mode === 'signin') {
                     await signInWithEmailAndPassword(auth, email, password);
-                    alert("Authentication successful!");
+                    alert("Authenticated successfully. Persistent operational state active.");
+                    closeAuthModal();
+                } else if (mode === 'reset') {
+                    await sendPasswordResetEmail(auth, email);
+                    alert("Secure reset link processed. Check your registered inbox validation maps.");
+                    toggleAuthMode();
                 }
-                
-                if (optionalPayload.passkey || optionalPayload.authenticator || optionalPayload.passcode) {
-                    console.log("Optional routing validation meta logs processed:", optionalPayload);
-                }
-                
-                closeAuthModal();
             } catch (error) {
-                alert(`Authentication Fault: ${error.message}`);
+                alert(`Security Routing Error: ${error.message}`);
             }
+        };
+
+        window.firebaseUpdateAccount = async (newUsername, newEmail) => {
+            if (!window.currentUserContext) return;
+            try {
+                if (newUsername && newUsername !== window.currentUserContext.displayName) {
+                    await updateProfile(window.currentUserContext, { displayName: newUsername });
+                }
+                if (newEmail && newEmail !== window.currentUserContext.email) {
+                    await updateEmail(window.currentUserContext, newEmail);
+                }
+                alert("Profile credentials securely updated within network schema database records.");
+                closeSettingsModal();
+            } catch (err) {
+                alert(`Profile Revision Fault: ${err.message}`);
+            }
+        };
+
+        window.triggerSignOut = async () => {
+            await signOut(auth);
+            alert("Disconnected session state.");
+            closeSettingsModal();
         };
     </script>
 
@@ -342,6 +440,7 @@
 
         // --- HCAPTCHA VERIFICATION GATE ---
         function renderCaptcha() {
+            if (localStorage.getItem('isHuman') === 'true') return;
             const isDark = document.documentElement.classList.contains('dark');
             const hcaptchaKeys = [
                 "700ad886-6702-41f8-b838-b40ad9a03238", 
@@ -362,7 +461,7 @@
         function hcaptchaLoaded() {
             if (localStorage.getItem('isHuman') === 'true') {
                 const gate = document.getElementById('captchaGate');
-                gate.style.display = 'none';
+                gate.style.setProperty('display', 'none', 'important');
             } else {
                 renderCaptcha();
             }
@@ -371,7 +470,7 @@
         function unlockGate() {
             const gate = document.getElementById('captchaGate');
             gate.classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => { gate.style.display = 'none'; }, 700);
+            setTimeout(() => { gate.style.setProperty('display', 'none', 'important'); }, 700);
         }
 
         // --- UI TOGGLES (SLIDER DRIVEN) ---
@@ -384,34 +483,58 @@
             document.body.classList.toggle('reader-mode');
         }
 
-        // --- INTERACTIVE AUTH UI MANAGEMENT ---
+        // --- INTERACTIVE AUTH UI SCHEDULER ---
         let internalAuthMode = 'signin';
         
         function openAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
+            if (window.currentUserContext) {
+                document.getElementById('settingsModal').classList.remove('hidden');
+            } else {
+                document.getElementById('authModal').classList.remove('hidden');
+            }
             if (window.lucide) lucide.createIcons();
         }
         
         function closeAuthModal() {
             document.getElementById('authModal').classList.add('hidden');
         }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
         
+        function changeToResetMode() {
+            internalAuthMode = 'reset';
+            document.getElementById('authModalTitle').textContent = 'Reset Password';
+            document.getElementById('usernameField').classList.add('hidden');
+            document.getElementById('passwordField').classList.add('hidden');
+            document.getElementById('optionalAuthLayers').classList.add('hidden');
+            document.getElementById('authSubmitBtn').textContent = 'Send Recovery Link';
+            document.getElementById('authToggleBtn').textContent = 'Return to Sign In';
+        }
+
         function toggleAuthMode() {
             const title = document.getElementById('authModalTitle');
             const userField = document.getElementById('usernameField');
+            const passField = document.getElementById('passwordField');
+            const optionalLayers = document.getElementById('optionalAuthLayers');
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
             
-            if (internalAuthMode === 'signin') {
+            if (internalAuthMode === 'signin' || internalAuthMode === 'reset') {
                 internalAuthMode = 'signup';
                 title.textContent = 'Sign Up';
                 userField.classList.remove('hidden');
+                passField.classList.remove('hidden');
+                optionalLayers.classList.remove('hidden');
                 submitBtn.textContent = 'Sign Up';
                 toggleBtn.textContent = 'Already have an account? Sign In';
             } else {
                 internalAuthMode = 'signin';
                 title.textContent = 'Sign In';
                 userField.classList.add('hidden');
+                passField.classList.remove('hidden');
+                optionalLayers.classList.remove('hidden');
                 submitBtn.textContent = 'Sign In';
                 toggleBtn.textContent = "Don't have an account? Sign Up";
             }
@@ -432,7 +555,14 @@
             window.firebaseAuthAction(internalAuthMode, email, password, username, optionalPayload);
         }
 
-        // --- MUSIC DATA MANAGEMENT ---
+        function handleSettingsUpdate(e) {
+            e.preventDefault();
+            const newUsername = document.getElementById('settingsUsername').value;
+            const newEmail = document.getElementById('settingsEmail').value;
+            window.firebaseUpdateAccount(newUsername, newEmail);
+        }
+
+        // --- MUSIC DATA PROFILE MANAGEMENT ---
         const catalog = [
             { id: "cat-2", title: "Relaxed Afternoon", type: "single", genre: "Chill Out", coverLabel: "Single", tracks: [{ id: "t-2", title: "Relaxed Afternoon", genre: "Chill Out", bpm: "110 BPM", musicKey: "C Major", streamUrl: "https://files.catbox.moe/ndxt0a.wav" }] }
         ];
@@ -451,7 +581,7 @@
         function handlePlayRequest(queueJSON, index) {
             const queue = JSON.parse(decodeURIComponent(queueJSON));
             const track = queue[index];
-            if (!track || !track.streamUrl) { alert("Track not uploaded yet!"); return; }
+            if (!track || !track.streamUrl) { alert("Track asset unmapped!"); return; }
 
             const current = state.activeQueue[state.activeTrackIndex];
             if (current && current.id === track.id) {
@@ -487,14 +617,6 @@
         function handleSeek(e) { audio.currentTime = (e.target.value/100) * (audio.duration||0); }
         function handleVolume(e) { audio.volume = e.target.value; }
 
-        function openAlbumModal(i) {
-            state.selectedAlbum = catalog[i];
-            document.getElementById('modalTitle').textContent = state.selectedAlbum.title;
-            document.getElementById('modalLabel').textContent = state.selectedAlbum.coverLabel;
-            renderModalTracklist();
-            albumModal.classList.remove('hidden');
-            lucide.createIcons();
-        }
         function closeModal() { albumModal.classList.add('hidden'); state.selectedAlbum = null; }
 
         audio.addEventListener('timeupdate', () => {
@@ -512,14 +634,12 @@
             grid.innerHTML = '';
             catalog.forEach((item, i) => {
                 const qs = encodeURIComponent(JSON.stringify(item.tracks));
-                const btn = (item.type === 'single') 
-                    ? `<button onclick="handlePlayRequest('${qs}', 0)" class="flex h-16 w-16 items-center justify-center rounded-full bg-[#ff3366] text-white transition-transform hover:scale-105 shadow-lg"><i data-lucide="play" class="w-[26px] h-[26px] ml-1"></i></button>`
-                    : `<button onclick="openAlbumModal(${i})" class="flex h-14 items-center gap-2 rounded-full bg-[#ff3366] px-6 text-white font-semibold transition-transform hover:scale-105 shadow-lg"><i data-lucide="list-music" class="w-5 h-5"></i> View Album</button>`;
+                const btn = `<button onclick="handlePlayRequest('${qs}', 0)" class="flex h-16 w-16 items-center justify-center rounded-full bg-[#ff3366] text-white transition-transform hover:scale-105 shadow-lg"><i data-lucide="play" class="w-[26px] h-[26px] ml-1"></i></button>`;
 
                 grid.innerHTML += `
                     <article class="group overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-sm hover:shadow-md transition-shadow duration-300">
                         <div class="relative flex aspect-square items-center justify-center bg-gray-100 dark:bg-[#251124]">
-                            <i data-lucide="${item.type==='album'?'list-music':'music'}" class="text-[#ff3366]/70 w-14 h-14"></i>
+                            <i data-lucide="music" class="text-[#ff3366]/70 w-14 h-14"></i>
                             <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">${btn}</div>
                         </div>
                         <div class="p-5 text-left">
@@ -527,27 +647,6 @@
                             <p class="text-xs text-[#ff3366] mt-1">${item.genre}</p>
                         </div>
                     </article>
-                `;
-            });
-            lucide.createIcons();
-        }
-
-        function renderModalTracklist() {
-            const container = document.getElementById('modalTracklist');
-            container.innerHTML = '';
-            const qs = encodeURIComponent(JSON.stringify(state.selectedAlbum.tracks));
-            state.selectedAlbum.tracks.forEach((t, i) => {
-                const isAvail = t.streamUrl !== "";
-                container.innerHTML += `
-                    <div class="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2a2a2e]/50 ${!isAvail?'opacity-50 grayscale':''} transition-colors">
-                        <button ${isAvail ? `onclick="handlePlayRequest('${qs}', ${i})"` : 'disabled'} class="h-10 w-10 flex items-center justify-center bg-gray-200 dark:bg-[#2a2a2e] rounded-full text-gray-900 dark:text-white hover:bg-[#ff3366] hover:text-white dark:hover:bg-[#ff3366]">
-                            <i data-lucide="play" class="w-4 h-4 ml-0.5"></i>
-                        </button>
-                        <div class="text-left">
-                            <p class="font-medium text-gray-900 dark:text-white">${t.title}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">${t.bpm} • ${t.musicKey}</p>
-                        </div>
-                    </div>
                 `;
             });
             lucide.createIcons();
