@@ -1,0 +1,34 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Metronome</h2>
+    <input type="number" id="bpmInput" value="120" class="border p-2 my-2" />
+    <br>
+    <button onclick="toggleMetronome()" id="playBtn" class="bg-[#ff3366] text-white px-4 py-2 mt-2">Start</button>
+</div>
+
+<script>
+    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let isPlaying = false;
+    let timerID;
+
+    function playClick() {
+        const osc = audioCtx.createOscillator();
+        osc.connect(audioCtx.destination);
+        osc.frequency.value = 1000;
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function toggleMetronome() {
+        isPlaying = !isPlaying;
+        const btn = document.getElementById('playBtn');
+        if (isPlaying) {
+            btn.innerText = "Stop";
+            let bpm = document.getElementById('bpmInput').value;
+            let interval = 60000 / bpm;
+            timerID = setInterval(playClick, interval);
+        } else {
+            btn.innerText = "Start";
+            clearInterval(timerID);
+        }
+    }
+</script>
