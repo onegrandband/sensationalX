@@ -55,6 +55,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300">
 
+    <!-- hCaptcha Security Site Gate Overlay -->
     <div id="captchaGate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] transition-opacity duration-700">
         <div class="text-center max-w-md p-8 bg-white dark:bg-[#1c1c1f] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#2a2a2e] transition-colors duration-300">
             <div class="flex justify-center mb-6">
@@ -68,6 +69,7 @@
         </div>
     </div>
     
+    <!-- Instant blocking script to prevent the hCaptcha gate from appearing if already verified -->
     <script>
         if (localStorage.getItem('isHuman') === 'true') {
             document.getElementById('captchaGate').style.setProperty('display', 'none', 'important');
@@ -158,6 +160,7 @@
         </section>
     </main>
 
+    <!-- Unified Security Gate Authorization Modal (Sign In / Sign Up / Double-Confirmation Reset) -->
     <div id="authModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
         <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
@@ -181,6 +184,7 @@
                     <input type="password" id="authPassword" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
                 </div>
 
+                <!-- Double Confirmation Reset Password Form Fields Block -->
                 <div id="resetFieldsBlock" class="hidden space-y-4">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Old Password</label>
@@ -200,6 +204,7 @@
                     </div>
                 </div>
 
+                <!-- Custom Optional Verification Fields Layer -->
                 <div id="optionalAuthLayers" class="pt-2 border-t border-gray-100 dark:border-[#2a2a2e] space-y-3">
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Fields</p>
                     <div>
@@ -226,6 +231,7 @@
         </div>
     </div>
 
+    <!-- Secure Profile Modification Engine View Panel Modal -->
     <div id="settingsModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
         <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
@@ -244,7 +250,11 @@
                     <input type="email" id="settingsEmail" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
                 </div>
                 <button type="submit" class="w-full bg-[#ff3366] text-white font-bold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity">Save Profile Updates</button>
-                <button type="button" onclick="triggerSignOut()" class="w-full border border-gray-300 dark:border-[#3a3a3e] text-gray-600 dark:text-gray-300 font-bold py-2 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors">Sign Out</button>
+                
+                <!-- New Reset Password Button Accessible While Logged In -->
+                <button type="button" onclick="openResetFromSettings()" class="w-full border border-[#ff3366] text-[#ff3366] font-bold py-2 rounded-lg text-sm hover:bg-[#ff3366] hover:text-white transition-colors">Change / Reset Password</button>
+                
+                <button type="button" onclick="triggerSignOut()" class="w-full border border-gray-300 dark:border-[#3a3a3e] text-gray-600 dark:text-gray-300 font-bold py-2 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors mt-2">Sign Out</button>
             </form>
         </div>
     </div>
@@ -307,6 +317,7 @@
         </div>
     </div>
 
+    <!-- Firebase System Management Framework Block -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { 
@@ -363,6 +374,12 @@
                         if (username) {
                             await updateProfile(credentials.user, { displayName: username });
                         }
+
+                        // Store optional security keys locally mapped to this email for future resets
+                        if (optionalPayload.passkey || optionalPayload.authenticator || optionalPayload.passcode) {
+                            localStorage.setItem('sec_keys_' + email.toLowerCase(), JSON.stringify(optionalPayload));
+                        }
+
                         // Decouple session instantly: force manual sign in mapping context
                         await signOut(auth);
                         alert("Account created successfully! For security, you must now type your details inside Sign In to log in permanently.");
@@ -393,6 +410,22 @@
                         return;
                     }
 
+                    // Pre-Flight Security Check: Verify Backup Keys if they exist
+                    const savedKeysRaw = localStorage.getItem('sec_keys_' + email.toLowerCase());
+                    if (savedKeysRaw) {
+                        const savedKeys = JSON.parse(savedKeysRaw);
+                        if (savedKeys.passkey || savedKeys.authenticator || savedKeys.passcode) {
+                            const securityInput = prompt("Advanced Security Detected 🔒\n\nPlease enter your Passkey, Authenticator code, or Backup Passcode to authorize this password reset.\n\nIf you don't remember it, please reach out to us at contact@onegrandband.com to help recover your account.");
+                            
+                            if (securityInput !== savedKeys.passkey && 
+                                securityInput !== savedKeys.authenticator && 
+                                securityInput !== savedKeys.passcode) {
+                                alert("Security Verification Failed.\n\nSince the backup keys didn't match, the reset was blocked. Please contact contact@onegrandband.com for recovery assistance.");
+                                return;
+                            }
+                        }
+                    }
+
                     // Authenticate identity context securely via user-provided details
                     const userCredential = await signInWithEmailAndPassword(auth, email, op1);
                     // Rewrite password values inside network schema database records forever
@@ -403,6 +436,12 @@
                     
                     // Reset visibility and return to standard sign-in interface
                     document.getElementById('resetFieldsBlock').classList.add('hidden');
+                    
+                    // Re-enable email field in case it was locked by logged-in state
+                    const emailInput = document.getElementById('authEmail');
+                    emailInput.disabled = false;
+                    emailInput.classList.remove('opacity-50', 'cursor-not-allowed');
+
                     window.internalAuthMode = 'signin';
                     toggleAuthMode();
                 }
@@ -525,7 +564,17 @@
             if (window.currentUserContext) {
                 document.getElementById('settingsModal').classList.remove('hidden');
             } else {
+                // Ensure email input is unlocked if they are logged out
+                const emailInput = document.getElementById('authEmail');
+                emailInput.disabled = false;
+                emailInput.classList.remove('opacity-50', 'cursor-not-allowed');
+                
                 document.getElementById('authModal').classList.remove('hidden');
+                
+                // If modal was left in reset mode previously, revert to sign-in default
+                if (window.internalAuthMode === 'reset') {
+                    toggleAuthMode();
+                }
             }
             if (window.lucide) lucide.createIcons();
         }
@@ -538,6 +587,20 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
         
+        function openResetFromSettings() {
+            closeSettingsModal();
+            document.getElementById('authModal').classList.remove('hidden');
+            changeToResetMode();
+            
+            // Auto-fill and lock their email if they are already logged in
+            if (window.currentUserContext) {
+                const emailInput = document.getElementById('authEmail');
+                emailInput.value = window.currentUserContext.email;
+                emailInput.disabled = true;
+                emailInput.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
         function changeToResetMode() {
             window.internalAuthMode = 'reset';
             document.getElementById('authModalTitle').textContent = 'Reset Password Forever';
@@ -548,7 +611,16 @@
             document.getElementById('resetFieldsBlock').classList.remove('hidden');
             
             document.getElementById('authSubmitBtn').textContent = 'Confirm Changes';
-            document.getElementById('authToggleBtn').textContent = 'Return to Sign In';
+            
+            // Hide the toggle button if they are already logged in (no reason to see 'Return to Sign In')
+            if (window.currentUserContext) {
+                document.getElementById('authToggleBtn').classList.add('hidden');
+                document.getElementById('authResetBtn').classList.add('hidden');
+            } else {
+                document.getElementById('authToggleBtn').classList.remove('hidden');
+                document.getElementById('authToggleBtn').textContent = 'Return to Sign In';
+                document.getElementById('authResetBtn').classList.add('hidden');
+            }
         }
 
         function toggleAuthMode() {
@@ -559,6 +631,12 @@
             const resetBlock = document.getElementById('resetFieldsBlock');
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
+            const resetBtn = document.getElementById('authResetBtn');
+            
+            // Re-enable email field in case it got locked during a logged-in reset attempt
+            const emailInput = document.getElementById('authEmail');
+            emailInput.disabled = false;
+            emailInput.classList.remove('opacity-50', 'cursor-not-allowed');
             
             if (window.internalAuthMode === 'signin' || window.internalAuthMode === 'reset') {
                 window.internalAuthMode = 'signup';
@@ -568,7 +646,9 @@
                 optionalLayers.classList.remove('hidden');
                 resetBlock.classList.add('hidden');
                 submitBtn.textContent = 'Sign Up';
+                toggleBtn.classList.remove('hidden');
                 toggleBtn.textContent = 'Already have an account? Sign In';
+                resetBtn.classList.add('hidden');
             } else {
                 window.internalAuthMode = 'signin';
                 title.textContent = 'Sign In';
@@ -577,7 +657,9 @@
                 optionalLayers.classList.remove('hidden');
                 resetBlock.classList.add('hidden');
                 submitBtn.textContent = 'Sign In';
+                toggleBtn.classList.remove('hidden');
                 toggleBtn.textContent = "Don't have an account? Sign Up";
+                resetBtn.classList.remove('hidden');
             }
         }
         
