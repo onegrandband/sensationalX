@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SensationalX Records | One Grand Band</title>
+    <title>SensationalX Records</title>
     
     <style>
         /* Flat, high-contrast theme variables */
@@ -28,11 +28,7 @@
         }
 
         /* Base styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
@@ -50,6 +46,8 @@
             padding: 1.5rem 2rem;
             background-color: var(--surface-color);
             border-bottom: 2px solid var(--accent-color);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo {
@@ -59,91 +57,78 @@
             letter-spacing: 2px;
         }
 
-        main {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
         }
 
-        section {
-            margin-bottom: 4rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        h1, h2, h3 {
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        h1 { font-size: 3rem; }
-        h2 { font-size: 2rem; color: var(--accent-color); }
-        
-        p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-muted);
-        }
-
-        /* Buttons & Forms */
-        button, .btn {
-            background-color: var(--accent-color);
-            color: var(--button-text);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
             font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            font-size: 0.95rem;
             text-transform: uppercase;
+            transition: color 0.2s;
         }
 
-        button:hover, .btn:hover {
-            opacity: 0.8;
-        }
+        nav a:hover { color: var(--accent-color); }
 
         .theme-toggle {
             background-color: transparent;
             color: var(--text-color);
             border: 2px solid var(--text-color);
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background-color: var(--surface-color);
-            padding: 2rem;
-            border-radius: 4px;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-
-        /* Advanced Tools Grid */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .tool-card {
-            background-color: var(--surface-color);
-            padding: 2rem;
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .bpm-display {
-            font-size: 2.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
-            margin: 1rem 0;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        section { margin-bottom: 4rem; }
+
+        h1 { font-size: 3rem; margin-bottom: 1rem; line-height: 1.2; }
+        h2 { font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem; }
+        p { font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+
+        /* Artists Grid */
+        .artists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .artist-card {
+            display: block;
+            background-color: var(--surface-color);
+            padding: 2rem;
+            text-decoration: none;
             color: var(--text-color);
+            border-bottom: 4px solid transparent;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .artist-card:hover {
+            transform: translateY(-5px);
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        .artist-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .artist-card p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -151,6 +136,13 @@
 
     <header>
         <div class="logo">SensationalX</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="#artists">Artists</a>
+            <a href="book-demo.html">Book a Demo</a>
+            <a href="bpm-tapper.html">Studio Tools</a>
+            <a href="#about">About</a>
+        </nav>
         <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
     </header>
 
@@ -160,58 +152,30 @@
             <p>Brought to you by the <strong>One Grand Band</strong>. We are an independent label dedicated to cutting-edge audio, raw talent, and breaking the boundaries of modern sound.</p>
         </section>
 
-        <section id="submit">
-            <h2>Submit Your Demo</h2>
-            <p>Think you have what it takes? Send us your unreleased tracks. We listen to everything.</p>
+        <section id="artists">
+            <h2>Our Roster</h2>
+            <p>Meet the visionary artists shaping the sound of SensationalX.</p>
             
-            <form id="demoForm" onsubmit="handleFormSubmit(event)">
-                <input type="text" id="artistName" placeholder="Artist / Band Name" required>
-                <input type="email" id="artistEmail" placeholder="Contact Email" required>
-                <input type="url" id="demoLink" placeholder="Streaming Link (SoundCloud, Spotify, Private link)" required>
-                
-                <div id="custom-captcha-container" style="margin: 0.5rem 0;">
-                    <p style="font-size: 0.85rem; font-style: italic;">[ Custom hCaptcha / API Verification Area ]</p>
-                </div>
-                
-                <button type="submit">Send to A&R</button>
-            </form>
-        </section>
+            <div class="artists-grid">
+                <a href="https://sensationalx.com/artist/onegrandband" class="artist-card">
+                    <h3>One Grand Band</h3>
+                    <p>Founders & Multi-Genre Collective</p>
+                </a>
 
-        <section id="tools">
-            <h2>Studio Tools</h2>
-            <p>Quick utilities for our producers and engineers.</p>
-            
-            <div class="tools-grid">
-                
-                <div class="tool-card">
-                    <h3>BPM Tapper</h3>
-                    <p>Tap the button to the beat to find the track's tempo.</p>
-                    <div class="bpm-display" id="bpmOutput">000 BPM</div>
-                    <button type="button" id="tapButton" style="width: 100%;">Tap Here</button>
-                    <button type="button" id="resetBpm" style="background: transparent; color: var(--text-color); border: 1px solid var(--border-color); margin-top: 0.5rem; width: 100%;">Reset</button>
-                </div>
+                <a href="https://sensationalx.com/artist/placeholder2" class="artist-card">
+                    <h3>Sonic Phantom</h3>
+                    <p>Electronic / Synthwave</p>
+                </a>
 
-                <div class="tool-card">
-                    <h3>WAV/MP3 Size Estimator</h3>
-                    <p>Calculate estimated file size based on duration and bitrate.</p>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
-                        <input type="number" id="audioMins" placeholder="Minutes" min="0" value="3">
-                        <select id="audioBitrate">
-                            <option value="320">MP3 - 320 kbps</option>
-                            <option value="1411" selected>WAV - 1411 kbps (CD Quality)</option>
-                            <option value="9216">WAV - 9216 kbps (24-bit/192kHz)</option>
-                        </select>
-                    </div>
-                    <button type="button" onclick="calculateSize()" style="width: 100%;">Calculate</button>
-                    <div class="bpm-display" id="sizeOutput" style="font-size: 1.5rem; margin-top: 1rem;">~31.75 MB</div>
-                </div>
-
+                <a href="https://sensationalx.com/artist/placeholder3" class="artist-card">
+                    <h3>The Redlines</h3>
+                    <p>Alt-Rock / Indie</p>
+                </a>
             </div>
         </section>
     </main>
 
     <script>
-        // --- 1. Dark Mode Logic ---
         const btn = document.getElementById('themeBtn');
         btn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -223,63 +187,11 @@
                 btn.textContent = 'Light Mode';
             }
         });
-
-        // --- 2. Form Handling & Custom API Key Integration ---
-        function handleFormSubmit(event) {
-            event.preventDefault(); 
-            
-            // Your custom hCaptcha API verification key/token processing goes here
-            const userKeyOrToken = "YOUR_HCAPTCHA_API_KEY_OR_TOKEN_VARIABLE"; 
-
-            console.log("Processing form submission with API validations...");
-            alert("Form submitted! Ready for backend connection.");
-            event.target.reset(); 
-        }
-
-        // --- 3. BPM Tapper Logic ---
-        let tapTimes = [];
-        const tapButton = document.getElementById('tapButton');
-        const bpmOutput = document.getElementById('bpmOutput');
-        const resetBpm = document.getElementById('resetBpm');
-
-        tapButton.addEventListener('mousedown', () => {
-            const timeNow = new Date().getTime();
-            tapTimes.push(timeNow);
-
-            if (tapTimes.length > 5) tapTimes.shift();
-
-            if (tapTimes.length >= 2) {
-                const intervals = [];
-                for (let i = 1; i < tapTimes.length; i++) {
-                    intervals.push(tapTimes[i] - tapTimes[i - 1]);
-                }
-                const averageInterval = intervals.reduce((a, b) => a + b) / intervals.length;
-                const bpm = Math.round(60000 / averageInterval);
-                bpmOutput.textContent = `${bpm} BPM`;
-            } else {
-                bpmOutput.textContent = "Tapping...";
-            }
-        });
-
-        resetBpm.addEventListener('click', () => {
-            tapTimes = [];
-            bpmOutput.textContent = "000 BPM";
-        });
-
-        // --- 4. File Size Estimator Logic ---
-        function calculateSize() {
-            const mins = parseFloat(document.getElementById('audioMins').value) || 0;
-            const kbps = parseFloat(document.getElementById('audioBitrate').value) || 0;
-            
-            const sizeInMB = ((mins * 60) * kbps) / 8 / 1024;
-            document.getElementById('sizeOutput').textContent = `~${sizeInMB.toFixed(2)} MB`;
-        }
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 
-        // Plug your Firebase configuration details directly here:
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -289,9 +201,7 @@
             appId: "YOUR_APP_ID"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        console.log("Firebase initialized successfully.");
     </script>
 </body>
 </html>
