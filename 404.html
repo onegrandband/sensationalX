@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404: Track Not Found | SensationalX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#0b0b0c] text-white font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <header class="flex flex-wrap items-center justify-between border-b border-[#2a2a2e] bg-[#1c1c1f] px-[8%] py-4 gap-4 w-full">
+        <div class="text-xl font-extrabold tracking-widest text-white uppercase">
+            <a href="/">SensationalX</a>
+        </div>
+        <nav class="flex flex-wrap items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-300">
+            <a href="/index.html" class="hover:text-[#ff3366] transition-colors">Home</a>
+            <a href="/index.html#catalog" class="hover:text-[#ff3366] transition-colors">The Catalog</a>
+            <a href="/index.html#artists" class="hover:text-[#ff3366] transition-colors">Artists</a>
+            <a href="/book-demo.html" class="hover:text-[#ff3366] transition-colors">Book a Demo</a>
+            <a href="/tempo-tapper.html" class="hover:text-[#ff3366] transition-colors">Studio Tools</a>
+        </nav>
+    </header>
+
+    <main class="flex flex-col items-center justify-center text-center px-6 py-20 flex-grow">
+        <div class="relative mb-8">
+            <h1 class="text-9xl font-black tracking-tighter text-[#1c1c1f] select-none relative">
+                404
+                <span class="absolute inset-0 flex items-center justify-center text-5xl text-[#ff3366] font-bold tracking-normal opacity-90">
+                    BEAT DROPPED
+                </span>
+            </h1>
+        </div>
+
+        <div class="bg-[#1c1c1f] border border-[#2a2a2e] p-8 rounded-2xl max-w-md shadow-xl flex flex-col items-center">
+            <div class="bg-gradient-to-br from-[#ff3366] to-[#251124] w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-md">
+                <i data-lucide="disc-album" class="text-white w-8 h-8 animate-[spin_4s_linear_infinite]"></i>
+            </div>
+            
+            <h2 class="text-2xl font-bold mb-3 tracking-tight">Static in the Mix</h2>
+            <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                The record you are trying to spin doesn't exist on this playlist. It might have been retitled, deleted, or never mixed in the first place.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-3 w-full">
+                <a href="/index.html" class="flex-1 inline-flex items-center justify-center gap-2 bg-[#ff3366] hover:bg-[#e02454] text-white font-bold text-sm uppercase tracking-wider py-3 px-4 rounded-xl transition-all transform hover:-translate-y-0.5">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                    Back to Base
+                </a>
+                <button onclick="window.history.back()" class="flex-1 inline-flex items-center justify-center gap-2 bg-[#2a2a2e] hover:bg-[#3a3a40] text-gray-300 font-bold text-sm uppercase tracking-wider py-3 px-4 rounded-xl transition-all border border-[#3a3a40]">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Go Back
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full text-center py-6 border-t border-[#1c1c1f] text-xs text-gray-600 tracking-wide uppercase">
+        &copy; 2026 SensationalX Records. All Signals Lost.
+    </footer>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
