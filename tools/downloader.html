@@ -4,106 +4,320 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Downloader | SensationalX</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
     </script>
 </head>
-<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen">
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
 
     <audio id="audioEngine" preload="none"></audio>
 
-    <!-- Header -->
-    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40">
-        <div class="text-xl font-extrabold tracking-widest uppercase"><span class="text-[#ff3366]">SX</span> Downloader</div>
-        <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400"><i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i></button>
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors duration-300">
+        <div class="text-xl font-extrabold tracking-widest uppercase">
+            <span class="text-[#ff3366]">SX</span> Downloader
+        </div>
+        <nav class="flex items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+            <a href="index.html" class="hover:text-[#ff3366] transition-colors flex items-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back Home
+            </a>
+            <button onclick="toggleTheme()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
     </header>
 
-    <main class="px-[8%] py-12 max-w-4xl mx-auto">
+    <main class="flex-grow px-[8%] py-12 max-w-4xl mx-auto w-full">
         
-        <!-- NEW: Text Customization Box -->
-        <div class="bg-white dark:bg-[#1c1c1f] p-6 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] mb-10 shadow-sm">
-            <h2 class="text-lg font-bold mb-4 uppercase tracking-wider text-gray-400">Text Previewer</h2>
-            <input type="text" id="customTextInput" placeholder="Type something here..." 
-                   class="w-full bg-gray-100 dark:bg-[#0b0b0c] p-3 rounded-lg mb-4 outline-none border border-transparent focus:border-[#ff3366] transition-all">
-            <div class="flex items-center gap-4">
-                <span class="text-sm font-bold">Size:</span>
-                <input type="range" id="sizeSlider" min="12" max="72" value="24" class="w-full h-2 bg-gray-200 dark:bg-[#2a2a2e] rounded-lg appearance-none cursor-pointer accent-[#ff3366]">
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-10 border-b border-gray-200 dark:border-[#2a2a2e] pb-6">
+            <button onclick="switchArtist('ogb')" id="tab-ogb" class="artist-tab px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 bg-[#ff3366] text-white shadow-md shadow-[#ff3366]/20">
+                One Grand Band
+            </button>
+            <button onclick="switchArtist('sonic')" id="tab-sonic" class="artist-tab px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 bg-gray-200 dark:bg-[#1c1c1f] text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-300 dark:hover:bg-[#2a2a2e]">
+                Sonic Phantom
+            </button>
+            <button onclick="switchArtist('redlines')" id="tab-redlines" class="artist-tab px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 bg-gray-200 dark:bg-[#1c1c1f] text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-300 dark:hover:bg-[#2a2a2e]">
+                The Redlines
+            </button>
+        </div>
+
+        <div id="dynamicContent" class="animate-fade-in">
             </div>
-            <div id="previewText" class="mt-6 font-bold break-words transition-all duration-75">Your text will appear here</div>
-        </div>
 
-        <!-- Artist Tabs -->
-        <div class="flex gap-3 mb-10 border-b border-gray-200 dark:border-[#2a2a2e] pb-6">
-            <button onclick="switchArtist('ogb')" id="tab-ogb" class="artist-tab px-6 py-2.5 rounded-full font-bold text-sm bg-[#ff3366] text-white">One Grand Band</button>
-            <button onclick="switchArtist('sonic')" id="tab-sonic" class="artist-tab px-6 py-2.5 rounded-full font-bold text-sm bg-gray-200 dark:bg-[#1c1c1f]">Sonic Phantom</button>
-            <button onclick="switchArtist('redlines')" id="tab-redlines" class="artist-tab px-6 py-2.5 rounded-full font-bold text-sm bg-gray-200 dark:bg-[#1c1c1f]">The Redlines</button>
-        </div>
-
-        <div id="dynamicContent" class="animate-fade-in"></div>
     </main>
 
-    <!-- Mini Player -->
-    <div id="miniPlayer" class="fixed bottom-0 left-0 right-0 border-t border-gray-200 dark:border-[#2a2a2e] bg-white/95 dark:bg-[#0b0b0c]/95 backdrop-blur-md p-4 transform translate-y-full transition-transform duration-300 z-40 flex justify-between items-center px-[8%]">
-        <div class="flex items-center gap-4">
-            <button onclick="togglePlay()" class="h-10 w-10 flex items-center justify-center bg-[#ff3366] text-white rounded-full"><i id="playIcon" data-lucide="pause" class="w-5 h-5"></i></button>
-            <div>
-                <p id="nowPlayingTitle" class="font-bold text-sm">Track Title</p>
-                <p class="text-xs text-[#ff3366]">Now Playing</p>
+    <div id="downloadModal" class="fixed inset-0 z-50 hidden flex-col items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="mx-auto w-16 h-16 bg-[#ff3366]/10 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="download-cloud" class="w-8 h-8 text-[#ff3366]"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Download File?</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6" id="modalFileName">Would you like to download this file?</p>
+            
+            <div class="flex gap-4 justify-center">
+                <button onclick="closeDownloadModal()" class="px-6 py-2.5 rounded-lg font-bold bg-gray-200 dark:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-[#3a3a3e] transition-colors">
+                    No
+                </button>
+                <button id="confirmDownloadBtn" class="px-6 py-2.5 rounded-lg font-bold bg-[#ff3366] text-white hover:bg-[#e62e5c] transition-colors shadow-lg shadow-[#ff3366]/30">
+                    Yes, Download
+                </button>
             </div>
         </div>
-        <button onclick="stopPlay()" class="text-gray-500 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
     </div>
 
+    <div id="miniPlayer" class="fixed bottom-0 left-0 right-0 border-t border-gray-200 dark:border-[#2a2a2e] bg-white/95 dark:bg-[#0b0b0c]/95 backdrop-blur-md p-4 transform translate-y-full transition-transform duration-300 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] dark:shadow-none z-40 flex justify-between items-center px-[8%]">
+        <div class="flex items-center gap-4">
+            <button onclick="togglePlay()" class="h-10 w-10 flex items-center justify-center bg-[#ff3366] text-white rounded-full">
+                <i id="playIcon" data-lucide="pause" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <p id="nowPlayingTitle" class="font-bold text-sm">Track Title</p>
+                <p class="text-xs text-[#ff3366]">Now Playing Preview</p>
+            </div>
+        </div>
+        <button onclick="stopPlay()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+    </div>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    </style>
+
     <script>
-        // --- Text Customization Logic ---
-        const textInput = document.getElementById('customTextInput');
-        const sizeSlider = document.getElementById('sizeSlider');
-        const previewText = document.getElementById('previewText');
+        // --- THEME MANAGEMENT ---
+        function updateThemeIcon() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            if (window.lucide) lucide.createIcons();
+        }
+        
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
 
-        textInput.addEventListener('input', (e) => previewText.textContent = e.target.value);
-        sizeSlider.addEventListener('input', (e) => previewText.style.fontSize = e.target.value + 'px');
-
-        // --- Existing Logic (Tabs/Audio/Download) ---
-        const audio = document.getElementById('audioEngine');
+        // --- DATA & STATE ---
         const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+        const audio = document.getElementById('audioEngine');
+        
+        const oneGrandBandTracks = [
+            { id: "dl-1", title: "Good Times", genre: "July Fun", url: "https://files.catbox.moe/kaxem8.wav" },
+            { id: "dl-2", title: "One Grand Afternoon", genre: "July Fun", url: "https://files.catbox.moe/yijftf.wav" },
+            { id: "dl-3", title: "Flowers for GMA", genre: "July Fun", url: "https://files.catbox.moe/zl7fq6.wav" },
+            { id: "dl-4", title: "RIBALICIOUS", genre: "July Fun", url: "https://files.catbox.moe/0uwnjg.wav" },
+            { id: "dl-5", title: "discoparty", genre: "July Fun", url: "https://files.catbox.moe/4nift9.wav" },
+            { id: "dl-6", title: "where joy lives", genre: "July Fun", url: "https://files.catbox.moe/u0q0n9.wav" },
+            { id: "dl-7", title: "doodle down", genre: "July Fun", url: "https://files.catbox.moe/wbzujf.wav" },
+            { id: "dl-8", title: "Relaxed Afternoon", genre: "July Fun", url: "https://files.catbox.moe/ndxt0a.wav" }
+        ];
 
-        function switchArtist(id) {
-            document.querySelectorAll('.artist-tab').forEach(t => t.classList.replace('bg-[#ff3366]', 'bg-gray-200'));
-            document.getElementById(`tab-${id}`).classList.replace('bg-gray-200', 'bg-[#ff3366]');
+        // --- UI ROUTER ---
+        function switchArtist(artistId) {
+            stopPlay(); // Stop music if switching tabs
+
+            // Update Tab Styles
+            document.querySelectorAll('.artist-tab').forEach(tab => {
+                tab.classList.remove('bg-[#ff3366]', 'text-white', 'shadow-md', 'shadow-[#ff3366]/20');
+                tab.classList.add('bg-gray-200', 'dark:bg-[#1c1c1f]', 'text-gray-600', 'dark:text-gray-400');
+            });
+            const activeTab = document.getElementById(`tab-${artistId}`);
+            activeTab.classList.remove('bg-gray-200', 'dark:bg-[#1c1c1f]', 'text-gray-600', 'dark:text-gray-400');
+            activeTab.classList.add('bg-[#ff3366]', 'text-white', 'shadow-md', 'shadow-[#ff3366]/20');
+
+            // Render Content
+            const contentBox = document.getElementById('dynamicContent');
             
-            const content = document.getElementById('dynamicContent');
-            if(id === 'ogb') {
-                content.innerHTML = `<!-- Tracklist Code Here -->`; // (Keep your existing tracklist renderer)
+            // Retrigger CSS animation by cloning and replacing node
+            contentBox.classList.remove('animate-fade-in');
+            void contentBox.offsetWidth; // trigger reflow
+            contentBox.classList.add('animate-fade-in');
+
+            if (artistId === 'ogb') {
+                renderTracklist(contentBox);
             } else {
-                content.innerHTML = `<h2 class="text-3xl font-black">Songs Featured in One Grand Band</h2>`;
+                renderEmptyState(contentBox);
             }
+        }
+
+        function renderTracklist(container) {
+            let html = `
+                <div class="mb-8">
+                    <h1 class="text-3xl font-black mb-2">One Grand Band Archive</h1>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">Desktop: Hover to play/download. Mobile: Double-tap to download.</p>
+                </div>
+                <div class="flex flex-col gap-3">
+            `;
+
+            oneGrandBandTracks.forEach(track => {
+                const groupClass = isTouchDevice ? '' : 'group';
+                html += `
+                    <div class="relative ${groupClass} flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] transition-colors duration-300 overflow-hidden"
+                         ontouchend="handleTouchEnd(event, '${track.id}')">
+                         
+                        <div class="flex items-center gap-4 z-10">
+                            <div class="w-10 h-10 bg-gray-100 dark:bg-[#2a2a2e] rounded-lg flex items-center justify-center text-[#ff3366]">
+                                <i data-lucide="music-4" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 dark:text-white">${track.title}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">${track.genre} • WAV Audio</p>
+                            </div>
+                        </div>
+
+                        <div class="hidden ${!isTouchDevice ? 'md:group-hover:flex' : ''} absolute right-4 top-0 bottom-0 items-center gap-3 bg-white dark:bg-[#1c1c1f] pl-4 z-20">
+                            <button onclick="playPreview('${track.title}', '${track.url}')" class="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-[#2a2a2e] hover:bg-gray-200 dark:hover:bg-[#3a3a3e] text-sm font-bold transition-colors">
+                                <i data-lucide="play" class="w-4 h-4"></i> Play
+                            </button>
+                            <button onclick="triggerDownload('${track.url}', '${track.title}.wav')" class="flex items-center gap-2 px-4 py-2 rounded-full bg-[#ff3366] text-white hover:bg-[#e62e5c] text-sm font-bold shadow-md shadow-[#ff3366]/20 transition-all">
+                                <i data-lucide="download" class="w-4 h-4"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
             lucide.createIcons();
         }
 
+        function renderEmptyState(container) {
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] rounded-2xl">
+                    <div class="w-20 h-20 bg-gray-100 dark:bg-[#2a2a2e] rounded-full flex items-center justify-center mb-6">
+                        <i data-lucide="mic" class="w-10 h-10 text-gray-400 dark:text-gray-500"></i>
+                    </div>
+                    <h2 class="text-3xl font-black mb-3">Songs Featured in One Grand Band</h2>
+                    <p class="text-gray-500 dark:text-gray-400 max-w-sm">
+                        Tracks from this artist are exclusively featured within the One Grand Band catalog.
+                    </p>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // --- MOBILE DOUBLE TAP LOGIC ---
+        let lastTapTime = 0;
+        let lastTappedTrackId = null;
+
+        function handleTouchEnd(e, trackId) {
+            if (!isTouchDevice) return; 
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTapTime;
+
+            if (tapLength < 500 && tapLength > 0 && lastTappedTrackId === trackId) {
+                e.preventDefault(); 
+                const track = oneGrandBandTracks.find(t => t.id === trackId);
+                openDownloadModal(track);
+            }
+            lastTapTime = currentTime;
+            lastTappedTrackId = trackId;
+        }
+
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById('downloadModal');
+        const modalContent = document.getElementById('modalContent');
+        
+        function openDownloadModal(track) {
+            document.getElementById('modalFileName').textContent = track.title + ".wav";
+            const confirmBtn = document.getElementById('confirmDownloadBtn');
+            confirmBtn.onclick = () => {
+                triggerDownload(track.url, track.title + ".wav");
+                closeDownloadModal();
+            };
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeDownloadModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // --- DOWNLOAD FILE VIA BLOB ---
+        async function triggerDownload(url, filename) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+            } catch (err) {
+                console.error("Download failed, falling back.", err);
+                window.open(url, '_blank');
+            }
+        }
+
+        // --- AUDIO PREVIEW LOGIC ---
         function playPreview(title, url) {
             document.getElementById('nowPlayingTitle').textContent = title;
             audio.src = url;
             audio.play();
             document.getElementById('miniPlayer').classList.remove('translate-y-full');
-        }
-
-        function stopPlay() {
-            audio.pause();
-            document.getElementById('miniPlayer').classList.add('translate-y-full');
-        }
-
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-            document.getElementById('themeIcon').setAttribute('data-lucide', document.documentElement.classList.contains('dark') ? 'moon' : 'sun');
+            document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
             lucide.createIcons();
         }
 
-        lucide.createIcons();
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+            } else {
+                audio.pause();
+                document.getElementById('playIcon').setAttribute('data-lucide', 'play');
+            }
+            lucide.createIcons();
+        }
+
+        function stopPlay() {
+            if (!audio.paused) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            document.getElementById('miniPlayer').classList.add('translate-y-full');
+        }
+
+        audio.addEventListener('ended', stopPlay);
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            switchArtist('ogb'); // Load One Grand Band by default
+            updateThemeIcon();
+        });
     </script>
 </body>
 </html>
