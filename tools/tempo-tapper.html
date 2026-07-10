@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX | BPM Tapper</title>
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --surface-color: #f4f4f4;
+            --text-color: #111111;
+            --text-muted: #555555;
+            --accent-color: #d90429;
+            --button-text: #ffffff;
+            --border-color: #dddddd;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #eeeeee;
+            --text-muted: #aaaaaa;
+            --accent-color: #ef233c;
+            --button-text: #ffffff;
+            --border-color: #333333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background-color: var(--surface-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        main {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        h2 { font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem; }
+        p { font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+
+        button {
+            background-color: var(--accent-color);
+            color: var(--button-text);
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        button:hover { opacity: 0.8; }
+
+        .theme-toggle {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .tool-card {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 4px 4px 0;
+            text-align: center;
+        }
+
+        .bpm-display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
+            color: var(--text-color);
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">SensationalX</div>
+        <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
+    </header>
+
+    <main>
+        <div class="tool-card">
+            <h2>BPM Tapper</h2>
+            <p>Tap the button to the beat to find the track's tempo.</p>
+            <div class="bpm-display" id="bpmOutput">000 BPM</div>
+            <button type="button" id="tapButton" style="width: 100%; padding: 1.5rem; font-size: 1.2rem;">Tap Here (or press Space)</button>
+            <button type="button" id="resetBpm" style="background: transparent; color: var(--text-color); border: 2px solid var(--border-color); margin-top: 1rem; width: 100%;">Reset</button>
+        </div>
+    </main>
+
+    <script>
+        // Dark Mode Logic
+        const btn = document.getElementById('themeBtn');
+        btn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                btn.textContent = 'Dark Mode';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                btn.textContent = 'Light Mode';
+            }
+        });
+
+        // BPM Tapper Logic
+        let tapTimes = [];
+        const tapButton = document.getElementById('tapButton');
+        const bpmOutput = document.getElementById('bpmOutput');
+        const resetBpm = document.getElementById('resetBpm');
+
+        function registerTap() {
+            const timeNow = new Date().getTime();
+            tapTimes.push(timeNow);
+
+            if (tapTimes.length > 5) tapTimes.shift();
+
+            if (tapTimes.length >= 2) {
+                const intervals = [];
+                for (let i = 1; i < tapTimes.length; i++) {
+                    intervals.push(tapTimes[i] - tapTimes[i - 1]);
+                }
+                const averageInterval = intervals.reduce((a, b) => a + b) / intervals.length;
+                const bpm = Math.round(60000 / averageInterval);
+                bpmOutput.textContent = `${bpm} BPM`;
+            } else {
+                bpmOutput.textContent = "Tapping...";
+            }
+        }
+
+        tapButton.addEventListener('mousedown', registerTap);
+        
+        // Bonus: Allow users to tap with the spacebar for better accuracy
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                registerTap();
+            }
+        });
+
+        resetBpm.addEventListener('click', () => {
+            tapTimes = [];
+            bpmOutput.textContent = "000 BPM";
+        });
+    </script>
+</body>
+</html>
