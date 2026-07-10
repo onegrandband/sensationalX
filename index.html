@@ -24,6 +24,8 @@
         }
     </script>
 
+    <script src="https://js.hcaptcha.com/1/api.js?onload=hcaptchaLoaded&render=explicit" async defer></script>
+
     <style>
         /* Custom Audio Animations */
         @keyframes custom-bounce {
@@ -53,11 +55,15 @@
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300">
 
+    <div id="pushBanner" class="hidden bg-[#ff3366] text-white text-center py-3 cursor-pointer font-bold text-sm tracking-wider uppercase shadow-md transition-all hover:bg-opacity-90 z-[200] relative" onclick="requestNotificationPermission()">
+        Click "Allow" to enable push notifications 🔔
+    </div>
+
     <div id="captchaGate" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] transition-opacity duration-700">
         <div class="text-center max-w-md p-8 bg-white dark:bg-[#1c1c1f] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#2a2a2e] transition-colors duration-300">
             <div class="flex justify-center mb-6">
                 <div class="bg-gradient-to-br from-[#ff3366] to-[#251124] w-16 h-16 rounded-xl flex items-center justify-center shadow-lg">
-                    <i data-lucide="shield-check" class="text-white w-8 h-8"></i>
+                  <i data-lucide="shield-check" class="text-white w-8 h-8"></i>
                 </div>
             </div>
             <h2 class="text-2xl font-black mb-2 tracking-tight text-gray-900 dark:text-white">Verify to Enter</h2>
@@ -86,7 +92,7 @@
             <button onclick="openAuthModal()" id="navAccountBtn" class="hover:text-[#ff3366] transition-colors flex items-center gap-1">
                 <i data-lucide="user" class="w-4 h-4"></i> Account
             </button>
-           
+  
             <div class="flex items-center gap-4 ml-4 border-l border-gray-200 dark:border-[#2a2a2e] pl-4">
                 <button onclick="toggleTheme()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center" title="Toggle Theme">
                     <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
@@ -96,7 +102,7 @@
                     <i data-lucide="a-large-small" class="w-5 h-5"></i>
                     <input id="textSizeSlider" type="range" min="0.8" max="1.3" step="0.05" value="1" oninput="handleTextSizeChange(event)" class="h-1.5 w-16 sm:w-20 cursor-pointer appearance-none rounded-full bg-gray-300 dark:bg-[#2a2a2e] accent-[#ff3366]">
                 </div>
-                
+    
                 <button onclick="toggleReaderMode()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center" title="Reader Mode">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
                 </button>
@@ -164,7 +170,6 @@
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-            
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div id="usernameField" class="hidden">
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Username</label>
@@ -342,13 +347,13 @@
             signOut,
             setPersistence,
             browserLocalPersistence,
-            signInWithPopup,
+            signInWithRedirect,
+            getRedirectResult,
             GoogleAuthProvider,
             FacebookAuthProvider,
             OAuthProvider
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-        // RESTORED: Reset configurations back to original the-grand-band environment 
+        
         const firebaseConfig = {
             apiKey: "AIzaSyD8fedCmpIZtKWVvIVcBUlHof4zw78j5Tk",
             authDomain: "the-grand-band.firebaseapp.com",
@@ -361,13 +366,13 @@
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-
+        
         // Ensure configuration enforces standard native persistence forever
         setPersistence(auth, browserLocalPersistence).catch(err => console.error("Persistence Engine Fault:", err));
-
+        
         // State validation tracking context variables
         window.currentUserContext = null;
-
+        
         onAuthStateChanged(auth, (user) => {
             const navBtn = document.getElementById('navAccountBtn');
             if (user) {
@@ -382,7 +387,18 @@
             if (window.lucide) lucide.createIcons();
         });
 
-        // Handles the Federated Identity Providers via Popup
+        // Checks if the user just returned from a social login redirect
+        getRedirectResult(auth).then((result) => {
+            if (result && result.user) {
+                alert(`Successfully signed in! Welcome, ${result.user.displayName || result.user.email}`);
+                closeAuthModal();
+            }
+        }).catch((error) => {
+            console.error("Redirect Auth Error:", error);
+            alert(`Social Auth Error: ${error.message}`);
+        });
+
+        // Handles the Federated Identity Providers via Full Page Redirect
         window.handleSocialAuth = async (providerName) => {
             let provider = null;
             if (providerName === 'google') provider = new GoogleAuthProvider();
@@ -393,17 +409,14 @@
 
             if (!provider) return;
             try {
-                const result = await signInWithPopup(auth, provider);
-                alert(`Successfully signed in with ${providerName.charAt(0).toUpperCase() + providerName.slice(1)}! Welcome, ${result.user.displayName || result.user.email}`);
-                closeAuthModal();
+                // This physically acts like a link and navigates them to the login screen
+                await signInWithRedirect(auth, provider);
             } catch (error) {
-                // Ignore the error if the user just manually closed the login window
-                if (error.code !== 'auth/popup-closed-by-user') {
-                    alert(`Social Auth Error: ${error.message}`);
-                }
+                console.error(`Firebase Auth Error for ${providerName}:`, error);
+                alert(`Social Auth Error: ${error.message}`);
             }
         };
-
+        
         window.firebaseAuthAction = async (mode, email, password, username, optionalPayload) => {
             try {
                 if (mode === 'signup') {
@@ -438,7 +451,7 @@
                     const op2 = document.getElementById('authOldPassword2').value;
                     const np1 = document.getElementById('authNewPassword1').value;
                     const np2 = document.getElementById('authNewPassword2').value;
-
+                    
                     if (op1 !== op2) {
                         alert("Security Error: The old password double-check mapping does not match.");
                         return;
@@ -469,6 +482,7 @@
                     await updatePassword(userCredential.user, np1);
                     alert("Password rewritten successfully forever! Session logged out. Please sign in with your brand new credentials.");
                     await signOut(auth);
+                    
                     // Reset visibility and return to standard sign-in interface
                     document.getElementById('resetFieldsBlock').classList.add('hidden');
                     document.getElementById('socialAuthBlock').classList.remove('hidden');
@@ -546,7 +560,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", updateThemeIcon);
-
+        
         // --- HCAPTCHA VERIFICATION GATE ---
         function renderCaptcha() {
             if (localStorage.getItem('isHuman') === 'true') return;
@@ -647,6 +661,7 @@
             document.getElementById('resetFieldsBlock').classList.remove('hidden');
             
             document.getElementById('authSubmitBtn').textContent = 'Confirm Changes';
+            
             // Hide the toggle button if they are already logged in (no reason to see 'Return to Sign In')
             if (window.currentUserContext) {
                 document.getElementById('authToggleBtn').classList.add('hidden');
@@ -668,6 +683,7 @@
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
             const resetBtn = document.getElementById('authResetBtn');
+            
             // Re-enable email field in case it got locked during a logged-in reset attempt
             const emailInput = document.getElementById('authEmail');
             emailInput.disabled = false;
@@ -833,7 +849,7 @@
 
         window.addEventListener('DOMContentLoaded', renderCatalog);
     </script>
-
-    <script src="https://js.hcaptcha.com/1/api.js?onload=hcaptchaLoaded&render=explicit" async defer></script>
+    
+    <script src="/sc/notifications.js"></script>
 </body>
 </html>
