@@ -1,4 +1,84 @@
 <!DOCTYPE html>
-<title>sensationalX records</title>
-<h3>SensationalX Records</h3>
-<p>SensationalX records is brought to you by the One Grand Band!</p>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX Records</title>
+    <style>
+        /* Flat, high-contrast theme variables */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #111111;
+            --button-bg: #111111;
+            --button-text: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #eeeeee;
+            --button-bg: #eeeeee;
+            --button-text: #121212;
+        }
+
+        /* Base styles */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: sans-serif;
+            margin: 0;
+            padding: 2rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        main {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        /* Flat toggle button */
+        .theme-toggle {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
+        <h1>SensationalX Records</h1>
+        <p>SensationalX Records is brought to you by the One Grand Band!</p>
+    </main>
+
+    <script>
+        const btn = document.getElementById('themeBtn');
+        
+        btn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                btn.textContent = 'Dark Mode';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                btn.textContent = 'Light Mode';
+            }
+        });
+    </script>
+</body>
+</html>
