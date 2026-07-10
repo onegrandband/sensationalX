@@ -1,0 +1,16 @@
+<div class="p-5 text-center">
+    <h2 class="font-bold text-xl">Case Converter</h2>
+    <textarea id="caseInput" class="border w-full h-24 p-2 mt-2" placeholder="Enter text..."></textarea>
+    <div class="flex justify-center gap-2 mt-2">
+        <button onclick="convertCase('upper')" class="bg-[#ff3366] text-white px-3 py-1">UPPER</button>
+        <button onclick="convertCase('lower')" class="bg-[#ff3366] text-white px-3 py-1">lower</button>
+    </div>
+</div>
+
+<script>
+    function convertCase(type) {
+        let text = document.getElementById('caseInput').value;
+        if (type === 'upper') document.getElementById('caseInput').value = text.toUpperCase();
+        if (type === 'lower') document.getElementById('caseInput').value = text.toLowerCase();
+    }
+</script>
