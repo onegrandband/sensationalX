@@ -3,74 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SensationalX Records</title>
+    <title>SensationalX Records | One Grand Band</title>
+    
     <style>
         /* Flat, high-contrast theme variables */
         :root {
             --bg-color: #ffffff;
+            --surface-color: #f4f4f4;
             --text-color: #111111;
-            --button-bg: #111111;
+            --text-muted: #555555;
+            --accent-color: #d90429;
             --button-text: #ffffff;
+            --border-color: #dddddd;
         }
 
         [data-theme="dark"] {
             --bg-color: #121212;
+            --surface-color: #1e1e1e;
             --text-color: #eeeeee;
-            --button-bg: #eeeeee;
-            --button-text: #121212;
+            --text-muted: #aaaaaa;
+            --accent-color: #ef233c;
+            --button-text: #ffffff;
+            --border-color: #333333;
         }
 
         /* Base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: sans-serif;
-            margin: 0;
-            padding: 2rem;
-            transition: background-color 0.2s ease, color 0.2s ease;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Layout & Typography */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background-color: var(--surface-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         main {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
+            padding: 2rem;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+        section {
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2rem; color: var(--accent-color); }
+        
         p {
             font-size: 1.1rem;
-            line-height: 1.5;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
         }
 
-        /* Flat toggle button */
-        .theme-toggle {
-            background-color: var(--button-bg);
+        /* Buttons & Forms */
+        button, .btn {
+            background-color: var(--accent-color);
             color: var(--button-text);
             border: none;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
+            transition: opacity 0.2s;
+            text-transform: uppercase;
+        }
+
+        button:hover, .btn:hover {
+            opacity: 0.8;
+        }
+
+        .theme-toggle {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 4px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        /* Advanced Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .bpm-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: var(--text-color);
         }
     </style>
 </head>
 <body>
-    <main>
+
+    <header>
+        <div class="logo">SensationalX</div>
         <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
-        <h1>SensationalX Records</h1>
-        <p>SensationalX Records is brought to you by the One Grand Band!</p>
+    </header>
+
+    <main>
+        <section id="hero">
+            <h1>SensationalX Records</h1>
+            <p>Brought to you by the <strong>One Grand Band</strong>. We are an independent label dedicated to cutting-edge audio, raw talent, and breaking the boundaries of modern sound.</p>
+        </section>
+
+        <section id="submit">
+            <h2>Submit Your Demo</h2>
+            <p>Think you have what it takes? Send us your unreleased tracks. We listen to everything.</p>
+            
+            <form id="demoForm" onsubmit="handleFormSubmit(event)">
+                <input type="text" id="artistName" placeholder="Artist / Band Name" required>
+                <input type="email" id="artistEmail" placeholder="Contact Email" required>
+                <input type="url" id="demoLink" placeholder="Streaming Link (SoundCloud, Spotify, Private link)" required>
+                
+                <div id="custom-captcha-container" style="margin: 0.5rem 0;">
+                    <p style="font-size: 0.85rem; font-style: italic;">[ Custom hCaptcha / API Verification Area ]</p>
+                </div>
+                
+                <button type="submit">Send to A&R</button>
+            </form>
+        </section>
+
+        <section id="tools">
+            <h2>Studio Tools</h2>
+            <p>Quick utilities for our producers and engineers.</p>
+            
+            <div class="tools-grid">
+                
+                <div class="tool-card">
+                    <h3>BPM Tapper</h3>
+                    <p>Tap the button to the beat to find the track's tempo.</p>
+                    <div class="bpm-display" id="bpmOutput">000 BPM</div>
+                    <button type="button" id="tapButton" style="width: 100%;">Tap Here</button>
+                    <button type="button" id="resetBpm" style="background: transparent; color: var(--text-color); border: 1px solid var(--border-color); margin-top: 0.5rem; width: 100%;">Reset</button>
+                </div>
+
+                <div class="tool-card">
+                    <h3>WAV/MP3 Size Estimator</h3>
+                    <p>Calculate estimated file size based on duration and bitrate.</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input type="number" id="audioMins" placeholder="Minutes" min="0" value="3">
+                        <select id="audioBitrate">
+                            <option value="320">MP3 - 320 kbps</option>
+                            <option value="1411" selected>WAV - 1411 kbps (CD Quality)</option>
+                            <option value="9216">WAV - 9216 kbps (24-bit/192kHz)</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="calculateSize()" style="width: 100%;">Calculate</button>
+                    <div class="bpm-display" id="sizeOutput" style="font-size: 1.5rem; margin-top: 1rem;">~31.75 MB</div>
+                </div>
+
+            </div>
+        </section>
     </main>
 
     <script>
+        // --- 1. Dark Mode Logic ---
         const btn = document.getElementById('themeBtn');
-        
         btn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
-            
             if (currentTheme === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
                 btn.textContent = 'Dark Mode';
@@ -79,6 +223,75 @@
                 btn.textContent = 'Light Mode';
             }
         });
+
+        // --- 2. Form Handling & Custom API Key Integration ---
+        function handleFormSubmit(event) {
+            event.preventDefault(); 
+            
+            // Your custom hCaptcha API verification key/token processing goes here
+            const userKeyOrToken = "YOUR_HCAPTCHA_API_KEY_OR_TOKEN_VARIABLE"; 
+
+            console.log("Processing form submission with API validations...");
+            alert("Form submitted! Ready for backend connection.");
+            event.target.reset(); 
+        }
+
+        // --- 3. BPM Tapper Logic ---
+        let tapTimes = [];
+        const tapButton = document.getElementById('tapButton');
+        const bpmOutput = document.getElementById('bpmOutput');
+        const resetBpm = document.getElementById('resetBpm');
+
+        tapButton.addEventListener('mousedown', () => {
+            const timeNow = new Date().getTime();
+            tapTimes.push(timeNow);
+
+            if (tapTimes.length > 5) tapTimes.shift();
+
+            if (tapTimes.length >= 2) {
+                const intervals = [];
+                for (let i = 1; i < tapTimes.length; i++) {
+                    intervals.push(tapTimes[i] - tapTimes[i - 1]);
+                }
+                const averageInterval = intervals.reduce((a, b) => a + b) / intervals.length;
+                const bpm = Math.round(60000 / averageInterval);
+                bpmOutput.textContent = `${bpm} BPM`;
+            } else {
+                bpmOutput.textContent = "Tapping...";
+            }
+        });
+
+        resetBpm.addEventListener('click', () => {
+            tapTimes = [];
+            bpmOutput.textContent = "000 BPM";
+        });
+
+        // --- 4. File Size Estimator Logic ---
+        function calculateSize() {
+            const mins = parseFloat(document.getElementById('audioMins').value) || 0;
+            const kbps = parseFloat(document.getElementById('audioBitrate').value) || 0;
+            
+            const sizeInMB = ((mins * 60) * kbps) / 8 / 1024;
+            document.getElementById('sizeOutput').textContent = `~${sizeInMB.toFixed(2)} MB`;
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+        // Plug your Firebase configuration details directly here:
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully.");
     </script>
 </body>
 </html>
