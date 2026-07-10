@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SensationalX Tools Hub</title>
     
-    <!-- Tailwind & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
@@ -19,8 +18,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen">
 
-    <!-- Header -->
-    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40">
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
         <div class="text-xl font-extrabold tracking-widest uppercase">
             <span class="text-[#ff3366]">SX</span> Tools
         </div>
@@ -32,57 +30,40 @@
         </nav>
     </header>
 
-    <main class="px-[8%] py-12 max-w-5xl mx-auto">
-        <div class="mb-12">
+    <main class="px-[8%] py-12 max-w-6xl mx-auto">
+        <div class="mb-10">
             <h1 class="text-4xl font-black mb-3">Project Toolkit</h1>
-            <p class="text-gray-500 dark:text-gray-400">Select a tool to get started.</p>
+            <p class="text-gray-500 dark:text-gray-400">Select a tool to get started or search for exactly what you need.</p>
         </div>
 
-        <!-- Tools Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="flex flex-col sm:flex-row gap-4 mb-10">
+            <div class="relative flex-1">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                <input type="text" id="searchInput" oninput="handleSearchAndSort()" placeholder="Search tools (e.g., audio, text, image)..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white">
+            </div>
+            <select id="sortSelect" onchange="handleSearchAndSort()" class="px-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white cursor-pointer font-medium">
+                <option value="az">Sort: A-Z</option>
+                <option value="za">Sort: Z-A</option>
+            </select>
+        </div>
+
+        <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <!-- Downloader -->
-            <a href="../tools/downloader.html" class="group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10">
-                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6">
+            <a href="../tools/downloader.html" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10 flex flex-col h-full" data-title="Downloader">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="download-cloud" class="w-6 h-6"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-2">Downloader</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Audio previewing and batch download center.</p>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Downloader</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Audio previewing and batch download center.</p>
             </a>
 
-            <!-- Tempo Tapper -->
-            <a href="../tools/tempo-tapper.html" class="group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10">
-                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6">
+            <a href="../tools/tempo-tapper.html" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10 flex flex-col h-full" data-title="Tempo Tapper">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="timer" class="w-6 h-6"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-2">Tempo Tapper</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Calculate BPM and track timing precisely.</p>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Tempo Tapper</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Calculate BPM and track timing precisely.</p>
             </a>
 
-            <!-- Estimator -->
-            <a href="../tools/size-estimator.html" class="group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10">
-                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6">
-                    <i data-lucide="calculator" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Size Estimator</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Estimate audio size.</p>
-            </a>
-
-        </div>
-    </main>
-
-    <script>
-        // Theme toggle logic
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
-            lucide.createIcons();
-        }
-
-        // Init icons
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+            <a href="../tools/size-estimator.html" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10 flex flex-col h-full" data-title="Size Estimator">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-
