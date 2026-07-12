@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crescendo - Rhythm Lab</title>
+    <style>
+        :root {
+            --primary: #58cc02;
+            --bg: #ffffff;
+            --text: #3c3c3c;
+            --gray: #e5e5e5;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            padding: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #ff4b4b;
+        }
+        .score { color: #ffc800; }
+        
+        .play-btn {
+            background-color: #ff9600;
+            color: white;
+            border: none;
+            border-bottom: 5px solid #e68500;
+            border-radius: 15px;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.1s;
+        }
+        .play-btn:active {
+            transform: translateY(4px);
+            border-bottom: 1px solid #e68500;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .option-btn {
+            background-color: white;
+            color: var(--text);
+            border: 2px solid var(--gray);
+            border-bottom: 4px solid var(--gray);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .option-btn:hover { background-color: #f7f7f7; }
+        .option-btn:active {
+            transform: translateY(2px);
+            border-bottom: 2px solid var(--gray);
+        }
+        
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="stats">
+        <span>Hearts: <span id="hearts">3</span></span>
+        <span class="score">Streak: <span id="streak">0</span></span>
+    </div>
+
+    <h2>Identify the Polyrhythm</h2>
+    <p>We are playing a steady 4-beat loop. How many counter-beats do you hear layered over it?</p>
+    
+    <button class="play-btn" onclick="playPolyrhythm()">🥁 Play Polyrhythm</button>
+
+    <div class="options">
+        <button class="option-btn" onclick="checkAnswer(2)">2 against 4</button>
+        <button class="option-btn" onclick="checkAnswer(3)">3 against 4 (Polyrhythm)</button>
+        <button class="option-btn" onclick="checkAnswer(4)">4 against 4 (Straight)</button>
+        <button class="option-btn" onclick="checkAnswer(5)">5 against 4 (Polyrhythm)</button>
+    </div>
+
+    <div id="feedback"></div>
+</div>
+
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    let correctAnswer = 3; // The loop defaults to generating a 3 against 4 pattern
+    let streak = 0;
+    let hearts = 3;
+    let isPlaying = false;
+
+    function playClick(frequency, time, type = 'sine') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, time);
+        
+        // Crisp percussive envelope
+        gain.gain.setValueAtTime(0.3, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start(time);
+        osc.stop(time + 0.1);
+    }
+
+    function playPolyrhythm() {
+        if (isPlaying) return; // Prevent double trigger overlapping
+        isPlaying = true;
+        
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        document.getElementById('feedback').innerText = "";
+
+        const startTime = audioCtx.currentTime + 0.1;
+        const totalDuration = 2.0; // The whole measure lasts 2 seconds
+        
+        // Base Beat (The "4" Grid) - High pitch woodblock sound
+        const baseBeats = 4;
+        for (let i = 0; i < baseBeats; i++) {
+            const time = startTime + (i * (totalDuration / baseBeats));
+            playClick(880, time, 'triangle'); 
+        }
+
+        // Overlapping Counter Beat (The "3" Pattern) - Low cowbell sound
+        const counterBeats = correctAnswer;
+        for (let i = 0; i < counterBeats; i++) {
+            const time = startTime + (i * (totalDuration / counterBeats));
+            // Slight delay so the absolute first hit doesn't drown each other out entirely
+            playClick(440, time, 'sine'); 
+        }
+
+        // Unlock play button after loop completes
+        setTimeout(() => {
+            isPlaying = false;
+        }, totalDuration * 1000);
+    }
+
+    function checkAnswer(guess) {
+        if (guess === correctAnswer) {
+            document.getElementById('feedback').innerText = "Awesome! You nailed the pattern! ⚡";
+            document.getElementById('feedback').style.color = "#58cc02";
+            streak++;
+            document.getElementById('streak').innerText = streak;
+        } else {
+            document.getElementById('feedback').innerText = `Not quite! That was a 3 against 4 pattern.`;
+            document.getElementById('feedback').style.color = "#ff4b4b";
+            hearts--;
+            document.getElementById('hearts').innerText = hearts;
+            streak = 0;
+            document.getElementById('streak').innerText = streak;
+            
+            if (hearts <= 0) {
+                alert("Out of hearts! Back to the practice room.");
+                hearts = 3;
+                document.getElementById('hearts').innerText = hearts;
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
