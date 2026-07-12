@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crescendo - Dashboard</title>
+    <style>
+        :root {
+            --primary: #58cc02;
+            --primary-shadow: #58a700;
+            --purple: #a55eea;
+            --purple-shadow: #8854d0;
+            --orange: #ff9600;
+            --orange-shadow: #e68500;
+            --bg: #f7f9fa;
+            --card-bg: #ffffff;
+            --text: #3c3c3c;
+            --gray: #e5e5e5;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: #777;
+            margin-bottom: 40px;
+        }
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .menu-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--gray);
+            border-bottom: 5px solid var(--gray);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.1s, border-color 0.2s;
+        }
+        .menu-card:hover {
+            border-color: #aaa;
+        }
+        .menu-card:active {
+            transform: translateY(3px);
+            border-bottom: 2px solid var(--gray);
+        }
+        .icon-box {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            width: 60px;
+            text-align: center;
+        }
+        .info-box {
+            text-align: left;
+        }
+        .info-box h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.3rem;
+        }
+        .info-box p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+        /* Custom colors for different tracks */
+        .intervals-card h3 { color: var(--purple); }
+        .rhythm-card h3 { color: var(--orange); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Crescendo</h1>
+    <div class="subtitle">Music Theory Learning Hub</div>
+
+    <div class="menu-list">
+        <a href="ear-training.html" class="menu-card intervals-card">
+            <div class="icon-box">🎵</div>
+            <div class="info-box">
+                <h3>Ear Effect</h3>
+                <p>Train your brain to recognize major, minor, and perfect intervals instantly.</p>
+            </div>
+        </a>
+
+        <a href="rhythm-tool.html" class="menu-card rhythm-card">
+            <div class="icon-box">🥁</div>
+            <div class="info-box">
+                <h3>Polyrhythm Practice</h3>
+                <p>Master complex rhythmic grids and learn to hear overlapping time signatures.</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
