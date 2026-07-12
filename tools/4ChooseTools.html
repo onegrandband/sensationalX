@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX 4CHOOSE Tools Dashboard</title>
+    <!-- Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for better UX */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-12">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-10 px-6 shadow-md mb-10 text-center">
+        <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">SensationalX 4CHOOSE Web Tools</h1>
+        <p class="mt-2 text-indigo-100 max-w-xl mx-auto">Boost engagement, calculate costs, preview SEO, and audit content instantly, all in one. 4 items.</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- TOOL 1: ROI & Pricing Calculator -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="p-2 bg-indigo-50 text-indigo-600 rounded-lg text-xl">💰</span>
+                    <h2 class="text-xl font-bold text-slate-900">ROI & Pricing Calculator</h2>
+                </div>
+                <p class="text-sm text-slate-500 mb-6">Estimate your project cost and projected business growth instantly.</p>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Project Scope (Pages)</label>
+                        <input type="range" id="calcPages" min="1" max="50" value="5" class="w-full accent-indigo-600 cursor-pointer">
+                        <div class="flex justify-between text-sm font-medium mt-1 text-slate-600">
+                            <span>1 Page</span>
+                            <span id="pagesVal" class="text-indigo-600 font-bold">5 Pages</span>
+                            <span>50 Pages</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Complexity Level</label>
+                        <select id="calcComplexity" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="1">Standard (Template/Clean Layout)</option>
+                            <option value="1.5">Premium (Custom Design & Interactions)</option>
+                            <option value="2.5">Enterprise (E-Commerce / Advanced Integrations)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-100 bg-slate-50 -mx-6 -mb-6 p-6 rounded-b-2xl grid grid-cols-2 gap-4 text-center">
+                <div>
+                    <span class="block text-xs font-medium text-slate-400 uppercase">Estimated Price</span>
+                    <span id="estPrice" class="text-2xl font-black text-slate-900">$500</span>
+                </div>
+                <div>
+                    <span class="block text-xs font-medium text-slate-400 uppercase">Est. Conversion Boost</span>
+                    <span id="estRoi" class="text-2xl font-black text-emerald-600">+15%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOL 2: Headline & Copy "Sensationalizer" -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="p-2 bg-purple-50 text-purple-600 rounded-lg text-xl">✍️</span>
+                    <h2 class="text-xl font-bold text-slate-900">Headline "Sensationalizer"</h2>
+                </div>
+                <p class="text-sm text-slate-500 mb-6">Convert boring corporate copy into highly engaging alternatives.</p>
+                
+                <div class="space-y-4">
+                    <input type="text" id="boringInput" placeholder="e.g., We sell high-quality shoes online." class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm placeholder:text-slate-400 focus:outline-none focus:border-purple-500">
+                    <button id="sensationalizeBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm py-2.5 px-4 rounded-lg transition shadow-sm cursor-pointer">Sensationalize It!</button>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Sensational Alternatives</span>
+                <div id="copyOutputs" class="space-y-2">
+                    <div class="p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-400 italic">Enter a sentence above to generate copies...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOL 3: Metadata & SEO Preview Generator -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 md:col-span-2">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="p-2 bg-blue-50 text-blue-600 rounded-lg text-xl">🔍</span>
+                <h2 class="text-xl font-bold text-slate-900">SEO Snippet Preview</h2>
+            </div>
+            <p class="text-sm text-slate-500 mb-6">See exactly how your website snippet will look inside Google Search results.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Inputs -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">SEO Title</label>
+                        <input type="text" id="seoTitleInput" value="SensationalX | Elite Web Design & Digital Copywriting" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500">
+                        <span id="titleCounter" class="text-[11px] text-slate-400 block mt-1">52 / 60 characters (Optimal)</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Meta Description</label>
+                        <textarea id="seoDescInput" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500">Transform your digital storefront. We construct lightning-fast websites and hyper-persuasive conversion pipelines built to maximize your revenue strategy.</textarea>
+                        <span id="descCounter" class="text-[11px] text-slate-400 block mt-1">158 / 160 characters (Optimal)</span>
+                    </div>
+                </div>
+                
+                <!-- Preview Visual -->
+                <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-inner flex flex-col justify-center">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 block">Google Search Preview</span>
+                    <div class="font-sans max-w-lg">
+                        <div class="flex items-center space-x-2 text-sm text-[#202124] mb-1">
+                            <div class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-xs">🌐</div>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-[#202124] line-clamp-1">SensationalX</span>
+                                <span class="text-[11px] text-[#5f6368] line-clamp-1">https://sensationalx.com</span>
+                            </div>
+                        </div>
+                        <h3 id="googleTitle" class="text-xl text-[#1a0dab] hover:underline cursor-pointer font-normal leading-tight mb-1 line-clamp-1">SensationalX | Elite Web Design & Digital Copywriting</h3>
+                        <p id="googleDesc" class="text-sm text-[#4d5156] leading-relaxed line-clamp-2">Transform your digital storefront. We construct lightning-fast websites and hyper-persuasive conversion pipelines built to maximize your revenue strategy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOL 4: Content Audit Checklist -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 md:col-span-2">
+            <div class="flex items-center space-x-3 mb-2">
+                <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg text-xl">📋</span>
+                <h2 class="text-xl font-bold text-slate-900">Homepage Content Audit Checklist</h2>
+            </div>
+            <p class="text-sm text-slate-500 mb-6">Track your optimization progress. Score 100% to maximize your page potential.</p>
+
+            <!-- Progress Bar -->
+            <div class="bg-slate-100 h-3 rounded-full overflow-hidden mb-6 flex">
+                <div id="auditProgress" class="bg-emerald-500 h-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+
+            <!-- Checklists -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="checklistContainer">
+                <label class="flex items-center space-x-3 p-3 border border-slate-100 rounded-lg cursor-pointer transition">
+                    <input type="checkbox" class="audit-check w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                    <span class="text-sm font-medium text-slate-700">Clear H1 Value Proposition</span>
+                </label>
+                <label class="flex items-center space-x-3 p-3 border border-slate-100 rounded-lg cursor-pointer transition">
+                    <input type="checkbox" class="audit-check w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                    <span class="text-sm font-medium text-slate-700">Primary Call-to-Action Above Fold</span>
+                </label>
+                <label class="flex items-center space-x-3 p-3 border border-slate-100 rounded-lg cursor-pointer transition">
+                    <input type="checkbox" class="audit-check w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                    <span class="text-sm font-medium text-slate-700">Social Proof / Testimonials</span>
+                </label>
+                <label class="flex items-center space-x-3 p-3 border border-slate-100 rounded-lg cursor-pointer transition">
+                    <input type="checkbox" class="audit-check w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                    <span class="text-sm font-medium text-slate-700">Mobile Responsive Design</span>
+                </label>
+            </div>
+            
+            <div id="auditStatusBox" class="hidden p-4 mt-6 rounded-lg text-sm text-center"></div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ==========================================
+            // LOGIC 1: ROI & Pricing Calculator
+            // ==========================================
+            const slider = document.getElementById('calcPages');
+            const complexity = document.getElementById('calcComplexity');
+            const pagesVal = document.getElementById('pagesVal');
+            const estPrice = document.getElementById('estPrice');
+            const estRoi = document.getElementById('estRoi');
+            
+            function calculateTotals() {
+                const pages = parseInt(slider.value);
+                const complexMultiplier = parseFloat(complexity.value);
+                pagesVal.textContent = `${pages} ${pages === 1 ? 'Page' : 'Pages'}`;
+                
+                // Formulas for calculations
+                const price = Math.round((pages * 100) * complexMultiplier);
+                const conversionBoost = Math.round(10 + (pages * 0.4) + (complexMultiplier * 3));
+                
+                estPrice.textContent = `$${price.toLocaleString()}`;
+                estRoi.textContent = `+${conversionBoost}%`;
+            }
+            
+            slider.addEventListener('input', calculateTotals);
+            complexity.addEventListener('change', calculateTotals);
+            calculateTotals(); // Initial trigger
+
+            // ==========================================
+            // LOGIC 2: Headline "Sensationalizer"
+            // ==========================================
+            const boringInput = document.getElementById('boringInput');
+            const sensationalizeBtn = document.getElementById('sensationalizeBtn');
+            const copyOutputs = document.getElementById('copyOutputs');
+            
+            // Variations dictionary map representing structural prompt transformations
+            const conversionTemplates = [
+                { type: "🔥 Emotional Hook", format: (text) => `Stop wasting money on subpar layouts. ${text.replace(/we sell|we offer|our/gi, 'Discover')} designed to scale conversion natively.`},
+                { type: "🎯 Benefit Driven", format: (text) => `Turn regular visitors into lifelong buyers with premium optimizations that make your brand unmistakable.` },
+                { type: "⚡ Direct & Punchy", format: (text) => `Stunning execution. Faster load times. Maximum returns. It's time to build smarter layouts.` }
+            ];
+            
+            sensationalizeBtn.addEventListener('click', () => {
+                const query = boringInput.value.trim();
+                if (!query) {
+                    copyOutputs.innerHTML = `<div class="p-2.5 bg-rose-50 border border-rose-100 rounded-lg text-sm text-rose-600">Please provide your base headline copy or a value pitch first!</div>`;
+                    return;
+                }
+                
+                copyOutputs.innerHTML = '';
+                conversionTemplates.forEach(item => {
+                    const block = document.createElement('div');
+                    block.className = "p-3 bg-slate-50 border border-slate-100 rounded-xl text-sm transition hover:border-purple-200 shadow-2xs";
+                    block.innerHTML = `<span class="block text-[11px] font-bold text-purple-600 uppercase tracking-wider mb-1">${item.type}</span> <p class="text-slate-700 font-medium">${item.format(query)}</p>`;
+                    copyOutputs.appendChild(block);
+                });
+            });
+
+            // ==========================================
+            // LOGIC 3: SEO Snippet Preview Counter
+            // ==========================================
+            const titleIn = document.getElementById('seoTitleInput');
+            const descIn = document.getElementById('seoDescInput');
+            const gTitle = document.getElementById('googleTitle');
+            const gDesc = document.getElementById('googleDesc');
+            const titleCount = document.getElementById('titleCounter');
+            const descCount = document.getElementById('descCounter');
+            
+            function updateSeoPreview() {
+                const tLen = titleIn.value.length;
+                const dLen = descIn.value.length;
+                
+                gTitle.textContent = titleIn.value || "Please enter a meta title...";
+                gDesc.textContent = descIn.value || "Please enter a meta description summary blueprint...";
+                
+                // Validate lengths dynamically
+                titleCount.textContent = `${tLen} / 60 characters ${tLen > 60 ? '(Too Long - will truncate)' : '(Optimal)'}`;
+                titleCount.className = `text-[11px] block mt-1 ${tLen > 60 ? 'text-amber-600 font-medium' : 'text-slate-400'}`;
+                descCount.textContent = `${dLen} / 160 characters ${dLen > 160 ? '(Too Long - will truncate)' : '(Optimal)'}`;
+                descCount.className = `text-[11px] block mt-1 ${dLen > 160 ? 'text-amber-600 font-medium' : 'text-slate-400'}`;
+            }
+            
+            titleIn.addEventListener('input', updateSeoPreview);
+            descIn.addEventListener('input', updateSeoPreview);
+
+            // ==========================================
+            // LOGIC 4: Content Audit Checklist
+            // ==========================================
+            const checkboxes = document.querySelectorAll('.audit-check');
+            const progress = document.getElementById('auditProgress');
+            const statusBox = document.getElementById('auditStatusBox');
+            
+            function updateChecklistProgress() {
+                const total = checkboxes.length;
+                const checked = document.querySelectorAll('.audit-check:checked').length;
+                const percentage = Math.round((checked / total) * 100);
+                progress.style.width = `${percentage}%`;
+                
+                // Update status container text based on thresholds
+                statusBox.classList.remove('hidden', 'bg-amber-50', 'text-amber-800', 'bg-emerald-50', 'text-emerald-800', 'bg-slate-50', 'text-slate-600');
+                if (percentage === 0) {
+                    statusBox.classList.add('hidden');
+                } else if (percentage < 100) {
+                    statusBox.classList.add('bg-amber-50', 'text-amber-800');
+                    statusBox.innerHTML = `⚠️ Your configuration score is <strong>${percentage}%</strong>. You have missing gaps leaving money on the table!`;
+                } else {
+                    statusBox.classList.add('bg-emerald-50', 'text-emerald-800');
+                    statusBox.innerHTML = `🎉 Perfect 100% Score! Your homepage layout structure is built like an conversion engine.`;
+                }
+            }
+            
+            checkboxes.forEach(chk => {
+                chk.addEventListener('change', (e) => {
+                    // Toggle a green border wrapper glow effect for visual depth feedback
+                    const parent = e.target.closest('label');
+                    if(e.target.checked) {
+                        parent.classList.add('border-emerald-200', 'bg-emerald-50/30');
+                    } else {
+                        parent.classList.remove('border-emerald-200', 'bg-emerald-50/30');
+                    }
+                    updateChecklistProgress();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
