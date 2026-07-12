@@ -3,164 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Metronome</title>
+    <title>SensationalX Metronome</title>
     
-<div class="p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5 max-w-sm mx-auto text-center relative overflow-hidden">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Visual Beat Indicator -->
-    <div id="beatLight" class="absolute top-4 right-4 w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-75 shadow-[0_0_15px_transparent]"></div>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
 
-    <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-4 mx-auto">
-        <i data-lucide="metronome" class="w-6 h-6"></i>
-    </div>
-    
-    <h3 class="text-xl font-bold mb-1 text-gray-900 dark:text-white">Metronome</h3>
-    <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">Set your BPM and keep perfect rhythm.</p>
-    
-    <!-- BPM Controls -->
-    <div class="flex items-center justify-center gap-4 mb-8">
-        <button onclick="adjustBpm(-1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-[#2a2a2e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#3f3f46] transition-colors focus:outline-none">
-            <i data-lucide="minus" class="w-5 h-5"></i>
-        </button>
-        
-        <div class="flex flex-col items-center">
-            <input type="number" id="bpmInput" value="120" min="40" max="250" oninput="updateBpm()" class="w-20 text-center bg-transparent focus:outline-none font-black text-4xl text-gray-900 dark:text-white" />
-            <span class="text-xs font-bold tracking-widest text-gray-400 uppercase mt-1">BPM</span>
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff3366]">SX</span> TOOLS
+            <i data-lucide="activity" class="w-5 h-5 text-[#ff3366]"></i>
         </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
 
-        <button onclick="adjustBpm(1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-[#2a2a2e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#3f3f46] transition-colors focus:outline-none">
-            <i data-lucide="plus" class="w-5 h-5"></i>
-        </button>
-    </div>
-    
-    <!-- Play/Stop Button -->
-    <button onclick="toggleMetronome()" id="playBtn" class="w-full py-4 bg-[#ff3366] hover:bg-[#e62e5c] text-white font-bold rounded-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98]">
-        <i data-lucide="play" id="btnIcon" class="w-5 h-5 fill-current"></i>
-        <span id="btnText">Start</span>
-    </button>
-</div>
-
-<script>
-    let audioCtx = null;
-    let isPlaying = false;
-    let currentBpm = 120;
-    
-    // Scheduler variables
-    let nextNoteTime = 0.0;
-    let beatInMeasure = 0;
-    let timerID;
-    const scheduleAheadTime = 0.1; // How far ahead to schedule audio (sec)
-    const lookahead = 25.0; // How frequently to call scheduling function (ms)
-
-    const bpmInput = document.getElementById('bpmInput');
-    const beatLight = document.getElementById('beatLight');
-
-    // UI Adjustments
-    function adjustBpm(amount) {
-        let newBpm = parseInt(bpmInput.value) + amount;
-        if (newBpm >= 40 && newBpm <= 250) {
-            bpmInput.value = newBpm;
-            currentBpm = newBpm;
-        }
-    }
-
-    function updateBpm() {
-        let val = parseInt(bpmInput.value);
-        if (val >= 40 && val <= 250) {
-            currentBpm = val;
-        }
-    }
-
-    // Flashes the UI light on the beat
-    function flashLight(isAccent) {
-        beatLight.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'shadow-[0_0_15px_transparent]');
+    <main class="flex-1 px-[8%] py-12 flex items-center justify-center">
         
-        if (isAccent) {
-            beatLight.classList.add('bg-[#ff3366]', 'shadow-[0_0_15px_#ff3366]');
-        } else {
-            beatLight.classList.add('bg-white', 'dark:bg-gray-400');
-        }
-
-        setTimeout(() => {
-            beatLight.classList.remove('bg-[#ff3366]', 'shadow-[0_0_15px_#ff3366]', 'bg-white', 'dark:bg-gray-400');
-            beatLight.classList.add('bg-gray-200', 'dark:bg-gray-700', 'shadow-[0_0_15px_transparent]');
-        }, 100);
-    }
-
-    // Core Audio Engine
-    function scheduleNote(beatNumber, time) {
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        
-        // Higher pitch on the first beat of the measure
-        const isAccent = (beatNumber === 0);
-        osc.frequency.value = isAccent ? 1200 : 800;
-        
-        gainNode.gain.setValueAtTime(1, time);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
-        
-        osc.start(time);
-        osc.stop(time + 0.05);
-
-        // Sync the visual flash with the exact audio time
-        let timeUntilNote = (time - audioCtx.currentTime) * 1000;
-        setTimeout(() => flashLight(isAccent), Math.max(0, timeUntilNote));
-    }
-
-    function scheduler() {
-        // While there are notes that will need to play before the next interval, schedule them
-        while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
-            scheduleNote(beatInMeasure, nextNoteTime);
+        <div class="p-8 rounded-3xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5 max-w-sm w-full text-center relative overflow-hidden transition-colors">
             
-            // Advance time and beat count
-            nextNoteTime += (60.0 / currentBpm);
-            beatInMeasure = (beatInMeasure + 1) % 4; // 4/4 time signature
-        }
-        timerID = setTimeout(scheduler, lookahead);
-    }
+            <div id="beatLight" class="absolute top-6 right-6 w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 transition-all duration-75 shadow-[0_0_15px_transparent]"></div>
 
-    async function toggleMetronome() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-            await audioCtx.resume();
-        }
+            <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-4 mx-auto">
+                <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-1 text-gray-900 dark:text-white">Metronome</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">Set your BPM and keep perfect rhythm.</p>
+            
+            <div class="flex items-center justify-center gap-4 mb-8">
+                <button onclick="adjustBpm(-1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-[#2a2a2e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#3f3f46] transition-colors focus:outline-none">
+                    <i data-lucide="minus" class="w-5 h-5"></i>
+                </button>
+                
+                <div class="flex flex-col items-center">
+                    <input type="number" id="bpmInput" value="120" min="40" max="250" oninput="updateBpm()" class="w-24 text-center bg-transparent focus:outline-none font-black text-4xl text-gray-900 dark:text-white" />
+                    <span class="text-xs font-bold tracking-widest text-gray-400 uppercase mt-1">BPM</span>
+                </div>
 
-        isPlaying = !isPlaying;
-        const btn = document.getElementById('playBtn');
-        const btnIcon = document.getElementById('btnIcon');
-        const btnText = document.getElementById('btnText');
-        
-        if (isPlaying) {
-            // UI Updates for Playing State
-            btnText.innerText = "Stop";
-            btn.classList.replace('bg-[#ff3366]', 'bg-gray-700');
-            btn.classList.replace('hover:bg-[#e62e5c]', 'hover:bg-gray-800');
-            btnIcon.setAttribute('data-lucide', 'square');
-            lucide.createIcons(); // Refresh icon
+                <button onclick="adjustBpm(1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-[#2a2a2e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#3f3f46] transition-colors focus:outline-none">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                </button>
+            </div>
             
-            // Start Audio Engine
-            currentBpm = parseInt(bpmInput.value) || 120;
-            nextNoteTime = audioCtx.currentTime + 0.05;
-            beatInMeasure = 0;
-            scheduler();
-            
-        } else {
-            // UI Updates for Stopped State
-            btnText.innerText = "Start";
-            btn.classList.replace('bg-gray-700', 'bg-[#ff3366]');
-            btn.classList.replace('hover:bg-gray-800', 'hover:bg-[#e62e5c]');
-            btnIcon.setAttribute('data-lucide', 'play');
+            <button onclick="toggleMetronome()" id="playBtn" class="w-full py-4 bg-[#ff3366] hover:bg-[#e62e5c] text-white font-bold rounded-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98]">
+                <i data-lucide="play" id="btnIcon" class="w-5 h-5 fill-current"></i>
+                <span id="btnText">Start</span>
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // --- THEME LOGIC ---
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
             lucide.createIcons();
-            
-            // Stop Audio Engine
-            clearTimeout(timerID);
-            beatLight.classList.remove('bg-[#ff3366]', 'shadow-[0_0_15px_#ff3366]', 'bg-white', 'dark:bg-gray-400');
-            beatLight.classList.add('bg-gray-200', 'dark:bg-gray-700');
         }
-    }
-</script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        });
+
+        // --- AUDIO GENERATOR ENGINE ---
+        let audioCtx = null;
+        let isPlaying = false;
+        let currentBpm = 120;
+        
+        let nextNoteTime = 0.0;
+        let beatInMeasure = 0;
+        let timerID = null;
+        const scheduleAheadTime = 0.1; 
+        const lookahead = 25.0; 
+
+        const bpmInput = document.getElementById('bpmInput');
+        const beatLight = document.getElementById('beatLight');
+
+        function adjustBpm(amount) {
+            let newBpm = (parseInt(bpmInput.value) || 120) + amount;
+            if (newBpm >= 40 && newBpm <= 250) {
+                bpmInput.value = newBpm;
+                currentBpm = newBpm;
+            }
+        }
+
+        function updateBpm() {
+            let val = parseInt(bpmInput.value);
+            if (val >= 40 && val <= 250) {
+                currentBpm = val;
+            }
+        }
+
+        function flashLight(isAccent) {
+            beatLight.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'shadow-[0_0_15px_transparent]');
+            
+            if (isAccent) {
+                beatLight.classList.add('bg-[#ff3366]', 'shadow-[0_0_15px_#ff3366]');
+            } else {
+                beatLight.classList.add('bg-gray-900', 'dark:bg-white', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
+            }
+
+            setTimeout(() => {
+                beatLight.classList.remove('bg-[#ff3366]', 'shadow-[0_0_15px_#ff3366]', 'bg-gray-900', 'dark:bg-white', 'shadow-[0_0_10px_rgba(255,255,255,0.5)]');
+                beatLight.classList.add('bg-gray-200', 'dark:bg-gray-700', 'shadow-[0_0_15px_transparent]');
+            }, 60);
+        }
+
+        function scheduleNote(beatNumber, time) {
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            const isAccent = (beatNumber === 0);
+            osc.frequency.setValueAtTime(isAccent ? 1000 : 600, time);
+            
+            gainNode.gain.setValueAtTime(0.6, time);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+            
+            osc.start(time);
+            osc.stop(time + 0.05);
+
+            let timeUntilNote = (time - audioCtx.currentTime) * 1000;
+            setTimeout(() => {
+                if (isPlaying) flashLight(isAccent);
+            }, Math.max(0, timeUntilNote));
+        }
+
+        function scheduler() {
+            while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
+                scheduleNote(beatInMeasure, nextNoteTime);
+                nextNoteTime += (60.0 / currentBpm);
+                beatInMeasure = (beatInMeasure + 1) % 4; 
+            }
+            timerID = setTimeout(scheduler, lookahead);
+        }
+
+        async function toggleMetronome() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('playBtn');
+            const btnIcon = document.getElementById('btnIcon');
+            const btnText = document.getElementById('btnText');
+            
+            if (isPlaying) {
+                currentBpm = parseInt(bpmInput.value) || 120;
+                btnText.innerText = "Stop";
+                btn.classList.remove('bg-[#ff3366]', 'hover:bg-[#e62e5c]');
+                btn.classList.add('bg-gray-800', 'dark:bg-gray-700', 'hover:bg-gray-900', 'dark:hover:bg-gray-600');
+                btnIcon.setAttribute('data-lucide', 'square');
+                lucide.createIcons(); 
+                
+                nextNoteTime = audioCtx.currentTime + 0.02;
+                beatInMeasure = 0;
+                scheduler();
+            } else {
+                btnText.innerText = "Start";
+                btn.classList.remove('bg-gray-800', 'dark:bg-gray-700', 'hover:bg-gray-900', 'dark:hover:bg-gray-600');
+                btn.classList.add('bg-[#ff3366]', 'hover:bg-[#e62e5c]');
+                btnIcon.setAttribute('data-lucide', 'play');
+                lucide.createIcons();
+                
+                clearTimeout(timerID);
+                beatLight.classList.remove('bg-[#ff3366]', 'shadow-[0_0_15px_#ff3366]', 'bg-gray-900', 'dark:bg-white');
+                beatLight.classList.add('bg-gray-200', 'dark:bg-gray-700');
+            }
+        }
+    </script>
+</body>
+</html>
