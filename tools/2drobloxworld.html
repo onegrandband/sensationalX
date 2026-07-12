@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Roblox World</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a2e; /* Classic Roblox dark sky theme */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            background: linear-gradient(to bottom, #7fc1fc, #cbe5ff); /* Sky */
+            border: 4px solid #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        /* Player Character */
+        #player {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background: #ffe600; /* Yellow Torso */
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            bottom: 50px;
+            left: 50px;
+        }
+        /* Arms & Legs */
+        .limb {
+            position: absolute;
+            width: 12px;
+            height: 28px;
+            background: #5097f5; /* Classic Blue Legs */
+            border-radius: 4px;
+            bottom: -25px;
+        }
+        #arm-left { left: 5px; }
+        #arm-right { right: 5px; }
+        #leg-left { left: 8px; }
+        #leg-right { right: 20px; }
+
+        /* Terrain Blocks */
+        .platform {
+            position: absolute;
+            background: #5d9e3b; /* Grass Green */
+            border-bottom: 5px solid #416f28; /* Dirt Base */
+        }
+
+        /* Robux Coin */
+        #robux {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #fbc711;
+            border-radius: 50%;
+            border: 3px solid #df9a06;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            text-shadow: 1px 1px #000;
+        }
+
+        /* UI */
+        #score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="score-board">Robux: <span id="score">0</span></div>
+        <div id="player">
+            <div id="arm-left" class="limb"></div>
+            <div id="arm-right" class="limb"></div>
+            <div id="leg-left" class="limb"></div>
+            <div id="leg-right" class="limb"></div>
+        </div>
+        <div id="robux">R$</div>
+    </div>
+
+    <script>
+        const container = document.getElementById('game-container');
+        const player = document.getElementById('player');
+        const robux = document.getElementById('robux');
+        const scoreDisplay = document.getElementById('score');
+
+        // Game State
+        let playerX = 50;
+        let playerY = 50;
+        let velocityY = 0;
+        let isGrounded = false;
+        let score = 0;
+
+        // Physics variables
+        const gravity = 0.8;
+        const jumpStrength = 13;
+        const moveSpeed = 5;
+        const platforms = [
+            { x: 0, y: 50, width: 300, height: 20 },
+            { x: 350, y: 120, width: 200, height: 20 },
+            { x: 600, y: 180, width: 200, height: 20 },
+            { x: 200, y: 250, width: 300, height: 20 }
+        ];
+
+        // Keys state
+        const keys = { ArrowLeft: false, ArrowRight: false, Space: false };
+
+        // Create platforms
+        platforms.forEach(p => {
+            const el = document.createElement('div');
+            el.className = 'platform';
+            el.style.left = p.x + 'px';
+            el.style.bottom = p.y + 'px';
+            el.style.width = p.width + 'px';
+            el.style.height = p.height + 'px';
+            container.appendChild(el);
+        });
+
+        // Setup Robux
+        let robuxX = 650;
+        let robuxY = 220;
+        function updateRobuxPosition() {
+            robux.style.left = robuxX + 'px';
+            robux.style.bottom = robuxY + 'px';
+        }
+        updateRobuxPosition();
+
+        // Event Listeners
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a') keys.ArrowLeft = true;
+            if (e.key === 'ArrowRight' || e.key === 'd') keys.ArrowRight = true;
+            if (e.key === ' ' || e.key === 'Spacebar') keys.Space = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a') keys.ArrowLeft = false;
+            if (e.key === 'ArrowRight' || e.key === 'd') keys.ArrowRight = false;
+            if (e.key === ' ' || e.key === 'Spacebar') keys.Space = false;
+        });
+
+        // Game Loop
+        function update() {
+            // Horizontal Movement
+            if (keys.ArrowLeft) playerX -= moveSpeed;
+            if (keys.ArrowRight) playerX += moveSpeed;
+
+            // Jump
+            if (keys.Space && isGrounded) {
+                velocityY = jumpStrength;
+                isGrounded = false;
+            }
+
+            // Apply Gravity
+            velocityY -= gravity;
+            playerY += velocityY;
+
+            // Floor Bounds
+            if (playerY <= 50) {
+                playerY = 50;
+                velocityY = 0;
+                isGrounded = true;
+            }
+
+            // Platform Collision Check
+            platforms.forEach(p => {
+                const withinX = playerX + 40 > p.x && playerX < p.x + p.width;
+                if (withinX) {
+                    const topEdge = p.y + p.height;
+                    // Landing on top
+                    if (playerY <= topEdge && playerY + velocityY >= p.y) {
+                        playerY = topEdge;
+                        velocityY = 0;
+                        isGrounded = true;
+                    }
+                }
+            });
+
+            // Keep in bounds
+            if (playerX < 0) playerX = 0;
+            if (playerX > 760) playerX = 760;
+
+            // Robux Collision
+            if (playerX < robuxX + 30 && playerX + 40 > robuxX &&
+                playerY < robuxY + 30 && playerY + 60 > robuxY) {
+                score += 10;
+                scoreDisplay.innerText = score;
+                // Respawn Robux elsewhere
+                robuxX = Math.floor(Math.random() * 750);
+                robuxY = Math.floor(Math.random() * 250) + 100; // Keep off ground
+            }
+
+            // Render
+            player.style.left = playerX + 'px';
+            player.style.bottom = playerY + 'px';
+            updateRobuxPosition();
+
+            requestAnimationFrame(update);
+        }
+
+        update();
+    </script>
+</body>
+</html>
