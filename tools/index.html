@@ -39,7 +39,7 @@
         <div class="flex flex-col sm:flex-row gap-4 mb-10">
             <div class="relative flex-1">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                <input type="text" id="searchInput" oninput="handleSearchAndSort()" placeholder="Search tools (e.g., audio, text, image)..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white">
+                <input type="text" id="searchInput" oninput="handleSearchAndSort()" placeholder="Search tools (e.g., audio, text, image, cooking)..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white">
             </div>
             <select id="sortSelect" onchange="handleSearchAndSort()" class="px-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white cursor-pointer font-medium">
                 <option value="az">Sort: A-Z</option>
@@ -48,6 +48,14 @@
         </div>
 
         <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <a href="../tools/calculator.html" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10 flex flex-col h-full" data-title="Cooking Calculator">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                    <i data-lucide="chef-hat" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Cooking Calculator</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Convert cups, teaspoons, tablespoons, and fluid volumes.</p>
+            </a>
             
             <a href="../tools/downloader.html" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10 flex flex-col h-full" data-title="Downloader">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
@@ -97,7 +105,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Calculate dimensions for videos and covers.</p>
             </a>
 
-        */---> COMMENTS    <a href="../tools/tone-generator.htmk" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10 flex flex-col h-full" data-title="Tone Generator"> // i just fixed the .htm bug bc i am not using .html instead of a shortner like .htm :3
+            <a href="../tools/tone-generator.html" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-all hover:shadow-xl hover:shadow-[#ff3366]/10 flex flex-col h-full" data-title="Tone Generator">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="speaker" class="w-6 h-6"></i>
                 </div>
@@ -194,7 +202,6 @@
             });
 
             // Step 2: Re-append sorted cards to the grid 
-            // (this physically moves them in the DOM)
             cards.forEach(card => grid.appendChild(card));
 
             // Step 3: Filter cards based on search query
@@ -203,7 +210,7 @@
                 const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
                 
                 if (title.includes(searchQuery) || desc.includes(searchQuery)) {
-                    card.style.display = 'flex'; // Use flex to maintain the card's internal layout
+                    card.style.display = 'flex'; 
                     visibleCount++;
                 } else {
                     card.style.display = 'none';
@@ -223,7 +230,7 @@
         // Initialize icons and initial sort on load
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            handleSearchAndSort(); // Triggers the default A-Z sort immediately
+            handleSearchAndSort(); 
         });
     </script>
 </body>
