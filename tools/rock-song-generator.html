@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX AI Rock Generator</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        // Theme init
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
+
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff3366]">SX</span> Rock Riffs
+            <i data-lucide="guitar" class="w-5 h-5 text-[#ff3366]"></i>
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-1 px-[8%] py-12 flex items-center justify-center">
+        
+        <div class="w-full max-w-xl p-8 rounded-3xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5 transition-colors">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-black mb-2">AI Rock Song Generator</h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">Input a prompt or choose a style to synthesize procedurally distorted rock riffs and live drums.</p>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label for="aiPrompt" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Vibe & Lyric Engine Prompt</label>
+                    <div class="relative">
+                        <i data-lucide="flame" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="aiPrompt" placeholder="e.g. 90s gritty Seattle grunge, fast 2000s pop punk anthems..." 
+                            class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="rockSelect" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Rock Subgenre Profile</label>
+                    <select id="rockSelect" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white cursor-pointer font-medium">
+                        <option value="hardrock">Classic Hard Rock</option>
+                        <option value="grunge">90s Grunge / Alternative</option>
+                        <option value="poppunk">High-Tempo Pop Punk</option>
+                        <option value="heavy">Heavy Metal</option>
+                    </select>
+                </div>
+
+                <button onclick="generateRockSong()" id="generateBtn" class="w-full mt-2 py-4 rounded-xl bg-[#ff3366]/10 text-[#ff3366] font-bold uppercase tracking-wider hover:bg-[#ff3366] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
+                    <i data-lucide="anvil" class="w-5 h-5 transition-transform group-hover:scale-110"></i>
+                    <span id="btnText">Forge Sonic Signature</span>
+                </button>
+            </div>
+
+            <div id="playerConsole" class="mt-8 p-6 rounded-2xl bg-gray-50 dark:bg-[#0b0b0c] border border-gray-200 dark:border-[#2a2a2e] hidden transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span id="metaGenre" class="text-xs font-bold uppercase tracking-widest text-[#ff3366]">GRUNGE ARCHETYPE</span>
+                        <h3 id="metaSeed" class="text-lg font-black tracking-tight text-gray-900 dark:text-white">Riff_Gen_4921.wav</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-mono bg-gray-200 dark:bg-[#1c1c1f] px-2 py-1 rounded text-gray-500 dark:text-gray-400" id="bpmDisplay">120 BPM</span>
+                    </div>
+                </div>
+
+                <div class="flex items-end justify-between gap-1 h-14 px-4 mb-6 bg-white dark:bg-[#1c1c1f] rounded-xl border border-gray-200 dark:border-[#2a2a2e] overflow-hidden">
+                    <div class="v-bar w-full bg-gray-200 dark:bg-[#2a2a2e] h-2 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366]/40 h-5 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366] h-3 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366]/70 h-6 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-gray-200 dark:bg-[#2a2a2e] h-1 rounded-t transition-all duration-100"></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="togglePlayback()" id="playPauseBtn" class="flex-1 py-3 rounded-xl bg-gray-900 text-white dark:bg-white dark:text-black font-bold uppercase tracking-wide text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+                        <i data-lucide="play" class="w-4 h-4 fill-current"></i> Ignite Audio
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- THEME LOGIC ---
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        });
+
+        // --- WEB AUDIO API PROCEDURAL ROCK ENGINE ---
+        let audioCtx = null;
+        let isPlaying = false;
+        let currentStep = 0;
+        let sequencerInterval = null;
+        let bpm = 120;
+        let distortionAmount = 50;
+
+        // Rock Progression parameters (Frequencies for root chords)
+        let chordProgression = [];
+        let currentProgressionIndex = 0;
+
+        // Sequencer Tracking Matrices (16 steps)
+        let patterns = { kick: [], snare: [], hat: [], guitar: [] };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Custom Distortion Curve Algorithm for classic overdriven rock guitar tone
+        function makeDistortionCurve(amount) {
+            const k = typeof amount === 'number' ? amount : 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) {
+                const x = (i * 2) / n_samples - 1;
+                curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+            }
+            return curve;
+        }
+
+        // Acoustic Drum Synthesizers
+        function playKick(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.frequency.setValueAtTime(120, time);
+            osc.frequency.exponentialRampToValueAtTime(40, time + 0.15);
+
+            gain.gain.setValueAtTime(1.2, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.14);
+
+            osc.start(time);
+            osc.stop(time + 0.15);
+        }
+
+        function playSnare(time) {
+            // White noise generation for snare pop
+            const bufferSize = audioCtx.sampleRate * 0.2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "bandpass";
+            filter.frequency.value = 1200;
+
+            const gain = audioCtx.createGain();
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.6, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
+
+            noise.start(time);
+            noise.stop(time + 0.19);
+        }
+
+        function playHat(time) {
+            const bufferSize = audioCtx.sampleRate * 0.05;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "highpass";
+            filter.frequency.value = 9000;
+
+            const gain = audioCtx.createGain();
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.2, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.04);
+
+            noise.start(time);
+            noise.stop(time + 0.05);
+        }
+
+        // Overdriven Simulated Power Chord Synthesizer
+        function playRockGuitar(time, freq) {
+            if (freq === 0) return;
+
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator(); // Perfect fifth interval generator
+            const gain = audioCtx.createGain();
+            const distortion = audioCtx.createWaveShaper();
+            const filter = audioCtx.createBiquadFilter();
+
+            osc1.type = "sawtooth";
+            osc1.frequency.setValueAtTime(freq, time);
+
+            osc2.type = "sawtooth";
+            osc2.frequency.setValueAtTime(freq * 1.5, time); // 5th note calculation
+
+            distortion.curve = makeDistortionCurve(distortionAmount);
+            distortion.oversample = '4x';
+
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(2000, time);
+
+            osc1.connect(distortion);
+            osc2.connect(distortion);
+            distortion.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.18, time);
+            gain.gain.linearRampToValueAtTime(0.12, time + 0.15);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.28);
+
+            osc1.start(time);
+            osc2.start(time);
+            osc1.stop(time + 0.3);
+            osc2.stop(time + 0.3);
+        }
+
+        // System Prompt Array Assembler Engine
+        function generateRockSong() {
+            initAudio();
+            stopBeat();
+
+            const subgenre = document.getElementById('rockSelect').value;
+            const prompt = document.getElementById('aiPrompt').value;
+            const btnText = document.getElementById('btnText');
+            const generateBtn = document.getElementById('generateBtn');
+
+            generateBtn.disabled = true;
+            btnText.innerText = "Stuning Amplifiers...";
+
+            setTimeout(() => {
+                // Procedural Style Configuration Mapping
+                if (subgenre === 'hardrock') {
+                    bpm = 115; distortionAmount = 45;
+                    chordProgression = [110.00, 130.81, 146.83, 110.00]; // A3, C3, D3, A3
+                } else if (subgenre === 'grunge') {
+                    bpm = 92; distortionAmount = 85;
+                    chordProgression = [73.42, 98.00, 87.31, 116.54]; // D2, G2, F2, A#2
+                } else if (subgenre === 'poppunk') {
+                    bpm = 165; distortionAmount = 35;
+                    chordProgression = [130.81, 196.00, 220.00, 174.61]; // C3, G3, A3, F3
+                } else if (subgenre === 'heavy') {
+                    bpm = 135; distortionAmount = 120;
+                    chordProgression = [82.41, 82.41, 103.83, 98.00]; // E2, E2, G#2, G2
+                }
+
+                // Compile 16-step grid sequences dynamically
+                for (let i = 0; i < 16; i++) {
+                    patterns.kick[i] = (i === 0 || i === 8 || i === 11 || (subgenre === 'poppunk' && i % 4 === 0)) ? 1 : 0;
+                    patterns.snare[i] = (i === 4 || i === 12) ? 1 : 0;
+                    patterns.hat[i] = (i % 2 === 0) ? 1 : 0;
+                    
+                    // Driving rhythm picking pattern generator
+                    if (subgenre === 'poppunk') {
+                        patterns.guitar[i] = (i % 2 === 0) ? 1 : 0;
+                    } else {
+                        patterns.guitar[i] = (i === 0 || i === 3 || i === 6 || i === 8 || i === 12 || Math.random() > 0.6) ? 1 : 0;
+                    }
+                }
+
+                // Render UI State Data Changes
+                document.getElementById('metaGenre').innerText = `${subgenre.toUpperCase()} SIGNATURE`;
+                document.getElementById('metaSeed').innerText = prompt ? `"${prompt.substring(0, 24)}..."` : `Riff_Gen_${Math.floor(Math.random() * 8000 + 1000)}.wav`;
+                document.getElementById('bpmDisplay').innerText = `${bpm} BPM`;
+
+                generateBtn.disabled = false;
+                btnText.innerText = "Forge Sonic Signature";
+                document.getElementById('playerConsole').classList.remove('hidden');
+
+                startBeat();
+            }, 1000);
+        }
+
+        // Sequencer Engine Clock Logic Loop
+        function stepSequencer() {
+            const stepDuration = 60 / bpm / 4; // Mapping 16th note frames
+            const time = audioCtx.currentTime;
+
+            // Advance through chord progression blocks every 4 counts
+            if (currentStep === 0) {
+                currentProgressionIndex = (currentProgressionIndex + 1) % chordProgression.length;
+            }
+
+            const currentChordFreq = chordProgression[currentProgressionIndex];
+
+            if (patterns.kick[currentStep]) playKick(time);
+            if (patterns.snare[currentStep]) playSnare(time);
+            if (patterns.hat[currentStep]) playHat(time);
+            if (patterns.guitar[currentStep]) playRockGuitar(time, currentChordFreq);
+
+            // Audio Bar Node Triggering Animations
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => {
+                const bounceHeight = Math.random() * 45 + 5;
+                bar.style.height = `${bounceHeight}px`;
+            });
+
+            currentStep = (currentStep + 1) % 16;
+        }
+
+        function startBeat() {
+            if (isPlaying) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            isPlaying = true;
+            currentStep = 0;
+            currentProgressionIndex = 0;
+            
+            const intervalMs = (60 / bpm / 4) * 1000;
+            sequencerInterval = setInterval(stepSequencer, intervalMs);
+
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="square" class="w-4 h-4 fill-current"></i> Halt Engine`;
+            lucide.createIcons();
+        }
+
+        function stopBeat() {
+            isPlaying = false;
+            clearInterval(sequencerInterval);
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => bar.style.height = `4px`);
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Ignite Audio`;
+            lucide.createIcons();
+        }
+
+        function togglePlayback() {
+            if (isPlaying) stopBeat();
+            else startBeat();
+        }
+    </script>
+</body>
+</html>
