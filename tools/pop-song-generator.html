@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX AI Pop Generator</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        // Theme init
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
+
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff3366]">SX</span> Pop Hits
+            <i data-lucide="radio" class="w-5 h-5 text-[#ff3366]"></i>
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-1 px-[8%] py-12 flex items-center justify-center">
+        
+        <div class="w-full max-w-xl p-8 rounded-3xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5 transition-colors">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-black mb-2">AI Pop Song Generator</h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">Describe a radio vibe or select an archetype to arrange custom vocal-ready pop backings.</p>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label for="aiPrompt" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Vibe Descriptor / Track Concept</label>
+                    <div class="relative">
+                        <i data-lucide="music" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="aiPrompt" placeholder="e.g. upbeat summer sunset anthem, melancholic late-night synth drive..." 
+                            class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="popSelect" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Pop Arrangement Flavor</label>
+                    <select id="popSelect" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white cursor-pointer font-medium">
+                        <option value="dancepop">Main-Stage Dance Pop</option>
+                        <option value="synthpop">80s Retro Synthpop</option>
+                        <option value="indiepop">Chill / Bedroom Indie Pop</option>
+                        <option value="discopop">Nu-Disco Upbeat</option>
+                    </select>
+                </div>
+
+                <button onclick="generatePopTrack()" id="generateBtn" class="w-full mt-2 py-4 rounded-xl bg-[#ff3366]/10 text-[#ff3366] font-bold uppercase tracking-wider hover:bg-[#ff3366] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
+                    <i data-lucide="layers" class="w-5 h-5 transition-transform group-hover:translate-y-[-1px]"></i>
+                    <span id="btnText">Produce Radio Demo</span>
+                </button>
+            </div>
+
+            <div id="playerConsole" class="mt-8 p-6 rounded-2xl bg-gray-50 dark:bg-[#0b0b0c] border border-gray-200 dark:border-[#2a2a2e] hidden transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span id="metaGenre" class="text-xs font-bold uppercase tracking-widest text-[#ff3366]">DANCE-POP ARCHETYPE</span>
+                        <h3 id="metaSeed" class="text-lg font-black tracking-tight text-gray-900 dark:text-white">Pop_Demo_Master.wav</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-mono bg-gray-200 dark:bg-[#1c1c1f] px-2 py-1 rounded text-gray-500 dark:text-gray-400" id="bpmDisplay">122 BPM</span>
+                    </div>
+                </div>
+
+                <div class="flex items-end justify-between gap-1 h-14 px-4 mb-6 bg-white dark:bg-[#1c1c1f] rounded-xl border border-gray-200 dark:border-[#2a2a2e] overflow-hidden">
+                    <div class="v-bar w-full bg-gray-200 dark:bg-[#2a2a2e] h-2 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366]/40 h-4 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366] h-1 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366]/60 h-5 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-gray-200 dark:bg-[#2a2a2e] h-1 rounded-t transition-all duration-100"></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="togglePlayback()" id="playPauseBtn" class="flex-1 py-3 rounded-xl bg-gray-900 text-white dark:bg-white dark:text-black font-bold uppercase tracking-wide text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+                        <i data-lucide="play" class="w-4 h-4 fill-current"></i> Stream Arrangement
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- THEME LOGIC ---
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        });
+
+        // --- WEB AUDIO API PROCEDURAL POP ENGINE ---
+        let audioCtx = null;
+        let isPlaying = false;
+        let currentStep = 0;
+        let sequencerInterval = null;
+        let bpm = 120;
+
+        // Custom Chord Progressions for Catchy Hooks
+        let baseChords = [];
+        let chordIndex = 0;
+        let patterns = { kick: [], snare: [], snap: [], synth: [] };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Standard Radio Pop Kick Drum
+        function playKick(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.frequency.setValueAtTime(140, time);
+            osc.frequency.exponentialRampToValueAtTime(50, time + 0.1);
+
+            gain.gain.setValueAtTime(1.0, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.11);
+
+            osc.start(time);
+            osc.stop(time + 0.12);
+        }
+
+        // Crisp Electronic Pop Snare
+        function playSnare(time) {
+            const bufferSize = audioCtx.sampleRate * 0.15;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "bandpass";
+            filter.frequency.value = 1100;
+
+            const gain = audioCtx.createGain();
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.45, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.12);
+
+            noise.start(time);
+            noise.stop(time + 0.13);
+        }
+
+        // Acoustic-Style Electronic Pop Snap / Rim Click
+        function playSnap(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(800, time);
+            osc.frequency.exponentialRampToValueAtTime(1500, time + 0.02);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.25, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
+
+            osc.start(time);
+            osc.stop(time + 0.04);
+        }
+
+        // Lush Polyphonic Soft Pop Synthesizer Nodes
+        function playPopSynth(time, freq) {
+            if (freq === 0) return;
+
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+
+            osc1.type = "sawtooth";
+            osc1.frequency.setValueAtTime(freq, time);
+
+            osc2.type = "triangle";
+            osc2.frequency.setValueAtTime(freq * 0.5, time); // Adds depth sub-octave
+
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(1200, time);
+            filter.frequency.exponentialRampToValueAtTime(2400, time + 0.1);
+
+            osc1.connect(filter);
+            osc2.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.2, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+
+            osc1.start(time);
+            osc2.start(time);
+            osc1.stop(time + 0.24);
+            osc2.stop(time + 0.24);
+        }
+
+        // AI Track Generator / Sequencer Builder Engine
+        function generatePopTrack() {
+            initAudio();
+            stopBeat();
+
+            const popFlavor = document.getElementById('popSelect').value;
+            const prompt = document.getElementById('aiPrompt').value;
+            const btnText = document.getElementById('btnText');
+            const generateBtn = document.getElementById('generateBtn');
+
+            generateBtn.disabled = true;
+            btnText.innerText = "Polishing Hook Melodies...";
+
+            setTimeout(() => {
+                // Algorithmic Archetype Mapping (Four classic structural chords)
+                if (popFlavor === 'dancepop') {
+                    bpm = 124;
+                    baseChords = [261.63, 392.00, 440.00, 349.23]; // C4 -> G4 -> A4 -> F4 (Classic I-V-vi-IV Progression)
+                } else if (popFlavor === 'synthpop') {
+                    bpm = 116;
+                    baseChords = [220.00, 261.63, 349.23, 392.00]; // A3 -> C4 -> F4 -> G4 (Moody Retro Progression)
+                } else if (popFlavor === 'indiepop') {
+                    bpm = 96;
+                    baseChords = [293.66, 349.23, 261.63, 392.00]; // D4 -> F4 -> C4 -> G4 (Mellow / Laid back)
+                } else if (popFlavor === 'discopop') {
+                    bpm = 120;
+                    baseChords = [440.00, 329.63, 349.23, 392.00]; // A4 -> E4 -> F4 -> G4 (Funky Pop Upbeat)
+                }
+
+                // Compile 16-step grid sequences dynamically
+                for (let i = 0; i < 16; i++) {
+                    // Four-on-the-floor rhythmic architecture for dance genres
+                    patterns.kick[i] = (i % 4 === 0 || (popFlavor === 'dancepop' && i === 14)) ? 1 : 0;
+                    patterns.snare[i] = (i === 4 || i === 12) ? 1 : 0;
+                    
+                    // Dynamic syncopation snaps for accents
+                    patterns.snap[i] = (i === 2 || i === 6 || i === 10 || i === 14) ? 1 : 0;
+
+                    // Modern pop syncopated synth rhythm matrix
+                    if (popFlavor === 'indiepop') {
+                        patterns.synth[i] = (i === 0 || i === 6 || i === 8) ? 1 : 0;
+                    } else {
+                        patterns.synth[i] = (i === 0 || i === 3 || i === 6 || i === 8 || i === 11 || i === 14) ? 1 : 0;
+                    }
+                }
+
+                // Render UI updates
+                document.getElementById('metaGenre').innerText = `${popFlavor.toUpperCase()} MIXDOWN`;
+                document.getElementById('metaSeed').innerText = prompt ? `"${prompt.substring(0, 24)}..."` : `Pop_Demo_${Math.floor(Math.random() * 8000 + 1000)}.wav`;
+                document.getElementById('bpmDisplay').innerText = `${bpm} BPM`;
+
+                generateBtn.disabled = false;
+                btnText.innerText = "Produce Radio Demo";
+                document.getElementById('playerConsole').classList.remove('hidden');
+
+                startBeat();
+            }, 1000);
+        }
+
+        // Loop Sequencer Clock Logic
+        function stepSequencer() {
+            const stepDuration = 60 / bpm / 4; 
+            const time = audioCtx.currentTime;
+
+            // Move block progressions forward every 4 counts (quarter measure updates)
+            if (currentStep === 0 || currentStep === 4 || currentStep === 8 || currentStep === 12) {
+                chordIndex = Math.floor(currentStep / 4) % baseChords.length;
+            }
+
+            const activeChordFreq = baseChords[chordIndex];
+
+            if (patterns.kick[currentStep]) playKick(time);
+            if (patterns.snare[currentStep]) playSnare(time);
+            if (patterns.snap[currentStep]) playSnap(time);
+            if (patterns.synth[currentStep]) playPopSynth(time, activeChordFreq);
+
+            // Interface UI Visualizer Animations Node
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => {
+                const bounceHeight = Math.random() * 42 + 6;
+                bar.style.height = `${bounceHeight}px`;
+            });
+
+            currentStep = (currentStep + 1) % 16;
+        }
+
+        function startBeat() {
+            if (isPlaying) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            isPlaying = true;
+            currentStep = 0;
+            chordIndex = 0;
+            
+            const intervalMs = (60 / bpm / 4) * 1000;
+            sequencerInterval = setInterval(stepSequencer, intervalMs);
+
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="square" class="w-4 h-4 fill-current"></i> Break Loop`;
+            lucide.createIcons();
+        }
+
+        function stopBeat() {
+            isPlaying = false;
+            clearInterval(sequencerInterval);
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => bar.style.height = `4px`);
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Stream Arrangement`;
+            lucide.createIcons();
+        }
+
+        function togglePlayback() {
+            if (isPlaying) stopBeat();
+            else startBeat();
+        }
+    </script>
+</body>
+</html>
