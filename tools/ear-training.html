@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crescendo - Ear Training</title>
+    <style>
+        :root {
+            --primary: #58cc02;
+            --primary-shadow: #58a700;
+            --bg: #ffffff;
+            --text: #3c3c3c;
+            --gray: #e5e5e5;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #ff4b4b;
+        }
+        .score { color: #ffc800; }
+        
+        .play-btn {
+            background-color: #1cb0f6;
+            color: white;
+            border: none;
+            border-bottom: 5px solid #1899d6;
+            border-radius: 15px;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.1s;
+        }
+        .play-btn:active {
+            transform: translateY(4px);
+            border-bottom: 1px solid #1899d6;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .option-btn {
+            background-color: white;
+            color: var(--text);
+            border: 2px solid var(--gray);
+            border-bottom: 4px solid var(--gray);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .option-btn:hover { background-color: #f7f7f7; }
+        .option-btn:active {
+            transform: translateY(2px);
+            border-bottom: 2px solid var(--gray);
+        }
+        
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="stats">
+        <span>Hearts: <span id="hearts">3</span></span>
+        <span class="score">Streak: <span id="streak">0</span></span>
+    </div>
+
+    <h2>Listen to the Interval</h2>
+    <button class="play-btn" onclick="playInterval()">🎵 Play Audio</button>
+
+    <div class="options" id="options">
+        </div>
+
+    <div id="feedback"></div>
+</div>
+
+<script>
+    // Web Audio API Context
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    let currentInterval = "";
+    let streak = 0;
+    let hearts = 3;
+
+    // Frequencies for a C major scale starting at C4
+    const notes = {
+        "Root": 261.63,       // C4
+        "Minor 3rd": 311.13,  // Eb4
+        "Major 3rd": 329.63,  // E4
+        "Perfect 5th": 392.00 // G4
+    };
+
+    const intervals = ["Minor 3rd", "Major 3rd", "Perfect 5th"];
+
+    // Function to play a synthetic tone
+    function playTone(frequency, startTime, duration) {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = 'triangle'; // Gives it a slightly softer "synth" sound
+        oscillator.frequency.value = frequency;
+        
+        // Simple envelope to avoid clicking
+        gainNode.gain.setValueAtTime(0.01, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(1, startTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration);
+    }
+
+    // Play the root note, then the interval
+    function playInterval() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        
+        document.getElementById('feedback').innerText = "";
+        
+        // Pick a random interval
+        currentInterval = intervals[Math.floor(Math.random() * intervals.length)];
+        const rootFreq = notes["Root"];
+        const targetFreq = notes[currentInterval];
+        
+        const now = audioCtx.currentTime;
+        
+        // Play Root
+        playTone(rootFreq, now, 0.5);
+        // Play Target Note 0.6 seconds later
+        playTone(targetFreq, now + 0.6, 0.5);
+        
+        renderButtons();
+    }
+
+    // Check the user's guess
+    function checkAnswer(guess) {
+        if (!currentInterval) {
+            document.getElementById('feedback').innerText = "Press Play first!";
+            return;
+        }
+
+        if (guess === currentInterval) {
+            document.getElementById('feedback').innerText = "Correct! 🎉";
+            document.getElementById('feedback').style.color = "#58cc02";
+            streak++;
+            document.getElementById('streak').innerText = streak;
+            currentInterval = ""; // Reset until they play again
+        } else {
+            document.getElementById('feedback').innerText = `Oops! It was a ${currentInterval}.`;
+            document.getElementById('feedback').style.color = "#ff4b4b";
+            hearts--;
+            document.getElementById('hearts').innerText = hearts;
+            currentInterval = "";
+            streak = 0; // Break streak
+            document.getElementById('streak').innerText = streak;
+            
+            if (hearts <= 0) {
+                alert("Out of hearts! Time to review the fundamentals. Resetting...");
+                hearts = 3;
+                document.getElementById('hearts').innerText = hearts;
+            }
+        }
+    }
+
+    // Generate the multiple choice buttons
+    function renderButtons() {
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = "";
+        
+        intervals.forEach(interval => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = interval;
+            btn.onclick = () => checkAnswer(interval);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    // Initial render
+    renderButtons();
+</script>
+
+</body>
+</html>
