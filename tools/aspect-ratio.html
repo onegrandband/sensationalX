@@ -1,22 +1,139 @@
-<div class="p-5 text-center">
-    <h2 class="font-bold text-xl">Aspect Ratio Calculator</h2>
-    <div class="flex justify-center gap-2 my-2">
-        <input type="number" id="width1" value="1920" class="border p-2 w-24" oninput="calcRatio()" /> :
-        <input type="number" id="height1" value="1080" class="border p-2 w-24" oninput="calcRatio()" />
-    </div>
-    <div class="flex justify-center gap-2 my-2">
-        <input type="number" id="width2" placeholder="New W" class="border p-2 w-24" oninput="calcNewHeight()" /> :
-        <input type="number" id="height2" placeholder="New H" class="border p-2 w-24" readonly />
-    </div>
-</div>
-
-<script>
-    function calcNewHeight() {
-        let w1 = document.getElementById('width1').value;
-        let h1 = document.getElementById('height1').value;
-        let w2 = document.getElementById('width2').value;
-        if (w1 && h1 && w2) {
-            document.getElementById('height2').value = Math.round((h1 / w1) * w2);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX - Aspect Ratio Calculator</title>
+    <style>
+        :root {
+            --bg-dark: #0d0e12;
+            --card-bg: #161920;
+            --accent: #00f2fe;
+            --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --text-main: #ffffff;
+            --text-muted: #a0aec0;
         }
-    }
-</script>
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .calc-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .ratio-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .divider {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        input {
+            width: 110px;
+            background: #222630;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.15);
+        }
+
+        input[readonly] {
+            background: #1a1d26;
+            color: var(--accent);
+            border-color: rgba(0, 242, 254, 0.2);
+            font-weight: bold;
+            cursor: not-allowed;
+        }
+
+        /* Quick reset for removing standard number input arrows */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calc-container">
+        <h2>Aspect Ratio Calculator</h2>
+        <p class="subtitle">Scale target video or image resolutions effortlessly</p>
+        
+        <div class="ratio-row">
+            <input type="number" id="width1" value="1920" placeholder="Base W" oninput="calcNewHeight()" />
+            <div class="divider">:</div>
+            <input type="number" id="height1" value="1080" placeholder="Base H" oninput="calcNewHeight()" />
+        </div>
+
+        <div class="ratio-row">
+            <input type="number" id="width2" placeholder="New W" oninput="calcNewHeight()" />
+            <div class="divider">:</div>
+            <input type="number" id="height2" placeholder="New H" readonly />
+        </div>
+    </div>
+
+    <script>
+        function calcNewHeight() {
+            const w1 = parseFloat(document.getElementById('width1').value);
+            const h1 = parseFloat(document.getElementById('height1').value);
+            const w2 = parseFloat(document.getElementById('width2').value);
+            const h2Element = document.getElementById('height2');
+
+            if (w1 && h1 && w2) {
+                h2Element.value = Math.round((h1 / w1) * w2);
+            } else {
+                h2Element.value = ''; // Clean clear if inputs are blanked out
+            }
+        }
+    </script>
+
+</body>
+</html>
