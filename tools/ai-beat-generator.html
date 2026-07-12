@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX AI Beat Generator</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        // Theme init
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
+
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff3366]">SX</span> AI Beats
+            <i data-lucide="sparkles" class="w-5 h-5 text-[#ff3366]"></i>
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-1 px-[8%] py-12 flex items-center justify-center">
+        
+        <div class="w-full max-w-xl p-8 rounded-3xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5 transition-colors">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-black mb-2">AI Beat Generator</h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">Describe a vibe or select a style to generate custom procedural tracks.</p>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label for="aiPrompt" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">AI Text Prompt / Mood</label>
+                    <div class="relative">
+                        <i data-lucide="cpu" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="aiPrompt" placeholder="e.g. dark cyberpunk bassline, chill summer lofi, aggressive trap..." 
+                            class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="genreSelect" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Primary Style Archetype</label>
+                    <select id="genreSelect" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors text-gray-900 dark:text-white cursor-pointer font-medium">
+                        <option value="trap">Heavy Trap</option>
+                        <option value="synthwave">80s Synthwave</option>
+                        <option value="lofi">Chill Lo-Fi</option>
+                        <option value="techno">Industrial Techno</option>
+                    </select>
+                </div>
+
+                <button onclick="generateAIBeat()" id="generateBtn" class="w-full mt-2 py-4 rounded-xl bg-[#ff3366]/10 text-[#ff3366] font-bold uppercase tracking-wider hover:bg-[#ff3366] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
+                    <i data-lucide="wand-2" class="w-5 h-5 transition-transform group-hover:rotate-12"></i>
+                    <span id="btnText">Compose Audio Signature</span>
+                </button>
+            </div>
+
+            <div id="playerConsole" class="mt-8 p-6 rounded-2xl bg-gray-50 dark:bg-[#0b0b0c] border border-gray-200 dark:border-[#2a2a2e] hidden transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span id="metaGenre" class="text-xs font-bold uppercase tracking-widest text-[#ff3366]">TRAP ARCHETYPE</span>
+                        <h3 id="metaSeed" class="text-lg font-black tracking-tight text-gray-900 dark:text-white">Track_Seed_7392.wav</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-mono bg-gray-200 dark:bg-[#1c1c1f] px-2 py-1 rounded text-gray-500 dark:text-gray-400" id="bpmDisplay">140 BPM</span>
+                    </div>
+                </div>
+
+                <div class="flex items-end justify-between gap-1 h-12 px-4 mb-6 bg-white dark:bg-[#1c1c1f] rounded-xl border border-gray-200 dark:border-[#2a2a2e] overflow-hidden">
+                    <div class="v-bar w-full bg-gray-200 dark:bg-[#2a2a2e] h-2 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366]/60 h-4 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366] h-1 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff3366]/40 h-3 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-gray-200 dark:bg-[#2a2a2e] h-1 rounded-t transition-all duration-100"></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="togglePlayback()" id="playPauseBtn" class="flex-1 py-3 rounded-xl bg-gray-900 text-white dark:bg-white dark:text-black font-bold uppercase tracking-wide text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+                        <i data-lucide="play" class="w-4 h-4 fill-current"></i> Play Audio
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- THEME LOGIC ---
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        });
+
+        // --- WEB AUDIO API PROCEDURAL AUDIO ENGINE ---
+        let audioCtx = null;
+        let isPlaying = false;
+        let currentStep = 0;
+        let beatInterval = null;
+        let bpm = 120;
+
+        // Sound Pattern Sequences (16-step matrix definitions)
+        let patterns = { kick: [], snare: [], hat: [], synth: [] };
+        let synthScale = [55, 65.41, 73.42, 82.41, 98.00]; // Root frequencies for scales
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Noise buffer generation for Hats/Snares
+        function createNoiseBuffer() {
+            const bufferSize = audioCtx.sampleRate * 0.15;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            return buffer;
+        }
+
+        // Procedural Audio Instrument Triggers
+        function playKick(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.frequency.setValueAtTime(150, time);
+            osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.12);
+
+            gain.gain.setValueAtTime(1, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.12);
+
+            osc.start(time);
+            osc.stop(time + 0.13);
+        }
+
+        function playSnare(time) {
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = createNoiseBuffer();
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "bandpass";
+            filter.frequency.value = 1000;
+
+            const gain = audioCtx.createGain();
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.7, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+
+            noise.start(time);
+            noise.stop(time + 0.16);
+        }
+
+        function playHat(time) {
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = createNoiseBuffer();
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "highpass";
+            filter.frequency.value = 7000;
+
+            const gain = audioCtx.createGain();
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.3, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.04);
+
+            noise.start(time);
+            noise.stop(time + 0.05);
+        }
+
+        function playSynth(time, freq) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(freq, time);
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(300, time);
+            filter.frequency.exponentialRampToValueAtTime(1200, time + 0.05);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.25, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.25);
+
+            osc.start(time);
+            osc.stop(time + 0.26);
+        }
+
+        // The AI Math Compiling Phase
+        function generateAIBeat() {
+            initAudio();
+            stopBeat();
+
+            const genre = document.getElementById('genreSelect').value;
+            const prompt = document.getElementById('aiPrompt').value;
+            const btnText = document.getElementById('btnText');
+            const generateBtn = document.getElementById('generateBtn');
+
+            // Visual Loading Sequence simulation
+            generateBtn.disabled = true;
+            btnText.innerText = "Processing Neural Nodes...";
+            
+            setTimeout(() => {
+                // Determine BPM configurations based on archetype settings
+                if (genre === 'trap') { bpm = 140; synthScale = [58.27, 69.30, 77.78, 87.31, 116.54]; } 
+                else if (genre === 'synthwave') { bpm = 110; synthScale = [65.41, 73.42, 82.41, 98.00, 110.00]; } 
+                else if (genre === 'lofi') { bpm = 82; synthScale = [65.41, 82.41, 98.00, 130.81, 164.81]; } 
+                else if (genre === 'techno') { bpm = 128; synthScale = [48.99, 55.00, 65.41, 73.42, 97.99]; }
+
+                // Procedural generation of 16 steps array matrices
+                for (let i = 0; i < 16; i++) {
+                    patterns.kick[i] = (i === 0 || i === 8 || (genre === 'techno' && i % 4 === 0) || (Math.random() > 0.75)) ? 1 : 0;
+                    patterns.snare[i] = (i === 4 || i === 12) ? 1 : 0;
+                    patterns.hat[i] = (i % 2 === 0 || (genre === 'trap' && Math.random() > 0.4)) ? 1 : 0;
+                    patterns.synth[i] = (Math.random() > 0.4) ? synthScale[Math.floor(Math.random() * synthScale.length)] : 0;
+                }
+
+                // UI Status Update Execution
+                document.getElementById('metaGenre').innerText = `${genre.toUpperCase()} ARCHETYPE`;
+                document.getElementById('metaSeed').innerText = prompt ? `"${prompt.substring(0,25)}..."` : `Track_Seed_${Math.floor(Math.random()*9000+1000)}.wav`;
+                document.getElementById('bpmDisplay').innerText = `${bpm} BPM`;
+
+                generateBtn.disabled = false;
+                btnText.innerText = "Compose Audio Signature";
+                document.getElementById('playerConsole').classList.remove('hidden');
+                
+                // Auto-trigger playback on generation
+                startBeat();
+            }, 1200);
+        }
+
+        // Loop Sequencer Engine Clock
+        function stepSequencer() {
+            const stepDuration = 60 / bpm / 4; // 16th notes calculations
+            const time = audioCtx.currentTime;
+
+            if (patterns.kick[currentStep]) playKick(time);
+            if (patterns.snare[currentStep]) playSnare(time);
+            if (patterns.hat[currentStep]) playHat(time);
+            if (patterns.synth[currentStep]) playSynth(time, patterns.synth[currentStep]);
+
+            // Trigger UI Visualizer Bars Bounce Node
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => {
+                const triggerAmp = Math.random() * 40 + 5;
+                bar.style.height = `${triggerAmp}px`;
+            });
+
+            currentStep = (currentStep + 1) % 16;
+        }
+
+        function startBeat() {
+            if (isPlaying) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            isPlaying = true;
+            currentStep = 0;
+            const intervalMs = (60 / bpm / 4) * 1000;
+            beatInterval = setInterval(stepSequencer, intervalMs);
+            
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="square" class="w-4 h-4 fill-current"></i> Stop Playback`;
+            lucide.createIcons();
+        }
+
+        function stopBeat() {
+            isPlaying = false;
+            clearInterval(beatInterval);
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => bar.style.height = `4px`);
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Play Audio`;
+            lucide.createIcons();
+        }
+
+        function togglePlayback() {
+            if (isPlaying) stopBeat();
+            else startBeat();
+        }
+    </script>
+</body>
+</html>
