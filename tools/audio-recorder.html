@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Audio Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-5 font-sans">
+
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-[0_0_30px_rgba(139,92,246,0.3)] max-w-md w-full text-center space-y-6 border border-gray-700">
+        <h2 class="font-extrabold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+            Neon Studio
+        </h2>
+        
+        <p class="text-sm text-gray-400" id="statusText">Ready to record.</p>
+
+        <div class="flex justify-center gap-4">
+            <button id="recordBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-red-500/50 transition-all duration-200">
+                🎙️ Record
+            </button>
+            <button id="stopBtn" disabled class="bg-gray-600 text-gray-400 cursor-not-allowed font-bold py-3 px-6 rounded-full transition-all duration-200">
+                ⏹️ Stop
+            </button>
+        </div>
+
+        <div class="space-y-4 hidden" id="playbackZone">
+            <hr class="border-gray-700">
+            <audio id="audioPlayer" controls class="w-full rounded-lg"></audio>
+            
+            <div class="text-left space-y-2 bg-gray-900 p-4 rounded-xl border border-gray-700">
+                <label class="block text-sm font-semibold text-purple-400">Effect: Pitch & Speed</label>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs">Demon</span>
+                    <input type="range" id="effectSlider" min="0.5" max="2" step="0.1" value="1" class="w-full accent-purple-500">
+                    <span class="text-xs">Chipmunk</span>
+                </div>
+            </div>
+
+            <a id="downloadLink" class="inline-block w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-200 text-center">
+                💾 Download Track
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const statusText = document.getElementById('statusText');
+        const playbackZone = document.getElementById('playbackZone');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const downloadLink = document.getElementById('downloadLink');
+        const effectSlider = document.getElementById('effectSlider');
+
+        // Check for microphone access
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    // Create an audio blob. Browsers default to webm or mp4 audio.
+                    const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    audioPlayer.src = audioUrl;
+                    
+                    // Setup Download link
+                    downloadLink.href = audioUrl;
+                    
+                    // Determine a safe file extension based on the browser's native mimeType
+                    let extension = mediaRecorder.mimeType.includes('mp4') ? 'm4a' : 'webm';
+                    downloadLink.download = `my_neon_track.${extension}`;
+
+                    playbackZone.classList.remove('hidden');
+                    audioChunks = []; // Reset for next recording
+                };
+            })
+            .catch(err => {
+                statusText.innerText = "Microphone access denied!";
+                statusText.classList.add("text-red-400");
+                recordBtn.disabled = true;
+                recordBtn.classList.replace('bg-red-500', 'bg-gray-600');
+            });
+
+        // Start Recording
+        recordBtn.addEventListener('click', () => {
+            mediaRecorder.start();
+            statusText.innerText = "Recording... 🔴";
+            statusText.classList.add("text-red-400");
+            statusText.classList.remove("text-gray-400");
+            
+            recordBtn.disabled = true;
+            recordBtn.classList.replace('bg-red-500', 'bg-gray-600');
+            
+            stopBtn.disabled = false;
+            stopBtn.classList.replace('bg-gray-600', 'bg-purple-500');
+            stopBtn.classList.replace('text-gray-400', 'text-white');
+            stopBtn.classList.remove('cursor-not-allowed');
+            
+            playbackZone.classList.add('hidden');
+        });
+
+        // Stop Recording
+        stopBtn.addEventListener('click', () => {
+            mediaRecorder.stop();
+            statusText.innerText = "Recording saved!";
+            statusText.classList.remove("text-red-400");
+            statusText.classList.add("text-purple-400");
+            
+            recordBtn.disabled = false;
+            recordBtn.classList.replace('bg-gray-600', 'bg-red-500');
+            
+            stopBtn.disabled = true;
+            stopBtn.classList.replace('bg-purple-500', 'bg-gray-600');
+            stopBtn.classList.replace('text-white', 'text-gray-400');
+            stopBtn.classList.add('cursor-not-allowed');
+        });
+
+        // Apply Real-Time Effect (Pitch/Speed)
+        effectSlider.addEventListener('input', (e) => {
+            audioPlayer.playbackRate = e.target.value;
+            // Force the pitch to change with the speed for that classic effect
+            audioPlayer.preservesPitch = false; 
+        });
+    </script>
+</body>
+</html>
