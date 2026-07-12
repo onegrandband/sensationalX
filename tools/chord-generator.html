@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX - Pro Chord Engine</title>
+    <style>
+        :root {
+            --bg-dark: #0d0e12;
+            --card-bg: #161920;
+            --accent: #00f2fe;
+            --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --text-main: #ffffff;
+            --text-muted: #a0aec0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .chord-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin-top: 0;
+            letter-spacing: 1px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .control-group {
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        select, input {
+            width: 100%;
+            background: #222630;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--accent);
+        }
+
+        .progression {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .chord-card {
+            background: #222630;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px 10px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .chord-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        }
+
+        .chord-card.playing {
+            background: var(--accent-gradient);
+            color: #000;
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            background: var(--accent-gradient);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        button.secondary:hover {
+            background: rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chord-container">
+        <h3>SENSATIONALX PRO CHORD ENGINE</h3>
+        <p class="subtitle">Generate Smart Musical Progressions with Instant Audio Playback</p>
+        
+        <div class="controls-grid">
+            <div class="control-group">
+                <label>Key Center</label>
+                <select id="keySelect" onchange="generateProgression()">
+                    <option value="C">C</option>
+                    <option value="G">G</option>
+                    <option value="D">D</option>
+                    <option value="A">A</option>
+                    <option value="F">F</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Scale Type</label>
+                <select id="scaleSelect" onchange="generateProgression()">
+                    <option value="major">Major (Happy / Pop)</option>
+                    <option value="minor">Minor (Sad / Emotional)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group" style="margin-bottom: 25px;">
+            <label>Playback Speed (BPM)</label>
+            <input type="number" id="bpmInput" value="120" min="60" max="200">
+        </div>
+
+        <div class="progression" id="chordOutput">
+            <!-- Populated dynamically -->
+        </div>
+
+        <div class="btn-container">
+            <button onclick="generateProgression()">Generate New</button>
+            <button class="secondary" id="playBtn" onclick="togglePlaySequence()">Play Sequence</button>
+        </div>
+    </div>
+
+    <script>
+        // Core Music Theory Database
+        const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        
+        // Scale intervals (semitones from root)
+        const scaleIntervals = {
+            major:,
+            minor: [0, 2, 3, 5, 7, 8, 10]
+        };
+
+        // Chord types built on each scale degree
+        const scaleChords = {
+            major: ['', 'm', 'm', '', '', 'm', 'dim'],
+            minor: ['m', 'dim', '', 'm', 'm', '', '']
+        };
+
+        // Frequencies for base notes (Octave 4)
+        const noteFreqs = {
+            'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63, 
+            'F': 349.23, 'F#': 369.99, 'G': 392.00, 'G#': 415.30, 'A': 440.00, 
+            'A#': 466.16, 'B': 493.88
+        };
+
+        // Popular hit formulas (Scale degrees: 1-indexed)
+        const formulas = {
+            major: [[1, 5, 6, 4], [1, 4, 6, 5], [6, 4, 1, 5], [1, 6, 4, 5]],
+            minor: [[1, 6, 3, 7], [1, 4, 5, 1], [1, 6, 7, 1], [6, 7, 1, 1]]
+        };
+
+        let currentProgression = [];
+        let audioCtx = null;
+        let isPlaying = false;
+        let sequenceTimeout = null;
+
+        // Initialize Audio context on user action
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Get actual note name shifting through arrays safely
+        function getNoteByOffset(root, semitones) {
+            let index = notes.indexOf(root);
+            return notes[(index + semitones) % 12];
+        }
+
+        // Generate dynamic harmony chord structures
+        function generateProgression() {
+            const rootKey = document.getElementById('keySelect').value;
+            const scaleType = document.getElementById('scaleSelect').value;
+            
+            // Pick a formula
+            const formulaPool = formulas[scaleType];
+            const selectedFormula = formulaPool[Math.floor(Math.random() * formulaPool.length)];
+            
+            const intervals = scaleIntervals[scaleType];
+            const types = scaleChords[scaleType];
+            
+            currentProgression = [];
+            const output = document.getElementById('chordOutput');
+            output.innerHTML = '';
+
+            selectedFormula.forEach((degree, idx) => {
+                const stepIdx = degree - 1;
+                const chordRoot = getNoteByOffset(rootKey, intervals[stepIdx]);
+                const chordType = types[stepIdx];
+                const chordName = chordRoot + chordType;
+
+                currentProgression.push({ root: chordRoot, type: chordType, name: chordName });
+
+                // UI Card Generation
+                const card = document.createElement('div');
+                card.className = 'chord-card';
+                card.id = `chord-${idx}`;
+                card.innerText = chordName;
+                card.onclick = () => { initAudio(); playChordAudio(chordRoot, chordType); };
+                output.appendChild(card);
+            });
+            
+            if(isPlaying) stopSequence();
+        }
+
+        // Synthesize polyphonic sound blocks programmatically
+        function playChordAudio(rootNote, type) {
+            initAudio();
+            const now = audioCtx.currentTime;
+            
+            // Build root, third, fifth intervals
+            let intervals =; // Major default
+            if (type === 'm') intervals =;
+            if (type === 'dim') intervals =;
+
+            // Trigger 3 structural oscillators simultaneously
+            intervals.forEach(semitones => {
+                const noteName = getNoteByOffset(rootNote, semitones);
+                let freq = noteFreqs[noteName];
+                
+                // Keep notes in a smooth sounding octave range
+                if (freq > 450) freq /= 2; 
+
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'triangle'; // Warm, piano-like tone
+                osc.frequency.value = freq;
+
+                // Dynamic envelope curve to avoid sharp clicks
+                gainNode.gain.setValueAtTime(0, now);
