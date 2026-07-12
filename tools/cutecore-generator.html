@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX AI Cutecore Studio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        // Theme init
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="bg-pink-50/30 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
+
+    <header class="flex items-center justify-between border-b border-pink-100 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff66b2]">SX</span> Pastel Heart
+            <i data-lucide="heart" class="w-5 h-5 text-[#ff66b2] fill-[#ff66b2]"></i>
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff66b2] transition-colors">Home</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-1 px-[8%] py-12 flex items-center justify-center gap-8 flex-col lg:flex-row max-w-6xl mx-auto w-full">
+        
+        <div class="w-full lg:w-1/2 p-8 rounded-3xl border border-pink-100 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff66b2]/5 transition-colors">
+            
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-black mb-2 text-pink-500 dark:text-white">AI Cutecore Generator</h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">Tune your sugary frequencies and generate high-tempo pastel aesthetics.</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="styleSelect" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Aesthetic Mutation</label>
+                    <select id="styleSelect" class="w-full px-4 py-3 rounded-xl border border-pink-100 dark:border-[#2a2a2e] bg-pink-50/20 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff66b2] dark:focus:border-[#ff66b2] transition-colors text-gray-900 dark:text-white cursor-pointer font-medium">
+                        <option value="kawaii">Kawaii Chiptune / Magical Girl</option>
+                        <option value="angelic">Angelic Lofi / Dreamy Pastel</option>
+                        <option value="cutebreak">Cutebreak / Glitchy Soft Core</option>
+                    </select>
+                </div>
+
+                <button onclick="generateCutecoreTrack()" id="generateBtn" class="w-full py-4 rounded-xl bg-[#ff66b2]/10 text-[#ff66b2] dark:bg-[#ff66b2]/20 font-bold uppercase tracking-wider hover:bg-[#ff66b2] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group">
+                    <i data-lucide="sparkles" class="w-5 h-5 transition-transform group-hover:rotate-12"></i>
+                    <span id="btnText">Bake Audio Sequence</span>
+                </button>
+            </div>
+
+            <div id="playerConsole" class="mt-6 p-6 rounded-2xl bg-pink-50/30 dark:bg-[#0b0b0c] border border-pink-100 dark:border-[#2a2a2e] hidden transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span id="metaGenre" class="text-xs font-bold uppercase tracking-widest text-[#ff66b2]">KAWAII SIGNATURE</span>
+                        <h3 class="text-md font-black tracking-tight text-gray-900 dark:text-white">Yume_Core_Active.patch</h3>
+                    </div>
+                    <span class="text-xs font-mono bg-white dark:bg-[#1c1c1f] px-2 py-1 rounded text-gray-500 border border-pink-100 dark:border-none" id="bpmDisplay">140 BPM</span>
+                </div>
+
+                <div class="flex items-end justify-between gap-1 h-14 px-4 mb-4 bg-white dark:bg-[#1c1c1f] rounded-xl border border-pink-100 dark:border-[#2a2a2e] overflow-hidden">
+                    <div class="v-bar w-full bg-pink-200 dark:bg-[#2a2a2e] h-2 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff66b2]/40 h-6 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff66b2] h-2 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-[#ff66b2]/70 h-5 rounded-t transition-all duration-100"></div>
+                    <div class="v-bar w-full bg-pink-200 dark:bg-[#2a2a2e] h-1 rounded-t transition-all duration-100"></div>
+                </div>
+
+                <button onclick="togglePlayback()" id="playPauseBtn" class="w-full py-3 rounded-xl bg-pink-500 text-white font-bold uppercase tracking-wide text-sm flex items-center justify-center gap-2 hover:bg-pink-600 transition-colors">
+                    <i data-lucide="play" class="w-4 h-4 fill-current"></i> Initialize Audio
+                </button>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 p-8 rounded-3xl border border-pink-100 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff66b2]/5 flex flex-col justify-between transition-colors">
+            <div>
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-black text-pink-500 dark:text-white flex items-center justify-center gap-2">
+                        Idea Generator Engine <i data-lucide="dices" class="w-5 h-5 text-[#ff66b2]"></i>
+                    </h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">Roll the generator matrix to output art prompts, user handles, clothing motifs, and video styles.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-pink-50/30 dark:bg-[#0b0b0c] border border-pink-50 dark:border-[#2a2a2e]">
+                        <span class="text-xs font-bold text-[#ff66b2] uppercase block tracking-wider mb-1">Visual Art Concept</span>
+                        <p id="ideaArt" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Click randomize to fetch cutecore moodboards...</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-pink-50/30 dark:bg-[#0b0b0c] border border-pink-50 dark:border-[#2a2a2e]">
+                        <span class="text-xs font-bold text-[#ff66b2] uppercase block tracking-wider mb-1">Aesthetic User Handle</span>
+                        <p id="ideaUsername" class="text-sm font-mono font-bold text-pink-600 dark:text-pink-400">@...</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-pink-50/30 dark:bg-[#0b0b0c] border border-pink-50 dark:border-[#2a2a2e]">
+                        <span class="text-xs font-bold text-[#ff66b2] uppercase block tracking-wider mb-1">Fashion / Wardrobe Elements</span>
+                        <p id="ideaFashion" class="text-sm font-semibold text-gray-700 dark:text-gray-300">...</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="generateNewIdeas()" class="w-full mt-6 py-4 rounded-xl bg-gray-900 text-white dark:bg-white dark:text-black font-bold uppercase tracking-wider hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Randomize Idea Matrix
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // --- THEME SWITCHER ---
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        // --- IDEA MAKER DICTIONARIES ---
+        const dictionary = {
+            art: [
+                "A vintage 2000s desktop interface covered in glowing pink stickers, floating angel wings, and falling pixel stars.",
+                "Sanrio-inspired plushies sitting inside a dark, retro-futuristic laboratory filled with pastel glitter liquids.",
+                "An archival glitchy edit featuring spinning glossy hearts, hyper-bright neon candy, and soft anime clouds.",
+                "A dreamscape bedroom featuring translucent pink arcade consoles, plush ribbons, and old cathode-ray tube TVs."
+            ],
+            usernames: [
+                "angelic_glitch", "bunny_binary.exe", "pixel_ribbons", "yume_clover", 
+                "mimi_matrix", "cyber_dollxo", "starry.plush", "pastel_overdrive"
+            ],
+            fashion: [
+                "Oversized pastel hoodies paired with metallic leg warmers, chunky platform Mary Janes, and star-shaped hair clips.",
+                "Lace-trimmed frilly socks, clear vinyl backpacks filled with plush toys, and layered neon chokers.",
+                "Decora-style layered neon barrettes, pastel pink headphones with custom wing attachments, and cyber-goggles.",
+                "Bitcrushed arcade badges pinned onto a soft pink plaid skirt with attached silver industrial chains."
+            ]
+        };
+
+        function generateNewIdeas() {
+            const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            document.getElementById('ideaArt').innerText = rand(dictionary.art);
+            document.getElementById('ideaUsername').innerText = `@${rand(dictionary.usernames)}`;
+            document.getElementById('ideaFashion').innerText = rand(dictionary.fashion);
+        }
+
+        // --- WEB AUDIO API PROCEDURAL MUSIC ENGINE ---
+        let audioCtx = null;
+        let isPlaying = false;
+        let currentStep = 0;
+        let sequencerInterval = null;
+        let bpm = 140;
+
+        let notesBank = [];
+        let patterns = { kick: [], hat: [], chime: [] };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // High-fidelity round pop dance kick
+        function playCuteKick(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.frequency.setValueAtTime(170, time);
+            osc.frequency.exponentialRampToValueAtTime(55, time + 0.08);
+
+            gain.gain.setValueAtTime(1.0, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+
+            osc.start(time);
+            osc.stop(time + 0.11);
+        }
+
+        // Crisp high-pass white noise hi-hat
+        function playCuteHat(time) {
+            const bufferSize = audioCtx.sampleRate * 0.03;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const source = audioCtx.createBufferSource();
+            source.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "highpass";
+            filter.frequency.value = 9500;
+
+            const gain = audioCtx.createGain();
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.18, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
+
+            source.start(time);
+            source.stop(time + 0.03);
+        }
+
+        // Sugar-coated high-frequency sine wave synth chimes
+        function playChime(time, freq) {
+            if (freq === 0) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, time);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.2, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+
+            osc.start(time);
+            osc.stop(time + 0.16);
+        }
+
+        function generateCutecoreTrack() {
+            initAudio();
+            stopBeat();
+
+            const selection = document.getElementById('styleSelect').value;
+            const btnText = document.getElementById('btnText');
+            const generateBtn = document.getElementById('generateBtn');
+
+            generateBtn.disabled = true;
+            btnText.innerText = "Spun Sugar Coding...";
+
+            setTimeout(() => {
+                if (selection === 'kawaii') {
+                    bpm = 142;
+                    notesBank = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50]; // Bright C Major Pentatonic (High range)
+                } else if (selection === 'angelic') {
+                    bpm = 110;
+                    notesBank = [587.33, 698.46, 880.00, 932.33, 1174.66]; // Dreamy, soft F Major notes
+                } else if (selection === 'cutebreak') {
+                    bpm = 168;
+                    notesBank = [659.25, 739.99, 880.00, 987.77, 1318.51]; // High-speed E Minor matrix
+                }
+
+                // Compile loop matrix rows
+                for (let i = 0; i < 16; i++) {
+                    patterns.kick[i] = (i === 0 || i === 8 || (selection === 'cutebreak' && (i === 6 || i === 11))) ? 1 : 0;
+                    patterns.hat[i] = (i % 2 !== 0 || (selection === 'cutebreak' && Math.random() > 0.4)) ? 1 : 0;
+                    patterns.chime[i] = (i % 3 === 0 || Math.random() > 0.6) ? notesBank[Math.floor(Math.random() * notesBank.length)] : 0;
+                }
+
+                document.getElementById('metaGenre').innerText = `${selection.toUpperCase()} SIGNATURE`;
+                document.getElementById('bpmDisplay').innerText = `${bpm} BPM`;
+
+                generateBtn.disabled = false;
+                btnText.innerText = "Bake Audio Sequence";
+                document.getElementById('playerConsole').classList.remove('hidden');
+
+                startBeat();
+            }, 800);
+        }
+
+        function stepSequencer() {
+            const time = audioCtx.currentTime;
+
+            if (patterns.kick[currentStep]) playCuteKick(time);
+            if (patterns.hat[currentStep]) playCuteHat(time);
+            if (patterns.chime[currentStep]) playChime(time, patterns.chime[currentStep]);
+
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => {
+                bar.style.height = `${Math.random() * 46 + 4}px`;
+            });
+
+            currentStep = (currentStep + 1) % 16;
+        }
+
+        function startBeat() {
+            if (isPlaying) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            isPlaying = true;
+            currentStep = 0;
+            const intervalMs = (60 / bpm / 4) * 1000;
+            sequencerInterval = setInterval(stepSequencer, intervalMs);
+
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="square" class="w-4 h-4 fill-current"></i> Halt Generator`;
+            lucide.createIcons();
+        }
+
+        function stopBeat() {
+            isPlaying = false;
+            clearInterval(sequencerInterval);
+            const bars = document.querySelectorAll('.v-bar');
+            bars.forEach(bar => bar.style.height = `4px`);
+            document.getElementById('playPauseBtn').innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Initialize Audio`;
+            lucide.createIcons();
+        }
+
+        function togglePlayback() {
+            if (isPlaying) stopBeat();
+            else startBeat();
+        }
+
+        // Boot initial ideas instantly
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            generateNewIdeas();
+        });
+    </script>
+</body>
+</html>
