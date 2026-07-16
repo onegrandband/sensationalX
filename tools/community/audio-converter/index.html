@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Converter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="brand-logo">🫪📻</span>
+        <h1>Audio Converter</h1>
+      </div>
+      <span class="badge">In-Browser Secure</span>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <section class="converter-box">
+      
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept="audio/*" class="file-input">
+        <div class="drop-zone-content">
+          <span class="upload-icon">🎵</span>
+          <p class="drop-text">Drag & drop your audio file here, or <span class="browse-link">browse</span></p>
+          <p class="file-limits">Supports MP3, WAV, OGG, M4A, etc.</p>
+        </div>
+      </div>
+
+      <div class="file-details hidden" id="file-details">
+        <div class="file-meta">
+          <span class="file-icon">📝</span>
+          <div class="file-info">
+            <span class="file-name" id="file-name">filename.mp3</span>
+            <span class="file-size" id="file-size">0.0 MB</span>
+          </div>
+        </div>
+        <button class="remove-btn" id="remove-btn" aria-label="Remove file">✕</button>
+      </div>
+
+      <div class="settings-panel">
+        <div class="setting-group">
+          <label for="format-select" class="setting-label">Convert to</label>
+          <div class="select-wrapper">
+            <select id="format-select" class="custom-select">
+              <option value="wav">WAV (Lossless)</option>
+              <option value="mp3">MP3 (MPEG Audio)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button id="convert-btn" class="btn btn-primary btn-block" disabled>
+        Convert Audio
+      </button>
+
+      <div class="progress-container hidden" id="progress-container">
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <span class="progress-status" id="progress-status">Converting...</span>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>All processing is done locally on your device. Your audio files never leave your computer.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
