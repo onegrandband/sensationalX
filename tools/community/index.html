@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Projects Portal</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <header>
         <div class="logo-container">
             <span class="logo-text">Community<span>Hub</span></span>
@@ -31,14 +30,12 @@
                 <h1>Explore Community Projects</h1>
                 <p>Discover, support, and collaborate on amazing initiatives, games, and tools created by our community members.</p>
             </div>
-            
             <div class="search-container">
                 <form id="project-search-form" onsubmit="event.preventDefault();">
                     <div class="search-input-wrapper">
                         <input type="text" id="project-search" placeholder="Search projects, games, or tools..." autocomplete="off">
                         <button type="submit" class="search-submit-btn">Search</button>
                     </div>
-                    
                     <div class="filters-wrapper">
                         <div class="filter-group">
                             <label for="category-select">Category</label>
@@ -52,7 +49,6 @@
                                 <option value="education">Education</option>
                             </select>
                         </div>
-
                         <div class="filter-group">
                             <label for="status-select">Status</label>
                             <select id="status-select">
@@ -62,7 +58,6 @@
                                 <option value="planning">In Planning</option>
                             </select>
                         </div>
-
                         <div class="filter-group">
                             <label for="sort-select">Sort By</label>
                             <select id="sort-select">
@@ -84,17 +79,12 @@
                     <button class="toggle-btn" id="list-view-btn" aria-label="List view">List</button>
                 </div>
             </div>
-
             <div id="active-filters" class="active-filters-container"></div>
-
-            <div class="projects-grid" id="projects-grid">
-                </div>
-
+            <div class="projects-grid" id="projects-grid"></div>
             <div class="pagination">
                 <button class="pagination-btn disabled" id="prev-page" disabled>Previous</button>
                 <div class="page-numbers">
                     <button class="page-num active">1</button>
-                    <button class="page-num">2</button>
                 </div>
                 <button class="pagination-btn" id="next-page">Next</button>
             </div>
@@ -102,9 +92,9 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 SensationalXC. Built with love by the community.</p>
+        <p>&copy; 2026 CommunityHub. Built with love by the community.</p>
     </footer>
 
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
