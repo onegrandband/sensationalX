@@ -49,8 +49,8 @@
 
         .logo { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
 
-        nav { display: flex; gap: 1.5rem; align-items: center; }
-        nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 0.95rem; text-transform: uppercase; }
+        nav { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+        nav a { color: var(--text-color); text-decoration: none; font-weight: bold; font-size: 0.95rem; text-transform: uppercase; transition: color 0.2s; }
         nav a:hover { color: var(--accent-color); }
 
         .theme-toggle {
@@ -62,6 +62,32 @@
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--button-text);
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: none;
+            padding: 0;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            color: var(--accent-color);
         }
 
         main { max-width: 600px; margin: 3rem auto; padding: 2rem; }
@@ -87,9 +113,16 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-size: 1rem;
+            border-radius: 4px;
+            transition: border-color 0.2s;
         }
 
-        button {
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button[type="submit"] {
             background-color: var(--accent-color);
             color: var(--button-text);
             border: none;
@@ -99,24 +132,42 @@
             cursor: pointer;
             transition: opacity 0.2s;
             text-transform: uppercase;
+            border-radius: 4px;
         }
 
-        button:hover { opacity: 0.8; }
+        button[type="submit"]:hover { 
+            opacity: 0.8; 
+        }
+
+        .error-message {
+            color: #d90429;
+            font-size: 0.9rem;
+            margin-top: -1.2rem;
+        }
+
+        .success-message {
+            color: #22c55e;
+            font-size: 1rem;
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--surface-color);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
 
-    <nav class="flex flex-wrap items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-            <a href="https://sensationalx.com/tools" class="text-[#ff3366] transition-colors">Studio Tools</a>
-            <a href="index.html" class="hover:text-[#ff3366] transition-colors">Home</a>
-            <a href="#catalog" class="hover:text-[#ff3366] transition-colors">Catalog</a>
-            <a href="#artists" class="hover:text-[#ff3366] transition-colors">Artists</a>
-            <a href="https://sensationalx.com/book.html" class="hover:text-[#ff3366] transition-colors">Book a Demo</a>
-            <button onclick="openAuthModal()" id="navAccountBtn" class="hover:text-[#ff3366] transition-colors flex items-center gap-1">
-                <i data-lucide="user" class="w-4 h-4"></i> Account
-            </button>
-          
-        <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
+    <header>
+        <div class="logo">SensationalX</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="index.html#catalog">Catalog</a>
+            <a href="index.html#artists">Artists</a>
+            <a href="book.html" style="color: var(--accent-color);">Book a Demo</a>
+            <button class="nav-btn" onclick="openAuthModal()" id="navAccountBtn">Account</button>
+            <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">Dark Mode</button>
+        </nav>
     </header>
 
     <main>
@@ -128,34 +179,80 @@
             <input type="email" id="artistEmail" placeholder="Contact Email" required>
             <input type="url" id="demoLink" placeholder="Streaming Link (SoundCloud, Spotify, Private link)" required>
             
-            <div id="custom-captcha-container">
-                <p style="font-size: 0.85rem; font-style: italic;">[ Your API Verification / Captcha Code Goes Here ]</p>
+            <div id="captcha-container">
+                <label for="captcha-input" style="font-size: 0.9rem;">Verify you're human:</label>
+                <input type="text" id="captcha-input" placeholder="Enter captcha code" required>
             </div>
             
+            <div id="form-messages"></div>
             <button type="submit">Submit Demo</button>
         </form>
     </main>
 
     <script>
         // Dark Mode
-        const btn = document.getElementById('themeBtn');
-        btn.addEventListener('click', () => {
+        const themeBtn = document.getElementById('themeBtn');
+        themeBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             if (currentTheme === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
-                btn.textContent = 'Dark Mode';
+                themeBtn.textContent = 'Dark Mode';
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                btn.textContent = 'Light Mode';
+                themeBtn.textContent = 'Light Mode';
             }
         });
 
+        // Authentication Modal
+        function openAuthModal() {
+            alert("Account feature coming soon!");
+            // TODO: Implement authentication modal
+        }
+
         // Form Handling
         function handleFormSubmit(event) {
-            event.preventDefault(); 
-            const userKeyOrToken = "YOUR_HCAPTCHA_API_KEY_OR_TOKEN_VARIABLE"; 
-            alert("Demo submitted! Ready for backend connection.");
-            event.target.reset(); 
+            event.preventDefault();
+            
+            const artistName = document.getElementById('artistName').value.trim();
+            const artistEmail = document.getElementById('artistEmail').value.trim();
+            const demoLink = document.getElementById('demoLink').value.trim();
+            const captchaInput = document.getElementById('captcha-input').value.trim();
+            const messagesDiv = document.getElementById('form-messages');
+            
+            // Clear previous messages
+            messagesDiv.innerHTML = '';
+            
+            // Validate inputs
+            if (!artistName) {
+                messagesDiv.innerHTML = '<div class="error-message">Artist name is required.</div>';
+                return;
+            }
+            
+            if (!artistEmail) {
+                messagesDiv.innerHTML = '<div class="error-message">Email is required.</div>';
+                return;
+            }
+            
+            if (!demoLink) {
+                messagesDiv.innerHTML = '<div class="error-message">Streaming link is required.</div>';
+                return;
+            }
+            
+            if (!captchaInput) {
+                messagesDiv.innerHTML = '<div class="error-message">Please complete the captcha.</div>';
+                return;
+            }
+            
+            // TODO: Validate captcha against backend
+            // TODO: Send form data to backend API
+            
+            messagesDiv.innerHTML = '<div class="success-message">✓ Demo submitted successfully! We\'ll review your track and be in touch soon.</div>';
+            event.target.reset();
+            
+            // Clear success message after 5 seconds
+            setTimeout(() => {
+                messagesDiv.innerHTML = '';
+            }, 5000);
         }
     </script>
 </body>
