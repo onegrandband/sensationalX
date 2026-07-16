@@ -1,12 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Projects Portal</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Projects Portal</title>
+  <style>
+    /* ==========================================================================
+       1. Design Tokens & Core System
+       ========================================================================== */
+    :root {
+      /* Color System - Soft, warm neutrals with inviting accents */
+      --color-bg-base: #faf8f6;
+      --color-bg-card: #ffffff;
+      --color-border: #e2deda;
+      --color-border-hover: #cbd5e1;
+      
+      --color-text-main: #181411;
+      --color-text-muted: #625c56;
+      
+      /* Brand Accents (Empathetic & Warm) */
+      --color-primary: #db2777;      /* Warm Pink */
+      --color-secondary: #7c3aed;    /* Violet */
+      --color-surface-tint: #fdf2f8; /* Very soft pink/lavender tint */
+      
+      /* Typography Scale */
+      --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      
+      /* Border Radii */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-full: 999px;
+      
+      /* Shadows & Micro-interactions */
+      --shadow-subtle: 0 4px 12px rgba(24, 20, 17, 0.03);
+      --shadow-hover: 0 12px 24px rgba(24, 20, 17, 0.06);
+      --transition-default: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ==========================================================================
+       2. Reset & Typography Baseline
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-system);
+      background-color: var(--color-bg-base);
+      color: var(--color-text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ==========================================================================
+       3. Header & Navigation Layout
+       ========================================================================== */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2rem;
+      background-color: var(--color-bg-card);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-text {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--color-text-main);
+    }
+
+    .logo-text span {
+      color: var(--color-primary);
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.75rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color var(--transition-default);
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--color-primary);
+    }
+
+    /* ==========================================================================
+       4. Buttons & Core Component Interactions
+       ========================================================================== */
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background-color var(--transition-default), transform var(--transition-default);
+    }
+
+    .btn-primary:hover {
+      background-color: #be185d;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    /* ==========================================================================
+       5. Search Hero Panel
+       ========================================================================== */
+    .search-hero {
+      background: linear-gradient(135deg, var(--color-surface-tint), #f5f3ff);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(1.8rem, 4vw, 2.75rem);
+      color: var(--color-text-main);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-content p {
+      font-size: 1.1rem;
+      color: var(--color-text-muted);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* ==========================================================================
+       6. Search Form & Filters Layout
+       ========================================================================== */
+    .search-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    #project-search {
+      flex-grow: 1;
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.25rem;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--color-text-main);
+      transition: border-color var(--transition-default), box-shadow var(--transition-default);
+    }
+
+    #project-search:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.1);
+    }
+
+    .search-submit-btn {
+      background-color: var(--color-secondary);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.85rem 1.75rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background-color var(--transition-default);
+    }
+
+    .search-submit-btn:hover {
+      background-color: #6d28d9;
+    }
+
+    .filters-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.25rem;
+      text-align: left;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .filter-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-group select {
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.7rem 1rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--color-text-main);
+      outline: none;
+      cursor: pointer;
+      transition: border-color var(--transition-default);
+    }
+
+    .filter-group select:focus {
+      border-color: var(--color-primary);
+    }
+
+    /* ==========================================================================
+       7. Grid Content Display & Navigation Controls
+       ========================================================================== */
+    main {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .toggle-btn {
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      transition: all var(--transition-default);
+    }
+
+    .toggle-btn.active, .toggle-btn:hover {
+      background-color: var(--color-surface-tint);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .active-filters-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Project Cards matching cohesive system */
+    .project-card {
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-subtle);
+      transition: transform var(--transition-default), box-shadow var(--transition-default);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* ==========================================================================
+       8. Pagination Controls
+       ========================================================================== */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.25rem;
+      margin-top: 3.5rem;
+    }
+
+    .pagination-btn {
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 1.15rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-main);
+      cursor: pointer;
+      transition: all var(--transition-default);
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .page-numbers {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .page-num {
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-default);
+    }
+
+    .page-num.active, .page-num:hover {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+    }
+
+    /* ==========================================================================
+       9. Sticky Footer Style
+       ========================================================================== */
+    footer {
+      border-top: 1px solid var(--color-border);
+      background-color: var(--color-bg-card);
+      padding: 2.25rem;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    footer p {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+    }
+  </style>
 </head>
 <body>
+
     <header>
         <div class="logo-container">
             <span class="logo-text">Community<span>Hub</span></span>
