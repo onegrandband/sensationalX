@@ -1,64 +1,117 @@
-// Mock Database of Community Projects
+// Updated Database containing all your custom assets, games, and pages
 const initialProjects = [
+    // --- GAMES ---
     {
         id: 1,
-        title: "Neighborhood Code Guild",
-        category: "tech",
+        title: "Ant Smasher Game",
+        category: "games",
         status: "active",
-        excerpt: "A volunteer-run initiative hosting free weekly coding workshops for youth in local community centers.",
-        creator: "Sarah Jenkins",
-        likes: 124,
-        img: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80"
+        excerpt: "A fun, fast-paced arcade game where you tap to smash invading ants before they cross the screen!",
+        creator: "ants",
+        likes: 142,
+        img: "https://images.unsplash.com/photo-1551009175-15bdf9dcb580?auto=format&fit=crop&w=400&q=80"
     },
     {
         id: 2,
-        title: "Greenspace Rooftops",
-        category: "environment",
+        title: "Apple Catch Game",
+        category: "games",
         status: "active",
-        excerpt: "Transforming unused urban rooftop spaces into community-managed vegetable gardens and insect sanctuaries.",
-        creator: "Marcus Vance",
-        likes: 98,
-        img: "https://images.unsplash.com/photo-1530741929037-f727d061967b?auto=format&fit=crop&w=400&q=80"
+        excerpt: "Control your basket and catch the falling golden apples. Don't let them hit the ground!",
+        creator: "apple",
+        likes: 118,
+        img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=400&q=80"
     },
     {
         id: 3,
-        title: "Downtown Mural Walk",
-        category: "art",
-        status: "planning",
-        excerpt: "Collaborating with local street artists to turn dull alleyways into a vibrant, story-rich open-air gallery.",
-        creator: "Elena Rostova",
-        likes: 76,
-        img: "https://images.unsplash.com/photo-1561054790-30363a5a2292?auto=format&fit=crop&w=400&q=80"
+        title: "Axe Throwing Game",
+        category: "games",
+        status: "active",
+        excerpt: "Test your aim in this virtual axe-throwing simulator. Hit the bullseye to unlock custom axes!",
+        creator: "axe-throwing",
+        likes: 189,
+        img: "https://images.unsplash.com/photo-1595206133361-b1fe343e5e23?auto=format&fit=crop&w=400&q=80"
     },
     {
         id: 4,
-        title: "Books for Backpacks",
-        category: "education",
-        status: "completed",
-        excerpt: "Successfully distributed over 1,200 books and back-to-school kits to elementary school students.",
-        creator: "Community Guild",
-        likes: 215,
-        img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=400&q=80"
+        title: "Banana Catcher Game",
+        category: "games",
+        status: "active",
+        excerpt: "A chaotic catching game featuring falling bananas and crazy monkey power-ups.",
+        creator: "banana",
+        likes: 95,
+        img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=400&q=80"
     },
     {
         id: 5,
-        title: "Ocean Cleanup Crew",
-        category: "environment",
+        title: "Bell Ringer Game",
+        category: "games",
         status: "active",
-        excerpt: "Weekly beach cleanups and community workshops focused on reducing single-use plastics.",
-        creator: "Davey Jones",
-        likes: 142,
-        img: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&w=400&q=80"
+        excerpt: "Timing is everything! Ring the festive bells at the exact peak of their swing to score combos.",
+        creator: "bell",
+        likes: 67,
+        img: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?auto=format&fit=crop&w=400&q=80"
     },
     {
         id: 6,
-        title: "Senior Tech Support",
-        category: "tech",
-        status: "planning",
-        excerpt: "Connecting high school volunteers with seniors to help them navigate smartphones, video calls, and online safety.",
-        creator: "Liam Chen",
+        title: "Catch the Kitty Game",
+        category: "games",
+        status: "active",
+        excerpt: "A cute, physics-based puzzle-catching adventure where you coax energetic kittens into cozy baskets.",
+        creator: "cat",
+        likes: 243,
+        img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80"
+    },
+
+    // --- UTILITIES / 404 PAGES ---
+    {
+        id: 7,
+        title: "Audio Converter - 404 Error Page",
+        category: "web-tools",
+        status: "completed",
+        excerpt: "A themed, retro-styled cassette layout error page for lost audio conversion routes.",
+        creator: "audio-converter",
         likes: 54,
-        img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80"
+        img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        id: 8,
+        title: "Video Converter - 404 Error Page",
+        category: "web-tools",
+        status: "completed",
+        excerpt: "A custom 404 glitch-art styled screen representing broken video translation paths.",
+        creator: "video-converter",
+        likes: 72,
+        img: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        id: 9,
+        title: "Pride Theme 404 Page",
+        category: "art",
+        status: "completed",
+        excerpt: "A vibrant, custom pride-themed 404 page celebrating identity while pointing users safely back home.",
+        creator: "pride",
+        likes: 312,
+        img: "https://images.unsplash.com/photo-1572537144122-f155981245b7?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        id: 10,
+        title: "Gender Not Found 404 Page",
+        category: "art",
+        status: "completed",
+        excerpt: "A custom-styled 404 page featuring a witty 'Gender Not Found: Please select custom values' theme.",
+        creator: "transf",
+        likes: 389,
+        img: "https://images.unsplash.com/photo-1611590027211-b954fd027b51?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        id: 11,
+        title: "Transmasc Styled 404 Page",
+        category: "art",
+        status: "completed",
+        excerpt: "A beautifully styled error fallback page featuring transmasculine palette pride flag graphics.",
+        creator: "transm",
+        likes: 274,
+        img: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=400&q=80"
     }
 ];
 
@@ -81,7 +134,6 @@ const resultsCount = document.getElementById('results-count');
 const gridViewBtn = document.getElementById('grid-view-btn');
 const listViewBtn = document.getElementById('list-view-btn');
 const activeFiltersContainer = document.getElementById('active-filters');
-const searchForm = document.getElementById('project-search-form');
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
@@ -91,13 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Setup Event Listeners
 function setupEventListeners() {
-    // Search input typing (debounced slightly or just listening to 'input')
     searchInput.addEventListener('input', (e) => {
         currentFilters.search = e.target.value.toLowerCase().trim();
         updateAndRender();
     });
 
-    // Dropdown changes
     categorySelect.addEventListener('change', (e) => {
         currentFilters.category = e.target.value;
         updateAndRender();
@@ -113,7 +163,6 @@ function setupEventListeners() {
         updateAndRender();
     });
 
-    // Layout toggles
     gridViewBtn.addEventListener('click', () => {
         projectsGrid.classList.remove('list-view');
         gridViewBtn.classList.add('active');
@@ -126,15 +175,12 @@ function setupEventListeners() {
         gridViewBtn.classList.remove('active');
     });
 
-    // Optional: Submit Project Alert
     document.getElementById('submit-project-btn').addEventListener('click', () => {
-        alert("Awesome! This button could open a submit project form modal.");
+        alert("This button will let users submit their custom layouts!");
     });
 }
 
-// Master Filtering, Sorting, and Rendering function
 function updateAndRender() {
-    // 1. Filter
     let filtered = initialProjects.filter(project => {
         const matchesSearch = project.title.toLowerCase().includes(currentFilters.search) || 
                               project.excerpt.toLowerCase().includes(currentFilters.search) ||
@@ -146,15 +192,11 @@ function updateAndRender() {
         return matchesSearch && matchesCategory && matchesStatus;
     });
 
-    // 2. Sort
     if (currentFilters.sort === 'newest') {
-        // Sort descending by ID as a proxy for date/newest
         filtered.sort((a, b) => b.id - a.id);
     } else if (currentFilters.sort === 'popular') {
-        // Sort descending by likes
         filtered.sort((a, b) => b.likes - a.likes);
     } else {
-        // Trending default (randomized balance or default index)
         filtered.sort((a, b) => b.likes - a.likes);
     }
 
@@ -163,7 +205,6 @@ function updateAndRender() {
     renderActiveFilterTags();
 }
 
-// Render Projects list to page
 function renderProjects() {
     projectsGrid.innerHTML = '';
 
@@ -171,7 +212,7 @@ function renderProjects() {
         projectsGrid.innerHTML = `
             <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
                 <span style="font-size: 48px;">🔍</span>
-                <h3 style="margin-top: 16px;">No projects found</h3>
+                <h3 style="margin-top: 16px;">No matches found</h3>
                 <p>Try refining your keywords or checking different categories.</p>
             </div>
         `;
@@ -187,22 +228,21 @@ function renderProjects() {
         card.setAttribute('data-category', project.category);
         card.setAttribute('data-status', project.status);
 
-        // Map status value to a badge style class name
         let statusClass = 'badge-active';
         if (project.status === 'completed') statusClass = 'badge-completed';
         if (project.status === 'planning') statusClass = 'badge-planning';
 
         card.innerHTML = `
             <div class="project-thumbnail">
-                <img src="${project.img}" alt="${project.title} Thumbnail" class="project-img" onerror="this.src='https://placehold.co/400x250?text=${encodeURIComponent(project.title)}'">
+                <img src="${project.img}" alt="${project.title} Thumbnail" class="project-img">
                 <span class="badge ${statusClass}">${project.status.charAt(0).toUpperCase() + project.status.slice(1)}</span>
             </div>
             <div class="project-card-content">
-                <span class="project-category">${project.category.toUpperCase()}</span>
+                <span class="project-category">${project.category.replace('-', ' ').toUpperCase()}</span>
                 <h3><a href="#project-${project.id}" class="project-link">${project.title}</a></h3>
                 <p class="project-excerpt">${project.excerpt}</p>
                 <div class="project-meta">
-                    <span class="project-creator">By <strong>${project.creator}</strong></span>
+                    <span class="project-creator">Creator: <strong>${project.creator}</strong></span>
                     <span class="project-likes" onclick="likeProject(${project.id})">❤️ ${project.likes}</span>
                 </div>
             </div>
@@ -211,7 +251,6 @@ function renderProjects() {
     });
 }
 
-// Interactivity: Increment Likes (Fake DB save)
 window.likeProject = function(projectId) {
     const project = initialProjects.find(p => p.id === projectId);
     if (project) {
@@ -220,7 +259,6 @@ window.likeProject = function(projectId) {
     }
 }
 
-// Render small interactive tags showing what filters are active
 function renderActiveFilterTags() {
     activeFiltersContainer.innerHTML = '';
 
@@ -249,7 +287,6 @@ function renderActiveFilterTags() {
     }
 }
 
-// Helper to append a dynamic filter tag close button
 function createTag(text, onRemove) {
     const tag = document.createElement('span');
     tag.className = 'filter-tag';
