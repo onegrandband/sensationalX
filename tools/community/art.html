@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-top: 0;
+            color: #7f8c8d;
+        }
+        #controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .color-picker {
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #canvas {
+            display: grid;
+            grid-template-columns: repeat(20, 20px);
+            grid-template-rows: repeat(20, 20px);
+            gap: 1px;
+            background-color: #bdc3c7;
+            padding: 2px;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .pixel {
+            width: 20px;
+            height: 20px;
+            background-color: #ffffff;
+            cursor: crosshair;
+        }
+        .pixel:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎨 Pixel Art Studio</h1>
+    <p>Pick a color and click (or drag) to draw!</p>
+
+    <div id="controls">
+        <label for="color">Color:</label>
+        <input type="color" id="color" class="color-picker" value="#ff5722">
+        <button id="clear-btn">Clear Canvas</button>
+    </div>
+
+    <div id="canvas"></div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const colorPicker = document.getElementById('color');
+        const clearBtn = document.getElementById('clear-btn');
+        const gridSize = 20;
+
+        // Create the grid of pixels
+        for (let i = 0; i < gridSize * gridSize; i++) {
+            const pixel = document.createElement('div');
+            pixel.classList.add('pixel');
+            canvas.appendChild(pixel);
+        }
+
+        // Variable to check if the mouse is being held down
+        let isDrawing = false;
+        let currentColor = colorPicker.value;
+
+        // Update the drawing color
+        colorPicker.addEventListener('input', (e) => {
+            currentColor = e.target.value;
+        });
+
+        // Drawing actions
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            if (e.target.classList.contains('pixel')) {
+                e.target.style.backgroundColor = currentColor;
+            }
+        });
+
+        canvas.addEventListener('mouseover', (e) => {
+            if (isDrawing && e.target.classList.contains('pixel')) {
+                e.target.style.backgroundColor = currentColor;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        // Clear the canvas
+        clearBtn.addEventListener('click', () => {
+            const pixels = document.querySelectorAll('.pixel');
+            pixels.forEach(pixel => {
+                pixel.style.backgroundColor = '#ffffff';
+            });
+        });
+    </script>
+</body>
+</html>
