@@ -30,19 +30,22 @@
             border-radius: 10px;
             cursor: pointer;
         }
-        .btn:hover { background: #c0392b; }
+        .btn:hover {
+            background: #c0392b;
+        }
     </style>
 </head>
 <body>
 
     <h1>🔔 Bell Ringer! 🔔</h1>
     <p>Click the bell as fast as you can in 10 seconds!</p>
-    
     <h2>Time Left: <span id="timer">10</span></h2>
     <h2>Score: <span id="score">0</span></h2>
 
     <div id="bell" onclick="ringBell()">🔔</div>
     <br><br>
+    
+    <!-- Fixed the typo in ID and function call -->
     <button class="btn" id="startBtn" onclick="startGame()">Start Game</button>
 
     <script>
@@ -50,6 +53,9 @@
         let timeLeft = 10;
         let gameActive = false;
         let timerId = null;
+
+        // Load the audio file
+        const bellSound = new Audio('/assets/ring-bell.mp3');
 
         function startGame() {
             if (gameActive) return;
@@ -77,6 +83,10 @@
             if (!gameActive) return;
             score++;
             document.getElementById('score').innerText = score;
+
+            // Reset sound to start if it is clicked rapidly
+            bellSound.currentTime = 0;
+            bellSound.play();
         }
 
         function endGame() {
