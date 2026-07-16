@@ -3,35 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Audio Editor</title>
+    <title>Studio Wave - DAW Editor</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Audio Editor</h1>
+        <h1>Studio Wave</h1>
         
-        <div class="controls-section">
-            <input type="file" id="audio-upload" accept="audio/*, .mp3, .wav, .m4a, .aac, .flac, .ogg">
-            <audio id="audio-player"></audio>
+        <div class="visualizer-container">
+            <canvas id="visualizer"></canvas>
+            <div id="midi-status" class="status-indicator">MIDI: Disconnected</div>
         </div>
 
-        <canvas id="visualizer"></canvas>
+        <div class="section row">
+            <div class="control-box">
+                <h3>1. Track Input</h3>
+                <input type="file" id="audio-upload" accept="audio/*, .mp3, .wav, .m4a, .aac, .flac, .ogg">
+                <audio id="audio-player"></audio>
+                <div class="player-buttons">
+                    <button id="play-btn">Play</button>
+                    <button id="pause-btn">Pause</button>
+                </div>
+            </div>
 
-        <div class="controls-section">
-            <button id="play-btn">Play</button>
-            <button id="pause-btn">Pause</button>
+            <div class="control-box">
+                <h3>2. Mic Recorder</h3>
+                <div class="recorder-buttons">
+                    <button id="record-btn">Record</button>
+                    <button id="stop-record-btn" disabled>Stop</button>
+                </div>
+                <audio id="recorded-audio" controls class="mini-player"></audio>
+            </div>
         </div>
 
-        <div class="sliders">
-            <div class="slider-group">
-                <label for="volume-slider">Volume</label>
-                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+        <div class="section">
+            <h3>3. Studio FX & Plugins</h3>
+            <div class="grid-controls">
+                <div class="slider-group">
+                    <label for="volume-slider">Master Volume</label>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+                </div>
+                
+                <div class="slider-group">
+                    <label for="speed-slider">Playback Speed</label>
+                    <input type="range" id="speed-slider" min="0.5" max="2" step="0.1" value="1">
+                </div>
+
+                <div class="slider-group">
+                    <label for="reverb-slider">Reverb Mix (Space)</label>
+                    <input type="range" id="reverb-slider" min="0" max="1" step="0.05" value="0">
+                </div>
+
+                <div class="slider-group">
+                    <label for="filter-slider">Filter Cutoff (Hz)</label>
+                    <input type="range" id="filter-slider" min="100" max="20000" step="100" value="20000">
+                </div>
             </div>
-            
-            <div class="slider-group">
-                <label for="speed-slider">Speed</label>
-                <input type="range" id="speed-slider" min="0.5" max="2" step="0.1" value="1">
-            </div>
+        </div>
+
+        <div class="section midi-section">
+            <h3>4. MIDI & Bluetooth Adapter Input</h3>
+            <button id="connect-midi">Scan & Connect MIDI Devices</button>
+            <p class="midi-note-display">Last Note Played: <span id="current-note">-</span></p>
         </div>
     </div>
 
