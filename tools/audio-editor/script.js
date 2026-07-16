@@ -3,6 +3,7 @@ const audioUpload = document.getElementById('audio-upload');
 const audioPlayer = document.getElementById('audio-player');
 const playBtn = document.getElementById('play-btn');
 const pauseBtn = document.getElementById('pause-btn');
+const stopBtn = document.getElementById('stop-btn'); // New Stop Button
 const volumeSlider = document.getElementById('volume-slider');
 const speedSlider = document.getElementById('speed-slider');
 const reverbSlider = document.getElementById('reverb-slider');
@@ -21,46 +22,85 @@ const currentNoteDisplay = document.getElementById('current-note');
 let audioCtx;
 let sourceNode;
 let biquadFilter;
-let convolverNode; // Reverb Effect Node
-let reverbGainNode; // Controls Reverb dry/wet mix
-let dryGainNode; // Controls original audio volume
+let convolverNode; 
+let reverbGainNode; 
+let dryGainNode; 
 let masterGain;
 let analyser;
 
 let mediaRecorder;
 let recordedChunks = [];
 
-// Initialize & setup Routing Node Web Audio chain
+// --- LOCAL STORAGE: LOAD SAVED SETTINGS ---
+function loadSavedSettings() {
+    if (localStorage.getItem('studio_volume') !== null) {
+        volumeSlider.value = localStorage.getItem('studio_volume');
+    }
+    if (localStorage.getItem('studio_speed') !== null) {
+        speedSlider.value = localStorage.getItem('studio_speed');
+    }
+    if (localStorage.getItem('studio_reverb') !== null) {
+        reverbSlider.value = localStorage.getItem('studio_reverb');
+    }
+    if (localStorage.getItem('studio_filter') !== null) {
+        filterSlider.value = localStorage.getItem('studio_filter');
+    }
+}
+
+// Save settings to LocalStorage helper
+function saveSetting(key, value) {
+    localStorage.setItem(key, value);
+}
+
+// Apply settings to the audio engine (Crucial for fixing Chrome resets!)
+function applyAudioSettings() {
+    if (!audioCtx) return;
+
+    // Apply volume
+    if (masterGain) {
+        masterGain.gain.setValueAtTime(parseFloat(volumeSlider.value), audioCtx.currentTime);
+    }
+
+    // Apply playback speed directly to the HTML5 audio element
+    audioPlayer.playbackRate = parseFloat(speedSlider.value);
+
+    // Apply Lowpass Filter
+    if (biquadFilter) {
+        biquadFilter.frequency.setValueAtTime(parseFloat(filterSlider.value), audioCtx.currentTime);
+    }
+
+    // Apply Reverb Mix
+    if (reverbGainNode && dryGainNode) {
+        const wetVal = parseFloat(reverbSlider.value);
+        reverbGainNode.gain.setValueAtTime(wetVal, audioCtx.currentTime);
+        dryGainNode.gain.setValueAtTime(1 - wetVal, audioCtx.currentTime);
+    }
+}
+
+// Run immediately on page load
+loadSavedSettings();
+
+// Initialize the DAW Audio Engine
 function initAudioEngine() {
     if (audioCtx) return;
 
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // Nodes instantiation
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 512;
 
     biquadFilter = audioCtx.createBiquadFilter();
     biquadFilter.type = 'lowpass';
-    biquadFilter.frequency.setValueAtTime(20000, audioCtx.currentTime);
 
-    // Dynamic procedural reverb generation
     convolverNode = audioCtx.createConvolver();
-    convolverNode.buffer = createReverbImpulse(3.5, 2.0); // 3.5 sec decay, 2.0 sec pre-delay simulation
+    convolverNode.buffer = createReverbImpulse(3.5, 2.0); // Warm studio reverb
 
     reverbGainNode = audioCtx.createGain();
     dryGainNode = audioCtx.createGain();
     masterGain = audioCtx.createGain();
 
-    // Set Default Mix volumes
-    reverbGainNode.gain.setValueAtTime(0, audioCtx.currentTime); 
-    dryGainNode.gain.setValueAtTime(1, audioCtx.currentTime);
-    masterGain.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
-
-    // Audio Graph Routing Chain:
-    // sourceNode -> biquadFilter -> split to (dryGain & convolverNode -> reverbGain) -> masterGain -> analyser -> destination
+    // Setup routing graph
     sourceNode = audioCtx.createMediaElementSource(audioPlayer);
-    
     sourceNode.connect(biquadFilter);
     
     // Wet path (Reverb)
@@ -68,18 +108,21 @@ function initAudioEngine() {
     convolverNode.connect(reverbGainNode);
     reverbGainNode.connect(masterGain);
 
-    // Dry path (Original)
+    // Dry path (Clean)
     biquadFilter.connect(dryGainNode);
     dryGainNode.connect(masterGain);
 
     masterGain.connect(analyser);
     analyser.connect(audioCtx.destination);
 
-    // Kickoff Visualizer draw frame loop
+    // Force apply localstorage settings to the newly built engine nodes
+    applyAudioSettings();
+
+    // Run the synchronized visualizer loop
     drawOscilloscope();
 }
 
-// Procedural impulse generator to create realistic studio space without needing heavy asset files
+// Reverb Impulse Space Generator
 function createReverbImpulse(duration, decay) {
     const sampleRate = audioCtx ? audioCtx.sampleRate : 44100;
     const length = sampleRate * duration;
@@ -96,7 +139,7 @@ function createReverbImpulse(duration, decay) {
     return impulse;
 }
 
-// Visualizer Syncing directly to incoming frequency bands
+// Synchronized Visualizer 
 function drawOscilloscope() {
     requestAnimationFrame(drawOscilloscope);
     
@@ -117,7 +160,7 @@ function drawOscilloscope() {
     for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i];
 
-        // Color dynamic shifting depending on the beat volume
+        // Dynamic synth wave gradient (cyan to hot pink!)
         const red = barHeight + (25 * (i / bufferLength));
         const green = 242 - barHeight;
         const blue = 254;
@@ -129,7 +172,18 @@ function drawOscilloscope() {
     }
 }
 
-// Event Listeners
+// --- CORE CONTROLS & FIXES ---
+
+// Fix: Re-apply settings whenever a new track metadata finishes loading
+audioPlayer.addEventListener('loadedmetadata', () => {
+    applyAudioSettings();
+});
+
+// Fix: Force settings on play event to stop Chrome resetting playback speed
+audioPlayer.addEventListener('play', () => {
+    applyAudioSettings();
+});
+
 audioUpload.addEventListener('change', function() {
     const file = this.files[0];
     if (file) {
@@ -138,40 +192,60 @@ audioUpload.addEventListener('change', function() {
     }
 });
 
+// PLAY BUTTON
 playBtn.addEventListener('click', () => {
+    initAudioEngine();
     if (audioCtx) audioCtx.resume();
     audioPlayer.play();
 });
 
+// PAUSE BUTTON (Fixed connection sync issues)
 pauseBtn.addEventListener('click', () => {
     audioPlayer.pause();
 });
 
+// STOP BUTTON (Pauses and resets position to the beginning)
+if (stopBtn) {
+    stopBtn.addEventListener('click', () => {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0; // Rewind track to start
+    });
+}
+
+// --- SLIDERS + LOCAL STORAGE SAVING ---
+
 volumeSlider.addEventListener('input', (e) => {
+    const val = e.target.value;
+    saveSetting('studio_volume', val);
     if (masterGain) {
-        masterGain.gain.setValueAtTime(e.target.value, audioCtx.currentTime);
+        masterGain.gain.setValueAtTime(val, audioCtx.currentTime);
     }
 });
 
 speedSlider.addEventListener('input', (e) => {
-    audioPlayer.playbackRate = e.target.value;
+    const val = e.target.value;
+    saveSetting('studio_speed', val);
+    audioPlayer.playbackRate = val; // Works perfectly now on active play state
 });
 
 filterSlider.addEventListener('input', (e) => {
+    const val = e.target.value;
+    saveSetting('studio_filter', val);
     if (biquadFilter) {
-        biquadFilter.frequency.setValueAtTime(e.target.value, audioCtx.currentTime);
+        biquadFilter.frequency.setValueAtTime(val, audioCtx.currentTime);
     }
 });
 
 reverbSlider.addEventListener('input', (e) => {
-    if (reverbGainNode) {
-        const wetVal = e.target.value;
-        reverbGainNode.gain.setValueAtTime(wetVal, audioCtx.currentTime);
-        dryGainNode.gain.setValueAtTime(1 - wetVal, audioCtx.currentTime); // Balance volume automatically
+    const val = e.target.value;
+    saveSetting('studio_reverb', val);
+    if (reverbGainNode && dryGainNode) {
+        reverbGainNode.gain.setValueAtTime(val, audioCtx.currentTime);
+        dryGainNode.gain.setValueAtTime(1 - val, audioCtx.currentTime);
     }
 });
 
-// --- MICROPHONE VOICE RECORDER ---
+// --- MICROPHONE RECORDER ---
 recordBtn.addEventListener('click', async () => {
     initAudioEngine();
     recordedChunks = [];
@@ -188,9 +262,7 @@ recordBtn.addEventListener('click', async () => {
             const blob = new Blob(recordedChunks, { type: 'audio/wav' });
             const recordedUrl = URL.createObjectURL(blob);
             recordedAudio.src = recordedUrl;
-
-            // Route our recording dynamically back into the DAW track player for editing
-            audioPlayer.src = recordedUrl; 
+            audioPlayer.src = recordedUrl; // Loads recording into DAW engine
         };
 
         mediaRecorder.start();
@@ -198,14 +270,13 @@ recordBtn.addEventListener('click', async () => {
         recordBtn.disabled = true;
         stopRecordBtn.disabled = false;
     } catch (err) {
-        alert("Microphone permission denied or unavailable on this device.");
+        alert("Microphone connection failed. Make sure Chrome has mic permissions enabled!");
     }
 });
 
 stopRecordBtn.addEventListener('click', () => {
     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
-        // Stop user mic track access to clear active recording indicators
         mediaRecorder.stream.getTracks().forEach(track => track.stop());
         recordBtn.innerText = "Record";
         recordBtn.disabled = false;
@@ -213,38 +284,45 @@ stopRecordBtn.addEventListener('click', () => {
     }
 });
 
-// --- MIDI INPUT CONNECTIVITY (USB & BLUETOOTH ADAPTERS) ---
+// --- CHROME SECURE MIDI CONNECTION HANDLING ---
 connectMidiBtn.addEventListener('click', () => {
     initAudioEngine();
+    
+    // Safety check: Chrome requires HTTPS or Localhost for MIDI controllers.
+    if (!window.isSecureContext && window.location.protocol !== "file:") {
+        alert("Chrome Security Alert: MIDI connections require a secure environment (HTTPS or localhost). If you are testing locally, try opening this page on Firefox, or set up a simple local server!");
+    }
+
     if (navigator.requestMIDIAccess) {
         navigator.requestMIDIAccess({ sysex: false })
             .then(onMIDISuccess, onMIDIFailure);
     } else {
-        alert("Web MIDI API not supported in this browser. Try Chrome, Edge, or Safari.");
+        alert("Web MIDI is not supported on this browser context. If you are on an iPad or iPhone, try using the WebMIDI Browser app!");
     }
 });
 
 function onMIDISuccess(midiAccess) {
-    midiStatus.innerText = "MIDI: Scan Active";
-    midiStatus.style.color = "#10b981"; // Green indicator
+    midiStatus.innerText = "MIDI: Online";
+    midiStatus.style.color = "#10b981"; 
     
     const inputs = midiAccess.inputs.values();
     for (let input of inputs) {
         input.onmidimessage = handleMidiMessage;
     }
     
-    // Listen for connection status changes (e.g., plugging in Bluetooth MIDI adapter live)
     midiAccess.onstatechange = (e) => {
         midiStatus.innerText = `MIDI: Device ${e.port.state}`;
     };
 }
 
-function onMIDIFailure() {
-    midiStatus.innerText = "MIDI: Error Accessing";
+function onMIDIFailure(error) {
+    console.error("MIDI Failure Details:", error);
+    midiStatus.innerText = "MIDI: Blocked";
     midiStatus.style.color = "#ef4444";
+    alert("MIDI connection blocked. If you're running this locally by double-clicking 'index.html', Chrome blocks MIDI devices. Tip: Switch to Firefox for local files, or host a quick local server!");
 }
 
-// Basic synthesizer node engine triggered by MIDI Controller
+// Synth engine keys triggered by MIDI Controller
 let activeOscillators = {};
 
 function handleMidiMessage(message) {
@@ -252,33 +330,30 @@ function handleMidiMessage(message) {
     const note = message.data[1];
     const velocity = (message.data.length > 2) ? message.data[2] : 0;
 
-    // Convert MIDI pitch to frequencies
     const frequency = Math.pow(2, (note - 69) / 12) * 440;
     const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
     const noteName = noteNames[note % 12] + (Math.floor(note / 12) - 1);
 
-    if (command === 144 && velocity > 0) { // Note ON Command
+    if (command === 144 && velocity > 0) { 
         currentNoteDisplay.innerText = noteName;
         playSynthNote(note, frequency, velocity);
-    } else if (command === 128 || (command === 144 && velocity === 0)) { // Note OFF Command
+    } else if (command === 128 || (command === 144 && velocity === 0)) { 
         stopSynthNote(note);
     }
 }
 
 function playSynthNote(note, frequency, velocity) {
-    if (activeOscillators[note]) return; // Avoid note stacking overlap
+    if (activeOscillators[note]) return; 
 
     const osc = audioCtx.createOscillator();
     const oscGain = audioCtx.createGain();
 
-    osc.type = 'triangle'; // Warm studio synth wave
+    osc.type = 'triangle'; 
     osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
 
-    // Map MIDI velocity (0-127) to output gain
     const gainVolume = (velocity / 127) * 0.2; 
     oscGain.gain.setValueAtTime(gainVolume, audioCtx.currentTime);
 
-    // Route synthesis keyboard straight into the master DAW analyser stream
     osc.connect(oscGain);
     oscGain.connect(masterGain);
     
@@ -290,7 +365,6 @@ function playSynthNote(note, frequency, velocity) {
 function stopSynthNote(note) {
     if (activeOscillators[note]) {
         const { osc, gain } = activeOscillators[note];
-        // Smooth release tail
         gain.gain.setValueAtTime(gain.gain.value, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
         osc.stop(audioCtx.currentTime + 0.1);
