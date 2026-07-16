@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniConvert // Browser Video Transcoder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="brand-logo">🫪🎬</span>
+        <h1>OmniConvert</h1>
+      </div>
+      <span class="badge">Video Converter</span>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <section class="converter-box">
+      
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept="video/*" class="file-input">
+        <div class="drop-zone-content">
+          <span class="upload-icon">📁</span>
+          <p class="drop-text">Drag & drop your video file here, or <span class="browse-link">browse</span></p>
+          <p class="file-limits">Supports MP4, WebM, MKV, AVI, etc.</p>
+        </div>
+      </div>
+
+      <div class="file-details hidden" id="file-details">
+        <div class="file-meta">
+          <span class="file-icon">🫪🎥</span>
+          <div class="file-info">
+            <span class="file-name" id="file-name">video.mp4</span>
+            <span class="file-size" id="file-size">0.0 MB</span>
+          </div>
+        </div>
+        <button class="remove-btn" id="remove-btn" aria-label="Remove file">✕</button>
+      </div>
+
+      <div class="settings-panel">
+        <div class="setting-group">
+          <label for="format-select" class="setting-label">Convert to</label>
+          <div class="select-wrapper">
+            <select id="format-select" class="custom-select">
+              <option value="mp4">MP4 (H.264 / AAC)</option>
+              <option value="webm">WebM (VP8 / Vorbis)</option>
+              <option value="gif">GIF (Animated)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button id="convert-btn" class="btn btn-primary btn-block" disabled>
+        Convert Video
+      </button>
+
+      <div class="progress-container hidden" id="progress-container">
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <span class="progress-status" id="progress-status">Loading...</span>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>We never collect your data or personal information. Your files are stored on your device and never on our servers.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
