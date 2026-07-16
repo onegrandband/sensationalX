@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Projects Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <span class="logo-text">Community<span>Hub</span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#projects" class="active">Projects</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <button class="btn-primary" id="submit-project-btn">Submit a Project</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="search-hero">
+            <div class="hero-content">
+                <h1>Explore Community Projects</h1>
+                <p>Discover, support, and collaborate on amazing initiatives, games, and tools created by our community members.</p>
+            </div>
+            
+            <div class="search-container">
+                <form id="project-search-form" onsubmit="event.preventDefault();">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="project-search" placeholder="Search projects, games, or tools..." autocomplete="off">
+                        <button type="submit" class="search-submit-btn">Search</button>
+                    </div>
+                    
+                    <div class="filters-wrapper">
+                        <div class="filter-group">
+                            <label for="category-select">Category</label>
+                            <select id="category-select">
+                                <option value="all">All Categories</option>
+                                <option value="games">Games</option>
+                                <option value="web-tools">Web Tools / Utility</option>
+                                <option value="art">Art & Creative</option>
+                                <option value="tech">Technology</option>
+                                <option value="environment">Environment</option>
+                                <option value="education">Education</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="status-select">Status</label>
+                            <select id="status-select">
+                                <option value="all">Any Status</option>
+                                <option value="active">Active & Playable</option>
+                                <option value="completed">Completed</option>
+                                <option value="planning">In Planning</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="sort-select">Sort By</label>
+                            <select id="sort-select">
+                                <option value="trending">Trending</option>
+                                <option value="newest">Newest</option>
+                                <option value="popular">Most Liked</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="projects-display">
+            <div class="section-header">
+                <h2 id="results-count">Showing All Projects</h2>
+                <div class="view-toggle">
+                    <button class="toggle-btn active" id="grid-view-btn" aria-label="Grid view">Grid</button>
+                    <button class="toggle-btn" id="list-view-btn" aria-label="List view">List</button>
+                </div>
+            </div>
+
+            <div id="active-filters" class="active-filters-container"></div>
+
+            <div class="projects-grid" id="projects-grid">
+                </div>
+
+            <div class="pagination">
+                <button class="pagination-btn disabled" id="prev-page" disabled>Previous</button>
+                <div class="page-numbers">
+                    <button class="page-num active">1</button>
+                    <button class="page-num">2</button>
+                </div>
+                <button class="pagination-btn" id="next-page">Next</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 CommunityHub. Built with love by the community.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
