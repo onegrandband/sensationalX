@@ -1,4 +1,4 @@
-// Updated Database containing your custom assets with Lucide SVGs instead of image URLs
+// Database containing all my custom assets with Lucide :3
 const initialProjects = [
     // --- GAMES ---
     {
