@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bell Ringer Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background: #2c3e50;
+            color: white;
+            padding-top: 50px;
+        }
+        #bell {
+            font-size: 100px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            display: inline-block;
+        }
+        #bell:active {
+            transform: scale(0.9);
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <h1>🔔 Bell Ringer! 🔔</h1>
+    <p>Click the bell as fast as you can in 10 seconds!</p>
+    
+    <h2>Time Left: <span id="timer">10</span></h2>
+    <h2>Score: <span id="score">0</span></h2>
+
+    <div id="bell" onclick="ringBell()">🔔</div>
+    <br><br>
+    <button class="btn" id="startBtn" onclick="startGame()">Start Game</button>
+
+    <script>
+        let score = 0;
+        let timeLeft = 10;
+        let gameActive = false;
+        let timerId = null;
+
+        function startGame() {
+            if (gameActive) return;
+
+            // Reset game
+            score = 0;
+            timeLeft = 10;
+            gameActive = true;
+            document.getElementById('score').innerText = score;
+            document.getElementById('timer').innerText = timeLeft;
+            document.getElementById('startBtn').disabled = true;
+
+            // Start countdown
+            timerId = setInterval(function() {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function ringBell() {
+            if (!gameActive) return;
+            score++;
+            document.getElementById('score').innerText = score;
+        }
+
+        function endGame() {
+            clearInterval(timerId);
+            gameActive = false;
+            document.getElementById('startBtn').disabled = false;
+            alert("Time's up! You rang the bell " + score + " times!");
+        }
+    </script>
+</body>
+</html>
