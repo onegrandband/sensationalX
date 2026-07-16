@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Kitty!</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #fce4ec;
+            font-family: 'Arial', sans-serif;
+            margin-top: 50px;
+        }
+        #game-box {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            background-color: #ffffff;
+            border: 4px solid #f48fb1;
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #cat {
+            position: absolute;
+            font-size: 40px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #f06292;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #ec407a;
+        }
+        .info {
+            font-size: 20px;
+            font-weight: bold;
+            color: #880e4f;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Catch the Kitty! 🐱</h1>
+    <div class="info">Score: <span id="score">0</span></div>
+    <div class="info">Time Left: <span id="timer">15</span></div>
+    
+    <div id="game-box">
+        <div id="cat" onclick="scorePoint()">😸</div>
+    </div>
+
+    <button class="btn" id="start-btn" onclick="startGame()">Start Game</button>
+
+    <script>
+        let score = 0;
+        let timeLeft = 15;
+        let gameInterval;
+        let catInterval;
+        let gameActive = false;
+
+        function startGame() {
+            if (gameActive) return;
+            
+            // Reset stats
+            score = 0;
+            timeLeft = 15;
+            gameActive = true;
+            document.getElementById("score").innerText = score;
+            document.getElementById("timer").innerText = timeLeft;
+            document.getElementById("start-btn").disabled = true;
+
+            // Start Timers
+            gameInterval = setInterval(updateTimer, 1000);
+            catInterval = setInterval(moveCat, 750); // Cat moves every 3/4 of a second
+            moveCat(); // Move it right away
+        }
+
+        function scorePoint() {
+            if (!gameActive) return;
+            score++;
+            document.getElementById("score").innerText = score;
+            moveCat(); // Click to make the cat jump!
+        }
+
+        function moveCat() {
+            let cat = document.getElementById("cat");
+            // Pick a random spot inside the 400x400 box (minus cat size)
+            let x = Math.floor(Math.random() * 350); 
+            let y = Math.floor(Math.random() * 350);
+            cat.style.left = x + "px";
+            cat.style.top = y + "px";
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            document.getElementById("timer").innerText = timeLeft;
+
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(gameInterval);
+            clearInterval(catInterval);
+            document.getElementById("start-btn").disabled = false;
+            alert("Time's up! Your final score is " + score);
+        }
+    </script>
+</body>
+</html>
