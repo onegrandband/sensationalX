@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Ant Smasher Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #d4a373; /* Earthy sand color */
+            overflow: hidden;
+            font-family: sans-serif;
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* The score board */
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #312b26;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        /* Ant styling */
+        .ant {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 5;
+            transition: transform 0.1s;
+        }
+
+        /* Smash effect */
+        .splat {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #8b0000; /* Dark red */
+            border-radius: 50%;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        /* Game Over Screen */
+        #game-over {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        #game-over h1 {
+            font-size: 60px;
+            margin: 10px;
+        }
+
+        #start-btn {
+            padding: 15px 30px;
+            font-size: 24px;
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        #start-btn:hover {
+            background-color: #264653;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="ui">Score: <span id="score">0</span></div>
+
+        <div id="game-over">
+            <h1>Game Over!</h1>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <button id="start-btn" onclick="startGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const gameContainer = document.getElementById('game-container');
+        const scoreDisplay = document.getElementById('score');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalScoreDisplay = document.getElementById('final-score');
+
+        let score = 0;
+        let gameInterval;
+        let spawnRate = 1000; // Time between ants in milliseconds
+        let antSpeed = 2; // Pixels ants move per frame
+        let isPlaying = false;
+
+        function startGame() {
+            // Reset game state
+            score = 0;
+            spawnRate = 1000;
+            antSpeed = 2;
+            isPlaying = true;
+            scoreDisplay.textContent = score;
+            gameOverScreen.style.display = 'none';
+
+            // Clear old ants
+            document.querySelectorAll('.ant, .splat').forEach(e => e.remove());
+
+            // Start spawning ants
+            clearInterval(gameInterval);
+            gameInterval = setInterval(createAnt, spawnRate);
+        }
+
+        function createAnt() {
+            if (!isPlaying) return;
+
+            const ant = document.createElement('div');
+            ant.classList.add('ant');
+
+            // Draw ant using emoji inside a div
+            ant.textContent = '🐜';
+            ant.style.fontSize = '35px';
+
+            // Random starting position (off-screen top)
+            const startX = Math.random() * (window.innerWidth - 50);
+            ant.style.left = startX + 'px';
+            ant.style.top = '-50px';
+
+            // Make the ant walk towards a random point at the bottom
+            const targetX = Math.random() * window.innerWidth;
+            const targetY = window.innerHeight + 50;
+
+            // Calculate angle for the ant to face the right way
+            const deltaX = targetX - startX;
+            const deltaY = targetY - (-50);
+            const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) + 90;
+            ant.style.transform = `rotate(${angle}deg)`;
+
+            gameContainer.appendChild(ant);
+
+            // Move the ant
+            let currentY = -50;
+            let currentX = startX;
+            const stepX = deltaX / (window.innerHeight / antSpeed);
+
+            const moveInterval = setInterval(() => {
+                if (!isPlaying) {
+                    clearInterval(moveInterval);
+                    return;
+                }
+
+                currentY += antSpeed;
+                currentX += stepX;
+                ant.style.top = currentY + 'px';
+                ant.style.left = currentX + 'px';
+
+                // Game Over if ant reaches bottom
+                if (currentY > window.innerHeight) {
+                    clearInterval(moveInterval);
+                    endGame();
+                    ant.remove();
+                }
+            }, 20);
+
+            // Smash the ant on click
+            ant.addEventListener('mousedown', () => {
+                if (!isPlaying) return;
+                
+                score++;
+                scoreDisplay.textContent = score;
+
+                // Create splat
+                const splat = document.createElement('div');
+                splat.classList.add('splat');
+                splat.style.left = ant.style.left;
+                splat.style.top = ant.style.top;
+                gameContainer.appendChild(splat);
+
+                // Remove ant and stop it moving
+                clearInterval(moveInterval);
+                ant.remove();
+
+                // Increase difficulty slightly
+                antSpeed += 0.1;
+
+                // Remove splat after 1 second
+                setTimeout(() => {
+                    splat.remove();
+                }, 1000);
+            });
+        }
+
+        function endGame() {
+            isPlaying = false;
+            finalScoreDisplay.textContent = score;
+            gameOverScreen.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
