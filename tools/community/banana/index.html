@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Banana Catcher Game</title>
+<style>
+    body {
+        text-align: center;
+        background-color: #f7d070;
+        font-family: sans-serif;
+    }
+    canvas {
+        background-color: #70c7f7;
+        border: 4px solid #333;
+        display: block;
+        margin: auto;
+    }
+    .score-board {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+
+    <h1>Banana Catcher!</h1>
+    <div class="score-board">Score: <span id="score">0</span></div>
+    
+    <!-- The game screen -->
+    <canvas id="gameCanvas" width="400" height="500"></canvas>
+
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreDisplay = document.getElementById("score");
+
+    let score = 0;
+    let gameOver = false;
+
+    // The basket (player)
+    const basket = {
+        width: 80,
+        height: 20,
+        x: 160,
+        y: 460,
+        speed: 8
+    };
+
+    // The banana
+    const banana = {
+        width: 25,
+        height: 30,
+        x: 150,
+        y: 0,
+        speed: 3
+    };
+
+    // Listen for arrow keys
+    let rightPressed = false;
+    let leftPressed = false;
+
+    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener("keyup", keyUpHandler);
+
+    function keyDownHandler(e) {
+        if (e.key == "Right" || e.key == "ArrowRight") {
+            rightPressed = true;
+        } else if (e.key == "Left" || e.key == "ArrowLeft") {
+            leftPressed = true;
+        }
+    }
+
+    function keyUpHandler(e) {
+        if (e.key == "Right" || e.key == "ArrowRight") {
+            rightPressed = false;
+        } else if (e.key == "Left" || e.key == "ArrowLeft") {
+            leftPressed = false;
+        }
+    }
+
+    // Draw the basket
+    function drawBasket() {
+        ctx.beginPath();
+        ctx.rect(basket.x, basket.y, basket.width, basket.height);
+        ctx.fillStyle = "#8B5A2B"; // Brown wood color
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Draw the banana
+    function drawBanana() {
+        ctx.beginPath();
+        ctx.ellipse(banana.x, banana.y, banana.width, banana.height, Math.PI / 4, 0, 2 * Math.PI);
+        ctx.fillStyle = "#FFD700"; // Yellow banana color
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Game logic
+    function update() {
+        if (gameOver) return;
+
+        // Move basket
+        if (rightPressed && basket.x < canvas.width - basket.width) {
+            basket.x += basket.speed;
+        } else if (leftPressed && basket.x > 0) {
+            basket.x -= basket.speed;
+        }
+
+        // Move banana down
+        banana.y += banana.speed;
+
+        // Check for catch
+        if (banana.y + banana.height > basket.y &&
+            banana.x > basket.x &&
+            banana.x < basket.x + basket.width) {
+            
+            score++;
+            scoreDisplay.innerText = score;
+            resetBanana();
+        }
+
+        // Check if banana hits the ground (Game Over)
+        if (banana.y > canvas.height) {
+            gameOver = true;
+        }
+    }
+
+    // Send banana back to top
+    function resetBanana() {
+        banana.y = 0;
+        banana.x = Math.random() * (canvas.width - 50) + 25;
+        // Make the game a tiny bit faster every time
+        banana.speed += 0.2; 
+    }
+
+    // Main game loop
+    function draw() {
+        // Clear screen
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBasket();
+        drawBanana();
+        update();
+
+        if (gameOver) {
+            ctx.fillStyle = "red";
+            ctx.font = "30px sans-serif";
+            ctx.fillText("Game Over!", 130, 250);
+        } else {
+            requestAnimationFrame(draw);
+        }
+    }
+
+    draw();
+</script>
+
+</body>
+</html>
