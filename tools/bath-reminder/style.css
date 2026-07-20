@@ -11,8 +11,7 @@ html, body {
 body {
     display: flex;
     justify-content: center;
-    /* align-items changed to flex-start to prevent the top from getting cut off on iPhones */
-    align-items: flex-start; 
+    align-items: flex-start; /* Fixes top cut-off on iPhone */
     padding: 40px 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -21,7 +20,7 @@ body {
 .app-container {
     width: 100%;
     max-width: 600px;
-    padding: 0 20px;
+    padding: 0 15px;
     box-sizing: border-box;
     margin: 0 auto;
 }
@@ -39,36 +38,54 @@ body {
 .bath-icon { font-size: 3rem; margin-bottom: 10px; }
 h2 { margin: 0 0 20px 0; color: #38bdf8; font-weight: 500; letter-spacing: 0.5px;}
 
-/* Fixed: The class name now matches the HTML, and it wraps cleanly on mobile */
+/* 
+ * CRITICAL FIX: The wrapper for the numbers. 
+ * This ensures they sit nicely in a row and wrap cleanly on small screens. 
+ */
 .countdown-row {
     display: flex;
     justify-content: center;
+    align-items: stretch;
     gap: 8px;
-    flex-wrap: wrap; /* CRUCIAL: Makes the time blocks wrap instead of shooting off screen */
-    font-family: 'Courier New', Courier, monospace;
-    font-variant-numeric: tabular-nums;
-    margin-bottom: 15px;
+    flex-wrap: wrap; 
+    margin-bottom: 20px;
 }
 
+/* 
+ * CRITICAL FIX: Strict styling so blocks stay as neat little squares 
+ * and never expand into huge rows.
+ */
 .time-block {
     background: #1e293b;
     border: 1px solid #475569;
-    padding: 10px;
     border-radius: 8px;
-    min-width: 50px;
+    min-width: 55px; /* Firmly sets them as squares */
+    padding: 10px 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1 1 auto;
+    justify-content: center;
 }
 
-.time-block span { font-size: 1.5rem; font-weight: bold; color: #f1f5f9; }
-.time-block label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+.time-block span { 
+    font-size: 1.5rem; 
+    font-weight: bold; 
+    color: #f1f5f9; 
+    font-family: 'Courier New', Courier, monospace;
+}
+.time-block label { 
+    font-size: 0.65rem; 
+    color: #94a3b8; 
+    text-transform: uppercase; 
+    margin-top: 5px; 
+    letter-spacing: 1px;
+}
 
-.time-block.highlight-ms { min-width: 65px; }
+.time-block.highlight-ms { min-width: 70px; }
 .time-block.highlight-ms span { color: #38bdf8; }
-.time-block.highlight-ns { min-width: 95px; }
-.time-block.highlight-ns span { color: #06b6d4; font-size: 1.3rem; margin-top: 2px;}
+
+.time-block.highlight-ns { min-width: 100px; }
+.time-block.highlight-ns span { color: #06b6d4; font-size: 1.3rem; }
 
 #status-text { color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px; }
 
@@ -109,7 +126,7 @@ h2 { margin: 0 0 20px 0; color: #38bdf8; font-weight: 500; letter-spacing: 0.5px
 
 .input-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on iPad/Desktop */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     margin-bottom: 20px;
 }
@@ -121,7 +138,7 @@ input[type="number"], input[type="time"] {
     background: #0f172a;
     border: 1px solid #475569;
     color: #fff;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     font-weight: bold;
     outline: none;
@@ -134,7 +151,7 @@ button.btn-primary {
     width: 100%;
     background: #0284c7;
     color: #fff;
-    padding: 14px;
+    padding: 15px;
     border: none;
     border-radius: 10px;
     font-size: 1rem;
@@ -191,14 +208,18 @@ button.btn-warning:hover { background: #d97706; }
 @media(max-width: 480px) { 
     body { padding: 20px 0; }
     
+    /* Forces the inputs into a single column so they don't get squished */
     .input-grid { 
-        grid-template-columns: 1fr; /* Stack inputs vertically so they don't crush */
-        gap: 10px;
+        grid-template-columns: 1fr; 
+        gap: 12px;
     }
     
+    /* Allows the numbers to squeeze slightly together on tiny phone screens */
     .countdown-row { gap: 5px; }
-    .time-block { padding: 6px; }
+    .time-block { min-width: 45px; padding: 8px 2px; }
     .time-block span { font-size: 1.2rem; }
+    .time-block.highlight-ms { min-width: 60px; }
+    .time-block.highlight-ns { min-width: 80px; }
     
     .days-picker { flex-wrap: wrap; justify-content: center; gap: 10px; }
     .bath-icon { font-size: 2.2rem; }
