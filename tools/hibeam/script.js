@@ -6,14 +6,11 @@ const video = document.getElementById('video-stream');
 let track = null;
 let isTorchOn = false;
 
-// Function to initialize and toggle the hardware flashlight
 async function toggleFlashlight() {
     try {
-        // 1. If we don't have a camera track yet, request it
         if (!track) {
-            statusMsg.innerText = "Requesting camera permission...";
+            statusMsg.innerText = "Connecting to camera...";
             
-            // Ask for the rear-facing camera specifically
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: { exact: "environment" } }
             });
@@ -21,40 +18,40 @@ async function toggleFlashlight() {
             video.srcObject = stream;
             track = stream.getVideoTracks()[0];
             
-            // Verify if this device actually has a physical torch/flashlight feature
             const capabilities = track.getCapabilities();
+            
+            // Check if browser/system is blocking the hardware torch
             if (!capabilities.torch) {
-                statusMsg.innerText = "Error: Torch capability not supported on this device/browser.";
+                statusMsg.style.color = "#ff5555";
+                statusMsg.innerText = "Apple blocks web browsers from using the physical iPad flashlight. Try an App Store app or use the Control Center panel instead!";
+                
+                // Shut down the camera stream since Apple blocked the flash
                 track.stop();
                 track = null;
                 return;
             }
         }
 
-        // 2. Flip the state and apply it to the hardware
         isTorchOn = !isTorchOn;
         await track.applyConstraints({
             advanced: [{ torch: isTorchOn }]
         });
 
-        // 3. Update the UI styles
         if (isTorchOn) {
-            toggleBtn.classList.remove('off');
-            toggleBtn.classList.add('on');
+            toggleBtn.className = "power-btn on";
             btnText.innerText = "Turn Off";
             statusMsg.innerText = "Flashlight Active";
         } else {
-            toggleBtn.classList.remove('on');
-            toggleBtn.classList.add('off');
+            toggleBtn.className = "power-btn off";
             btnText.innerText = "Turn On";
             statusMsg.innerText = "Flashlight Inactive";
         }
 
     } catch (error) {
         console.error(error);
-        statusMsg.innerText = "Error: Rear camera access denied or unavailable.";
+        statusMsg.style.color = "#ff5555";
+        statusMsg.innerText = "Camera access denied. Go to Settings > Safari > Camera to allow access.";
     }
 }
 
-// Attach event listener to button
 toggleBtn.addEventListener('click', toggleFlashlight);
