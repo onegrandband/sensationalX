@@ -3,9 +3,9 @@ let activeSchedule = null;
 let animationFrameId = null;
 let isEditingMode = false;  
 
-let alarmAudioCtx = null;
-let alarmOscillator = null;
-let alarmInterval = null;
+// Load your specific audio file
+const alarmAudio = new Audio('bathub-alert.mp3');
+alarmAudio.loop = true; // Let it loop until they click OK on the alert
 
 const MS_PER_SEC = 1000;
 const MS_PER_MIN = MS_PER_SEC * 60;
@@ -44,14 +44,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Required to allow sound to play on iPhones
+// Required to allow the MP3 to play later on iPhones
 function unlockAudio() {
-    if (!alarmAudioCtx) {
-        alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (alarmAudioCtx.state === 'suspended') {
-        alarmAudioCtx.resume();
-    }
+    alarmAudio.play().then(() => {
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0;
+    }).catch(err => console.log("Audio unlock pending interaction.", err));
 }
 
 function loadDataFromStorage() {
@@ -103,36 +101,21 @@ function triggerAlarmLoop() {
     mainCard.classList.remove('active-running');
     statusText.innerText = "🚨 Time's Up! Water is Ready.";
 
-    if (!alarmAudioCtx) {
-        alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
+    // Start playing the MP3
+    alarmAudio.play().catch(err => console.log("Playback failed:", err));
 
-    alarmInterval = setInterval(() => {
-        let osc = alarmAudioCtx.createOscillator();
-        let gain = alarmAudioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, alarmAudioCtx.currentTime); 
-        gain.gain.setValueAtTime(0.25, alarmAudioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, alarmAudioCtx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(alarmAudioCtx.destination);
-        osc.start();
-        osc.stop(alarmAudioCtx.currentTime + 0.3);
-    }, 400);
-
+    // Wait slightly so the sound actually starts before the browser pauses everything for the alert box
     setTimeout(() => {
         alert("🛁 Time to take your bath!");
         stopAlarmLoop();
         if (activeSchedule) calculateNextScheduledOccurrence();
         else clearActiveTimerState();
-    }, 100);
+    }, 400); 
 }
 
 function stopAlarmLoop() {
-    if (alarmInterval) {
-        clearInterval(alarmInterval);
-        alarmInterval = null;
-    }
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0; // Reset it to the beginning for next time
 }
 
 function enterEditingMode() {
