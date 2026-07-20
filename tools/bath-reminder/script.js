@@ -5,7 +5,7 @@ let isEditingMode = false;
 
 // Load your specific audio file
 const alarmAudio = new Audio('bathub-alert.mp3');
-alarmAudio.loop = true; // Let it loop until they click OK on the alert
+alarmAudio.loop = true; // Loops continuously until the stop button is clicked
 
 const MS_PER_SEC = 1000;
 const MS_PER_MIN = MS_PER_SEC * 60;
@@ -13,6 +13,7 @@ const MS_PER_HR = MS_PER_MIN * 60;
 const MS_PER_DAY = MS_PER_HR * 24;
 const MS_PER_WK = MS_PER_DAY * 7;
 
+// DOM Elements
 const lblWk = document.getElementById('lbl-wk');
 const lblDay = document.getElementById('lbl-day');
 const lblHr = document.getElementById('lbl-hr');
@@ -24,6 +25,9 @@ const statusText = document.getElementById('status-text');
 const mainCard = document.getElementById('main-timer-card');
 const btnClearActive = document.getElementById('btn-clear-active');
 const btnEditActive = document.getElementById('btn-edit-active');
+
+// New Stop Button (Make sure this exists in your HTML!)
+const btnStopAudio = document.getElementById('btn-stop-audio'); 
 
 const tabOnce = document.getElementById('tab-once');
 const tabRepeat = document.getElementById('tab-repeat');
@@ -44,7 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Required to allow the MP3 to play later on iPhones
+// Required to allow the MP3 to play later on iOS/Mobile devices
 function unlockAudio() {
     alarmAudio.play().then(() => {
         alarmAudio.pause();
@@ -63,6 +67,7 @@ function startSyncLoop() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     btnClearActive.classList.remove('hidden');
     btnEditActive.classList.remove('hidden');
+    if(btnStopAudio) btnStopAudio.classList.add('hidden'); // Ensure stop button is hidden while running
     mainCard.classList.add('active-running');
     
     function update() {
@@ -99,23 +104,33 @@ function startSyncLoop() {
 function triggerAlarmLoop() {
     cancelAnimationFrame(animationFrameId);
     mainCard.classList.remove('active-running');
-    statusText.innerText = "🚨 Time's Up! Water is Ready.";
+    statusText.innerText = "🚨 Time's Up! Water is Ready. 🛁";
 
-    // Start playing the MP3
+    // Play the looping audio
     alarmAudio.play().catch(err => console.log("Playback failed:", err));
 
-    // Wait slightly so the sound actually starts before the browser pauses everything for the alert box
-    setTimeout(() => {
-        alert("🛁 Time to take your bath!");
-        stopAlarmLoop();
-        if (activeSchedule) calculateNextScheduledOccurrence();
-        else clearActiveTimerState();
-    }, 400); 
+    // Show the Stop Audio button instead of blocking the browser with an alert()
+    if(btnStopAudio) {
+        btnStopAudio.classList.remove('hidden');
+    }
 }
 
 function stopAlarmLoop() {
+    // Stop and reset the audio
     alarmAudio.pause();
-    alarmAudio.currentTime = 0; // Reset it to the beginning for next time
+    alarmAudio.currentTime = 0; 
+    
+    // Hide the stop button
+    if(btnStopAudio) {
+        btnStopAudio.classList.add('hidden');
+    }
+
+    // Move to the next timer phase
+    if (activeSchedule) {
+        calculateNextScheduledOccurrence();
+    } else {
+        clearActiveTimerState();
+    }
 }
 
 function enterEditingMode() {
@@ -193,7 +208,8 @@ function calculateNextScheduledOccurrence() {
 
 function clearActiveTimerState() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    stopAlarmLoop();
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
     activeTimerTarget = null;
     localStorage.removeItem('bath_target_timestamp');
     mainCard.classList.remove('active-running');
@@ -204,6 +220,7 @@ function clearActiveTimerState() {
     statusText.innerText = "No active timers";
     btnClearActive.classList.add('hidden');
     btnEditActive.classList.add('hidden');
+    if(btnStopAudio) btnStopAudio.classList.add('hidden');
     exitEditingModeUIReset();
 }
 
@@ -248,11 +265,17 @@ function setupEventListeners() {
     });
 
     btnEditActive.addEventListener('click', enterEditingMode);
+    
     btnClearActive.addEventListener('click', () => {
         localStorage.removeItem('bath_repeat_schedule');
         activeSchedule = null;
         clearActiveTimerState();
     });
+
+    // Wire up the new Stop Audio button!
+    if(btnStopAudio) {
+        btnStopAudio.addEventListener('click', stopAlarmLoop);
+    }
 }
 
 function switchTabFocus(mode) {
