@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #222; /* Base color of the hidden text */
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+.content {
+    text-align: center;
+    z-index: 1; /* Keeps the text underneath the darkness */
+}
+
+.flashlight {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Allows you to click things underneath the shadow */
+    z-index: 10;
+    /* Default starting position in the center of the screen */
+    background: radial-gradient(
+        circle 150px at 50% 50%,
+        transparent 0%,
+        rgba(0, 0, 0, 0.98) 80%
+    );
+}
