@@ -1,7 +1,7 @@
 let activeTimerTarget = null; 
-let activeSchedule = null;    
+let activeSchedule = null;     
 let animationFrameId = null;
-let isEditingMode = false;   
+let isEditingMode = false;  
 
 // Dynamic Audio Loop Properties
 let alarmAudioCtx = null;
@@ -45,6 +45,16 @@ window.addEventListener('DOMContentLoaded', () => {
         calculateNextScheduledOccurrence();
     }
 });
+
+// Fixed: iOS requires audio context to be created/resumed during a direct user click
+function unlockAudio() {
+    if (!alarmAudioCtx) {
+        alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (alarmAudioCtx.state === 'suspended') {
+        alarmAudioCtx.resume();
+    }
+}
 
 function loadDataFromStorage() {
     const storedTarget = localStorage.getItem('bath_target_timestamp');
@@ -90,7 +100,6 @@ function startSyncLoop() {
     update();
 }
 
-// Continuous Sound Loop (Fixed for Safari Interaction Restriction Rules)
 function triggerAlarmLoop() {
     cancelAnimationFrame(animationFrameId);
     mainCard.classList.remove('active-running');
@@ -100,12 +109,11 @@ function triggerAlarmLoop() {
         alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
-    // Play rhythmic pulsing sound cycles until cleared
     alarmInterval = setInterval(() => {
         let osc = alarmAudioCtx.createOscillator();
         let gain = alarmAudioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, alarmAudioCtx.currentTime); // High clear D5 pitch
+        osc.frequency.setValueAtTime(587.33, alarmAudioCtx.currentTime); 
         gain.gain.setValueAtTime(0.25, alarmAudioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, alarmAudioCtx.currentTime + 0.3);
         osc.connect(gain);
@@ -220,6 +228,8 @@ function clearActiveTimerState() {
 
 function setupEventListeners() {
     btnOnceSubmit.addEventListener('click', () => {
+        unlockAudio(); // Unlocks audio on iPhone
+
         activeSchedule = null;
         localStorage.removeItem('bath_repeat_schedule');
 
@@ -240,6 +250,8 @@ function setupEventListeners() {
     });
 
     btnRepeatSubmit.addEventListener('click', () => {
+        unlockAudio(); // Unlocks audio on iPhone
+
         const checkedBoxes = document.querySelectorAll('input[name="sched-day"]:checked');
         const selectedTime = document.getElementById('sched-time').value;
 
