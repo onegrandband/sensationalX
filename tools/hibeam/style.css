@@ -1,19 +1,22 @@
-body {
+/* Apply strict bounds to reset iPad Safari layout bugs */
+html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
     background-color: #121212;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+body {
     color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     
-    /* Perfect centering setup */
+    /* Absolute dead-center alignment layout */
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    /* Using dynamic viewport height to prevent mobile address bar shifting */
-    min-height: 100dvh; 
-    width: 100vw;
-    overflow: hidden;
 }
 
 .flashlight-container {
@@ -23,18 +26,18 @@ body {
     align-items: center;
     text-align: center;
     width: 100%;
+    padding: 20px;
 }
 
 h1 {
-    font-size: 1.8rem;
-    margin-top: 0;
-    margin-bottom: 40px;
+    font-size: 2rem;
+    margin: 0 0 40px 0;
     letter-spacing: 1px;
 }
 
 .power-btn {
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
     border: none;
     font-size: 1.1rem;
@@ -45,19 +48,18 @@ h1 {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Button state when flashlight is OFF */
+/* Off State */
 .power-btn.off {
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
     color: #888;
     box-shadow: inset 2px 2px 5px rgba(255,255,255,0.05), 0 10px 20px rgba(0,0,0,0.6);
 }
 
-/* Button state when flashlight is ON */
+/* On State */
 .power-btn.on {
     background: linear-gradient(145deg, #ffca28, #ffb300);
     color: #121212;
@@ -65,12 +67,13 @@ h1 {
 }
 
 .icon {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
 }
 
 #status-msg {
-    margin-top: 30px;
-    font-size: 0.9rem;
-    color: #666;
-    min-height: 20px; /* Prevents layout shifting when text changes */
+    margin: 30px 0 0 0;
+    font-size: 1rem;
+    color: #888;
+    max-width: 300px;
+    line-height: 1.4;
 }
