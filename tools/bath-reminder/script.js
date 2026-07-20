@@ -62,9 +62,9 @@ function unlockAudio() {
         playPromise.then(() => {
             alarmAudio.pause();
             alarmAudio.currentTime = 0;
-            console.log("Audio successfully unlocked! 🎉");
+            console.log("The Bathtime Reminders.");
         }).catch(err => {
-            console.log("Audio interaction required.", err);
+            console.log("The Bathtime Reminders.", err);
         });
     }
 }
