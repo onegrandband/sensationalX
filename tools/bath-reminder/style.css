@@ -3,124 +3,180 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    overflow: hidden;
+    background: #0f172a;
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
 }
 
-.reminder-card {
-    background: #ffffff;
-    padding: 40px 30px;
-    border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-    text-align: center;
+.app-container {
     width: 100%;
-    max-width: 360px;
+    max-width: 600px;
+    padding: 20px;
     box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
-.icon-header {
-    font-size: 3.5rem;
-    margin-bottom: 15px;
-    animation: float 3s ease-in-out infinite;
+.timer-card {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
 }
 
-h1 {
-    color: #0369a1;
-    margin: 0 0 5px 0;
-    font-size: 1.8rem;
-}
+.bath-icon { font-size: 3rem; margin-bottom: 10px; }
+h2 { margin: 0 0 20px 0; color: #38bdf8; font-weight: 500; letter-spacing: 0.5px;}
 
-.subtitle {
-    color: #64748b;
-    margin: 0 0 30px 0;
-    font-size: 0.95rem;
-}
-
-.input-group {
+#countdown-display {
     display: flex;
     justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-family: 'Courier New', Courier, monospace;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 15px;
+}
+
+.time-block {
+    background: #1e293b;
+    border: 1px solid #475569;
+    padding: 10px;
+    border-radius: 8px;
+    min-width: 50px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+}
+
+.time-block span { font-size: 1.5rem; font-weight: bold; color: #f1f5f9; }
+.time-block label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+
+.time-block.sub-ms { min-width: 65px; }
+.time-block.sub-ms span { color: #38bdf8; }
+.time-block.sub-ns { min-width: 95px; }
+.time-block.sub-ns span { color: #06b6d4; font-size: 1.3rem; margin-top: 2px;}
+
+#status-text { color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px; }
+
+.action-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.control-panel {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 25px;
+}
+
+.tabs {
+    display: flex;
     gap: 10px;
     margin-bottom: 25px;
 }
 
-input[type="number"] {
-    width: 80px;
+.tab-btn {
+    flex: 1;
+    background: #334155;
+    color: #94a3b8;
+    border: none;
     padding: 12px;
-    font-size: 1.3rem;
+    border-radius: 10px;
     font-weight: bold;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    text-align: center;
-    color: #0f172a;
+    cursor: pointer;
+}
+
+.tab-btn.active { background: #38bdf8; color: #0f172a; }
+
+.panel-content h3 { margin: 0 0 15px 0; font-size: 1.1rem; color: #cbd5e1; }
+.panel-content h3.edit-highlight { color: #fbbf24; }
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+@media(max-width: 450px) { .input-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 0.75rem; color: #94a3b8; }
+
+input[type="number"], input[type="time"] {
+    background: #0f172a;
+    border: 1px solid #475569;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
     outline: none;
-    transition: border-color 0.2s;
 }
+input:disabled { opacity: 0.4; }
 
-input[type="number"]:focus {
-    border-color: #38bdf8;
-}
-
-.input-group span {
-    font-size: 1.1rem;
-    color: #334155;
-    font-weight: 500;
-}
-
-button {
+button.btn-primary {
     width: 100%;
-    padding: 15px;
+    background: #0284c7;
+    color: #fff;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
     font-size: 1rem;
     font-weight: bold;
-    border: none;
-    border-radius: 14px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s;
+}
+button.btn-primary:hover { background: #0369a1; }
+button.btn-primary.edit-mode { background: #d97706; }
+button.btn-primary.edit-mode:hover { background: #b45309; }
+
+button.btn-danger, button.btn-warning {
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+button.btn-danger { background: #ef4444; }
+button.btn-danger:hover { background: #dc2626; }
+button.btn-warning { background: #f59e0b; color: #0f172a; }
+button.btn-warning:hover { background: #d97706; }
+
+.days-picker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background: #0f172a;
+    padding: 12px;
+    border-radius: 10px;
 }
 
-.btn-primary {
-    background: #0284c7;
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+.days-picker label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-.btn-primary:hover {
-    background: #0369a1;
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background: #f1f5f9;
-    color: #64748b;
-}
-
-.btn-secondary:hover {
-    background: #e2e8f0;
-    color: #475569;
-}
-
-#timer-display {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: #0f172a;
-    font-variant-numeric: tabular-nums;
+.time-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     margin-bottom: 25px;
 }
 
-.hidden {
-    display: none !important;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-}
+.hidden { display: none !important; }
