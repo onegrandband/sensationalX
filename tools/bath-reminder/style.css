@@ -1,0 +1,126 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reminder-card {
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+    text-align: center;
+    width: 100%;
+    max-width: 360px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.icon-header {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+h1 {
+    color: #0369a1;
+    margin: 0 0 5px 0;
+    font-size: 1.8rem;
+}
+
+.subtitle {
+    color: #64748b;
+    margin: 0 0 30px 0;
+    font-size: 0.95rem;
+}
+
+.input-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+input[type="number"] {
+    width: 80px;
+    padding: 12px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    text-align: center;
+    color: #0f172a;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="number"]:focus {
+    border-color: #38bdf8;
+}
+
+.input-group span {
+    font-size: 1.1rem;
+    color: #334155;
+    font-weight: 500;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary {
+    background: #0284c7;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+}
+
+.btn-primary:hover {
+    background: #0369a1;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+#timer-display {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 25px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
