@@ -1,3 +1,4 @@
+// UPDATED CODE
 let activeTimerTarget = null; 
 let activeSchedule = null;     
 let animationFrameId = null;
