@@ -2,28 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>High-Precision Bath Scheduler</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="bg-glow"></div>
+
     <div class="app-container">
-        <header class="timer-card">
-            <div class="bath-icon">🛁</div>
+        <header id="main-timer-card" class="timer-card">
+            <div class="bath-icon-wrapper">
+                <div class="pulse-ring"></div>
+                <div class="bath-icon">Docs 🛁</div>
+            </div>
+            
             <h2>Next Bath Countdown</h2>
-            <div id="countdown-display">
+            
+            <div class="countdown-row">
                 <div class="time-block"><span id="lbl-wk">00</span><label>Wk</label></div>
                 <div class="time-block"><span id="lbl-day">00</span><label>Day</label></div>
                 <div class="time-block"><span id="lbl-hr">00</span><label>Hr</label></div>
                 <div class="time-block"><span id="lbl-min">00</span><label>Min</label></div>
                 <div class="time-block"><span id="lbl-sec">00</span><label>Sec</label></div>
-                <div class="time-block sub-ms"><span id="lbl-ms">000</span><label>Ms</label></div>
-                <div class="time-block sub-ns"><span id="lbl-ns">000000</span><label>Ns</label></div>
+                <div class="time-block highlight-ms"><span id="lbl-ms">000</span><label>Ms</label></div>
+                <div class="time-block highlight-ns"><span id="lbl-ns">000000</span><label>Ns</label></div>
             </div>
+
             <div id="status-text">No active timers</div>
+            
             <div class="action-row">
-                <button id="btn-edit-active" class="btn-warning hidden">✏️ Edit</button>
-                <button id="btn-clear-active" class="btn-danger hidden">❌ Cancel</button>
+                <button id="btn-edit-active" class="btn-action btn-warning hidden">✏️ Edit</button>
+                <button id="btn-clear-active" class="btn-action btn-danger hidden">❌ Cancel</button>
             </div>
         </header>
 
@@ -42,7 +51,6 @@
                     <div class="field"><label>Mins</label><input type="number" id="in-min" min="0" value="20"></div>
                     <div class="field"><label>Secs</label><input type="number" id="in-sec" min="0" value="0"></div>
                     <div class="field"><label>Ms</label><input type="number" id="in-ms" min="0" value="0"></div>
-                    <div class="field"><label>Ns</label><input type="number" id="in-ns" min="0" value="0" disabled></div>
                 </div>
                 <button id="btn-start-once" class="btn-primary">Start One-Time Timer</button>
             </div>
@@ -50,13 +58,13 @@
             <div id="panel-repeat" class="panel-content hidden">
                 <h3 id="repeat-title">Set Recurring Days & Time</h3>
                 <div class="days-picker">
-                    <label><input type="checkbox" name="sched-day" value="1"> M</label>
-                    <label><input type="checkbox" name="sched-day" value="2"> T</label>
-                    <label><input type="checkbox" name="sched-day" value="3"> W</label>
-                    <label><input type="checkbox" name="sched-day" value="4"> T</label>
-                    <label><input type="checkbox" name="sched-day" value="5"> F</label>
-                    <label><input type="checkbox" name="sched-day" value="6"> S</label>
-                    <label><input type="checkbox" name="sched-day" value="0"> S</label>
+                    <label><input type="checkbox" name="sched-day" value="1"> <span>M</span></label>
+                    <label><input type="checkbox" name="sched-day" value="2"> <span>T</span></label>
+                    <label><input type="checkbox" name="sched-day" value="3"> <span>W</span></label>
+                    <label><input type="checkbox" name="sched-day" value="4"> <span>T</span></label>
+                    <label><input type="checkbox" name="sched-day" value="5"> <span>F</span></label>
+                    <label><input type="checkbox" name="sched-day" value="6"> <span>S</span></label>
+                    <label><input type="checkbox" name="sched-day" value="0"> <span>S</span></label>
                 </div>
                 <div class="time-picker-row">
                     <label for="sched-time">Target Time:</label>
