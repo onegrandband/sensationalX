@@ -1,4 +1,3 @@
-/* Apply strict bounds to reset iPad Safari layout bugs */
 html, body {
     margin: 0;
     padding: 0;
@@ -6,35 +5,37 @@ html, body {
     height: 100%;
     background-color: #121212;
     overflow: hidden;
-    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    
-    /* Absolute dead-center alignment layout */
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
+/* This container acts as an absolute coordinate grid */
 .flashlight-container {
+    position: relative;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
     width: 100%;
-    padding: 20px;
+    height: 100%;
 }
 
+/* Positioned cleanly above the button without pushing it down */
 h1 {
+    position: absolute;
+    top: 25%;
     font-size: 2rem;
-    margin: 0 0 40px 0;
+    margin: 0;
     letter-spacing: 1px;
+    text-align: center;
 }
 
+/* The button is now the literal anchor point of the entire page center */
 .power-btn {
     width: 160px;
     height: 160px;
@@ -50,6 +51,7 @@ h1 {
     gap: 10px;
     transition: all 0.3s ease;
     -webkit-tap-highlight-color: transparent;
+    z-index: 2;
 }
 
 /* Off State */
@@ -70,10 +72,14 @@ h1 {
     font-size: 2.8rem;
 }
 
+/* Positioned cleanly below the button */
 #status-msg {
-    margin: 30px 0 0 0;
+    position: absolute;
+    bottom: 20%;
     font-size: 1rem;
     color: #888;
-    max-width: 300px;
+    max-width: 450px;
+    text-align: center;
     line-height: 1.4;
+    padding: 0 20px;
 }
