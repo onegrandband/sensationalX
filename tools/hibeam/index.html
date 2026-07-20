@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Flashlight</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="flashlight-container">
+        <h1>Hardware Torch</h1>
+        
+        <button id="torch-toggle" class="power-btn off">
+            <span class="icon">💡</span>
+            <span id="btn-text">Turn On</span>
+        </button>
+        
+        <p id="status-msg">Click to activate device flashlight</p>
+    </div>
+
+    <video id="video-stream" autoplay playsinline style="display:none;"></video>
+
+    <script src="script.js"></script>
+</body>
+</html>
