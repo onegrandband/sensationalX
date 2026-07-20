@@ -3,27 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bath Time Reminder</title>
+    <title>High-Precision Bath Scheduler</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="reminder-card">
-        <div class="icon-header">🛁</div>
-        <h1>Bath Reminder</h1>
-        <p class="subtitle">Set a timer to prepare your bath</p>
-
-        <div id="setup-container">
-            <div class="input-group">
-                <input type="number" id="minutes-input" min="1" max="120" value="20">
-                <span>minutes</span>
+    <div class="app-container">
+        <header class="timer-card">
+            <div class="bath-icon">🛁</div>
+            <h2>Next Bath Countdown</h2>
+            <div id="countdown-display">
+                <div class="time-block"><span id="lbl-wk">00</span><label>Wk</label></div>
+                <div class="time-block"><span id="lbl-day">00</span><label>Day</label></div>
+                <div class="time-block"><span id="lbl-hr">00</span><label>Hr</label></div>
+                <div class="time-block"><span id="lbl-min">00</span><label>Min</label></div>
+                <div class="time-block"><span id="lbl-sec">00</span><label>Sec</label></div>
+                <div class="time-block sub-ms"><span id="lbl-ms">000</span><label>Ms</label></div>
+                <div class="time-block sub-ns"><span id="lbl-ns">000000</span><label>Ns</label></div>
             </div>
-            <button id="btn-start" class="btn-primary">Set Reminder</button>
-        </div>
+            <div id="status-text">No active timers</div>
+            <button id="btn-clear-active" class="btn-danger hidden">Cancel Active Timer</button>
+        </header>
 
-        <div id="countdown-container" class="hidden">
-            <div id="timer-display">00:00</div>
-            <button id="btn-cancel" class="btn-secondary">Cancel</button>
-        </div>
+        <main class="control-panel">
+            <div class="tabs">
+                <button id="tab-once" class="tab-btn active">One-Time Timer</button>
+                <button id="tab-repeat" class="tab-btn">Weekly Schedule</button>
+            </div>
+
+            <div id="panel-once" class="panel-content">
+                <h3>Set Relative Duration</h3>
+                <div class="input-grid">
+                    <div class="field"><label>Weeks</label><input type="number" id="in-wk" min="0" value="0"></div>
+                    <div class="field"><label>Days</label><input type="number" id="in-day" min="0" value="0"></div>
+                    <div class="field"><label>Hours</label><input type="number" id="in-hr" min="0" value="0"></div>
+                    <div class="field"><label>Mins</label><input type="number" id="in-min" min="0" value="20"></div>
+                    <div class="field"><label>Secs</label><input type="number" id="in-sec" min="0" value="0"></div>
+                    <div class="field"><label>Ms</label><input type="number" id="in-ms" min="0" value="0"></div>
+                    <div class="field"><label>Ns</label><input type="number" id="in-ns" min="0" value="0"></div>
+                </div>
+                <button id="btn-start-once" class="btn-primary">Start One-Time Timer</button>
+            </div>
+
+            <div id="panel-repeat" class="panel-content hidden">
+                <h3>Set Recurring Days & Time</h3>
+                <div class="days-picker">
+                    <label><input type="checkbox" name="sched-day" value="1"> M</label>
+                    <label><input type="checkbox" name="sched-day" value="2"> T</label>
+                    <label><input type="checkbox" name="sched-day" value="3"> W</label>
+                    <label><input type="checkbox" name="sched-day" value="4"> T</label>
+                    <label><input type="checkbox" name="sched-day" value="5"> F</label>
+                    <label><input type="checkbox" name="sched-day" value="6"> S</label>
+                    <label><input type="checkbox" name="sched-day" value="0"> S</label>
+                </div>
+                <div class="time-picker-row">
+                    <label for="sched-time">Target Time:</label>
+                    <input type="time" id="sched-time" value="20:00">
+                </div>
+                <button id="btn-save-schedule" class="btn-primary">Save Repeating Schedule</button>
+            </div>
+        </main>
     </div>
 
     <script src="script.js"></script>
