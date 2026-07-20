@@ -5,7 +5,7 @@ let isEditingMode = false;
 
 // Load your specific audio file
 const alarmAudio = new Audio('bathub-alert.mp3');
-alarmAudio.loop = true; // Loops continuously until the stop button is clicked
+alarmAudio.loop = true; 
 
 const MS_PER_SEC = 1000;
 const MS_PER_MIN = MS_PER_SEC * 60;
@@ -25,8 +25,6 @@ const statusText = document.getElementById('status-text');
 const mainCard = document.getElementById('main-timer-card');
 const btnClearActive = document.getElementById('btn-clear-active');
 const btnEditActive = document.getElementById('btn-edit-active');
-
-// New Stop Button (Make sure this exists in your HTML!)
 const btnStopAudio = document.getElementById('btn-stop-audio'); 
 
 const tabOnce = document.getElementById('tab-once');
@@ -46,14 +44,29 @@ window.addEventListener('DOMContentLoaded', () => {
     } else if (activeSchedule) {
         calculateNextScheduledOccurrence();
     }
+
+    // FALLBACK: Unlocks audio on the very first click anywhere on the page
+    const unlockFallback = () => {
+        unlockAudio();
+        document.removeEventListener('click', unlockFallback);
+    };
+    document.addEventListener('click', unlockFallback);
 });
 
-// Required to allow the MP3 to play later on iOS/Mobile devices
+// Forces the browser to whitelist this audio object for future playback
 function unlockAudio() {
-    alarmAudio.play().then(() => {
-        alarmAudio.pause();
-        alarmAudio.currentTime = 0;
-    }).catch(err => console.log("Audio unlock pending interaction.", err));
+    // We play and immediately pause it. This satisfies the browser's "user interaction" requirement.
+    const playPromise = alarmAudio.play();
+    
+    if (playPromise !== undefined) {
+        playPromise.then(() => {
+            alarmAudio.pause();
+            alarmAudio.currentTime = 0;
+            console.log("Audio successfully unlocked! 🎉");
+        }).catch(err => {
+            console.log("Audio interaction required.", err);
+        });
+    }
 }
 
 function loadDataFromStorage() {
@@ -67,7 +80,7 @@ function startSyncLoop() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     btnClearActive.classList.remove('hidden');
     btnEditActive.classList.remove('hidden');
-    if(btnStopAudio) btnStopAudio.classList.add('hidden'); // Ensure stop button is hidden while running
+    if(btnStopAudio) btnStopAudio.classList.add('hidden');
     mainCard.classList.add('active-running');
     
     function update() {
@@ -106,26 +119,26 @@ function triggerAlarmLoop() {
     mainCard.classList.remove('active-running');
     statusText.innerText = "🚨 Time's Up! Water is Ready. 🛁";
 
-    // Play the looping audio
-    alarmAudio.play().catch(err => console.log("Playback failed:", err));
+    // Play the audio loop
+    alarmAudio.currentTime = 0; 
+    alarmAudio.play().catch(err => {
+        console.error("Playback blocked by browser settings:", err);
+        statusText.innerText = "🚨 Time's Up! (Click anywhere to hear audio)";
+    });
 
-    // Show the Stop Audio button instead of blocking the browser with an alert()
     if(btnStopAudio) {
         btnStopAudio.classList.remove('hidden');
     }
 }
 
 function stopAlarmLoop() {
-    // Stop and reset the audio
     alarmAudio.pause();
     alarmAudio.currentTime = 0; 
     
-    // Hide the stop button
     if(btnStopAudio) {
         btnStopAudio.classList.add('hidden');
     }
 
-    // Move to the next timer phase
     if (activeSchedule) {
         calculateNextScheduledOccurrence();
     } else {
@@ -206,10 +219,10 @@ function calculateNextScheduledOccurrence() {
     }
 }
 
+// Fixed: Stop audio directly when clearing state
 function clearActiveTimerState() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    alarmAudio.pause();
-    alarmAudio.currentTime = 0;
+    stopAlarmLoop(); 
     activeTimerTarget = null;
     localStorage.removeItem('bath_target_timestamp');
     mainCard.classList.remove('active-running');
@@ -272,7 +285,6 @@ function setupEventListeners() {
         clearActiveTimerState();
     });
 
-    // Wire up the new Stop Audio button!
     if(btnStopAudio) {
         btnStopAudio.addEventListener('click', stopAlarmLoop);
     }
