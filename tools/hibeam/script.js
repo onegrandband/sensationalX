@@ -52,7 +52,7 @@ async function toggleFlashlight() {
 
     } catch (error) {
         console.error(error);
-        statusMsg.innerText = "Error: Camera access denied.";
+        statusMsg.innerText = "Error: Rear camera access denied or unavailable.";
     }
 }
 
