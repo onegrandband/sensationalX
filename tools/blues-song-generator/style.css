@@ -1,0 +1,120 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121214;
+    color: #e2e8f0;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #ff79c6;
+    margin-bottom: 5px;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    color: #8be9fd;
+    margin: 0;
+    font-style: italic;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+button {
+    background-color: #ff5555;
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+    background-color: #ff6e6e;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.output-card {
+    background-color: #1d1f27;
+    border: 2px solid #44475a;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.hidden {
+    display: none;
+}
+
+.track-meta h2 {
+    color: #50fa7b;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.track-meta p {
+    color: #bd93f9;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #44475a;
+    margin: 20px 0;
+}
+
+.lyrics-body {
+    white-space: pre-line;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.verse {
+    margin-bottom: 25px;
+}
+
+.chorus {
+    margin-bottom: 25px;
+    font-weight: bold;
+    color: #f1fa8c;
+    border-left: 3px solid #f1fa8c;
+    padding-left: 15px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
