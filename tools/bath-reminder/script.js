@@ -3,7 +3,6 @@ let activeSchedule = null;
 let animationFrameId = null;
 let isEditingMode = false;  
 
-// Dynamic Audio Loop Properties
 let alarmAudioCtx = null;
 let alarmOscillator = null;
 let alarmInterval = null;
@@ -14,7 +13,6 @@ const MS_PER_HR = MS_PER_MIN * 60;
 const MS_PER_DAY = MS_PER_HR * 24;
 const MS_PER_WK = MS_PER_DAY * 7;
 
-// DOM Mappings
 const lblWk = document.getElementById('lbl-wk');
 const lblDay = document.getElementById('lbl-day');
 const lblHr = document.getElementById('lbl-hr');
@@ -46,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Fixed: iOS requires audio context to be created/resumed during a direct user click
+// Required to allow sound to play on iPhones
 function unlockAudio() {
     if (!alarmAudioCtx) {
         alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -228,7 +226,7 @@ function clearActiveTimerState() {
 
 function setupEventListeners() {
     btnOnceSubmit.addEventListener('click', () => {
-        unlockAudio(); // Unlocks audio on iPhone
+        unlockAudio(); 
 
         activeSchedule = null;
         localStorage.removeItem('bath_repeat_schedule');
@@ -250,7 +248,7 @@ function setupEventListeners() {
     });
 
     btnRepeatSubmit.addEventListener('click', () => {
-        unlockAudio(); // Unlocks audio on iPhone
+        unlockAudio(); 
 
         const checkedBoxes = document.querySelectorAll('input[name="sched-day"]:checked');
         const selectedTime = document.getElementById('sched-time').value;
