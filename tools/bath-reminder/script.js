@@ -4,7 +4,7 @@ let animationFrameId = null;
 let isEditingMode = false;  
 
 // Load your specific audio file
-const alarmAudio = new Audio('bathub-alert.mp3');
+const alarmAudio = new Audio('bathtub-alert.mp3');
 alarmAudio.loop = true; 
 
 const MS_PER_SEC = 1000;
