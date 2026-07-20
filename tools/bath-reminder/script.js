@@ -57,6 +57,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function unlockAudio() {
     // We play and immediately pause it. This satisfies the browser's "user interaction" requirement.
     const playPromise = alarmAudio.play();
+    playPromise.loop = true;
     
     if (playPromise !== undefined) {
         playPromise.then(() => {
