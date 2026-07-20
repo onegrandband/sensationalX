@@ -1,211 +1,205 @@
-/* --- Base Styles --- */
-:root {
-    --bg-dark: #12182b;
-    --card-bg: #1e2642;
-    --accent-blue: #32bef0;
-    --text-color: #ffffff;
-    --text-muted: #abb8c3;
-    --input-bg: #141a31;
-    --border-color: #2e3b61;
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background: #0f172a;
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-    background-color: var(--bg-dark);
-    color: var(--text-color);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    margin: 0;
-    padding: 20px; /* Provides internal gutter */
+    display: flex;
+    justify-content: center;
+    /* align-items changed to flex-start to prevent the top from getting cut off on iPhones */
+    align-items: flex-start; 
+    padding: 40px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 0 20px;
     box-sizing: border-box;
-}
-
-h1, h2 {
-    margin: 0 0 10px;
-    color: var(--text-muted);
-    font-weight: 400;
-}
-
-h2 {
-    color: var(--text-color);
-    margin-top: 20px;
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-}
-
-p.status-text {
-    text-align: center;
-    color: var(--text-muted);
-    margin: 15px 0;
-}
-
-/* --- Base Layout: iPad / Tablet (Correct State) --- */
-.main-container {
-    max-width: 1000px; /* Ensures content doesn't get too wide on large screens */
     margin: 0 auto;
 }
 
-.app-header {
-    margin-bottom: 20px;
-}
-
-/* Base style for the blue timer blocks */
-.timer-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-}
-
-.timer-block {
-    width: 100%;
-    margin-bottom: 5px;
-    padding: 10px;
-    background-color: var(--input-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
+.timer-card {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 30px 20px;
     text-align: center;
-    color: var(--accent-blue);
-    font-weight: bold;
-    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
 }
 
-.number-large {
-    font-size: 1.5rem;
-    color: #ffffff;
+.bath-icon { font-size: 3rem; margin-bottom: 10px; }
+h2 { margin: 0 0 20px 0; color: #38bdf8; font-weight: 500; letter-spacing: 0.5px;}
+
+/* Fixed: The class name now matches the HTML, and it wraps cleanly on mobile */
+.countdown-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap; /* CRUCIAL: Makes the time blocks wrap instead of shooting off screen */
+    font-family: 'Courier New', Courier, monospace;
+    font-variant-numeric: tabular-nums;
     margin-bottom: 15px;
 }
 
-/* Basic styling for tab buttons */
-.tabs-row {
+.time-block {
+    background: #1e293b;
+    border: 1px solid #475569;
+    padding: 10px;
+    border-radius: 8px;
+    min-width: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 auto;
+}
+
+.time-block span { font-size: 1.5rem; font-weight: bold; color: #f1f5f9; }
+.time-block label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+
+.time-block.highlight-ms { min-width: 65px; }
+.time-block.highlight-ms span { color: #38bdf8; }
+.time-block.highlight-ns { min-width: 95px; }
+.time-block.highlight-ns span { color: #06b6d4; font-size: 1.3rem; margin-top: 2px;}
+
+#status-text { color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px; }
+
+.action-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.control-panel {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 25px;
+}
+
+.tabs {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .tab-btn {
-    flex: 1; /* Split width equally */
+    flex: 1;
+    background: #334155;
+    color: #94a3b8;
+    border: none;
     padding: 12px;
-    background-color: var(--card-bg);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
     border-radius: 10px;
-    cursor: pointer;
     font-weight: bold;
-    transition: background 0.2s;
+    cursor: pointer;
 }
 
-.tab-btn.active {
-    background-color: var(--accent-blue);
-}
+.tab-btn.active { background: #38bdf8; color: #0f172a; }
 
-.tab-btn:hover:not(.active) {
-    background-color: var(--border-color);
-}
+.panel-content h3 { margin: 0 0 15px 0; font-size: 1.1rem; color: #cbd5e1; }
+.panel-content h3.edit-highlight { color: #fbbf24; }
 
-/* Basic styling for the form and inputs */
-.controls-section {
-    padding: 20px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-}
-
-/* *** BASE Form Grid (Good for iPad) *** */
-.form-fields-grid {
+.input-grid {
     display: grid;
-    /* This rule creates columns that fit the screen, stacking automatically */
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on iPad/Desktop */
     gap: 15px;
+    margin-bottom: 20px;
 }
 
-.field-group {
-    display: flex;
-    flex-direction: column;
-}
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 0.75rem; color: #94a3b8; }
 
-.field-group label {
-    margin-bottom: 8px;
-    color: var(--text-muted);
-}
-
-.field-group input {
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 12px;
-    box-sizing: border-box; /* Crucial to prevent horizontal scroll */
+input[type="number"], input[type="time"] {
+    background: #0f172a;
+    border: 1px solid #475569;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    outline: none;
     width: 100%;
-    font-size: 1rem;
+    box-sizing: border-box;
 }
+input:disabled { opacity: 0.4; }
 
-.start-btn {
+button.btn-primary {
     width: 100%;
-    margin-top: 20px;
-    padding: 15px;
-    background-color: var(--accent-blue);
-    color: #ffffff;
+    background: #0284c7;
+    color: #fff;
+    padding: 14px;
     border: none;
     border-radius: 10px;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button.btn-primary:hover { background: #0369a1; }
+button.btn-primary.edit-mode { background: #d97706; }
+button.btn-primary.edit-mode:hover { background: #b45309; }
+
+button.btn-danger, button.btn-warning {
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+button.btn-danger { background: #ef4444; }
+button.btn-danger:hover { background: #dc2626; }
+button.btn-warning { background: #f59e0b; color: #0f172a; }
+button.btn-warning:hover { background: #d97706; }
+
+.days-picker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background: #0f172a;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.days-picker label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
     font-weight: bold;
     cursor: pointer;
 }
 
-/* ========================================= */
-/* --- The Specific Fix for iPhone screens --- */
-/* ========================================= */
-@media (max-width: 767px) {
-    /* Main body spacing for smaller screens */
-    body {
-        padding: 15px;
-    }
+.time-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
 
-    /* Stack blue number blocks vertically and make them smaller */
-    .timer-section {
-        padding: 15px;
-    }
+.hidden { display: none !important; }
 
-    .timer-block {
-        font-size: 0.9rem;
-        padding: 8px;
-        margin-bottom: 4px;
-    }
-
-    .number-large {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-    }
-
-    /* Stack tab buttons vertically */
-    .tabs-row {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    /* Adjust the form card internal padding */
-    .controls-section {
-        padding: 15px;
-    }
-
-    /* *** The Crucial Fix for Form Fields *** */
-    /* Force form grid to be a SINGLE vertical column */
-    .form-fields-grid {
-        grid-template-columns: 1fr;
+/* Mobile Formatting for iPhone */
+@media(max-width: 480px) { 
+    body { padding: 20px 0; }
+    
+    .input-grid { 
+        grid-template-columns: 1fr; /* Stack inputs vertically so they don't crush */
         gap: 10px;
     }
-
-    /* Smaller spacing on labels */
-    .field-group label {
-        margin-bottom: 6px;
-    }
-
-    /* Adjust main submit button height for touch access */
-    .start-btn {
-        padding: 18px;
-        font-size: 1.2rem;
-    }
+    
+    .countdown-row { gap: 5px; }
+    .time-block { padding: 6px; }
+    .time-block span { font-size: 1.2rem; }
+    
+    .days-picker { flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .bath-icon { font-size: 2.2rem; }
 }
