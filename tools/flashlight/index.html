@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Blues Song Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DeltaBot 9000</h1>
+            <p class="subtitle">AI Blues Song Generator</p>
+        </header>
 
+        <main>
+            <div class="controls">
+                <button id="generate-btn">Generate New Blues Track</button>
+            </div>
+
+            <div id="output-card" class="output-card hidden">
+                <div class="track-meta">
+                    <h2 id="song-title">Song Title</h2>
+                    <p id="song-meta">Tempo: 90 BPM | Key: E Minor</p>
+                </div>
+                <hr>
+                <div id="song-lyrics" class="lyrics-body">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
