@@ -2,7 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100vh; /* Fixed: Allows scrolling if content is taller than screen */
     background: #0f172a;
     color: #f8fafc;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -10,16 +10,21 @@ html, body {
 
 body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start; /* Fixed: prevents clipping at the top on iPhone */
     align-items: center;
-    overflow-y: auto;
+    padding: 40px 0; /* Adds breathing room to top and bottom */
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto; /* Fixed: Ensures scrollbar works */
 }
 
 .app-container {
     width: 100%;
     max-width: 600px;
-    padding: 20px;
+    padding: 0 15px; /* Side padding so it doesn't touch phone edges */
     box-sizing: border-box;
+    margin: auto; /* Centers perfectly if screen is tall enough */
 }
 
 .timer-card {
@@ -35,11 +40,12 @@ body {
 .bath-icon { font-size: 3rem; margin-bottom: 10px; }
 h2 { margin: 0 0 20px 0; color: #38bdf8; font-weight: 500; letter-spacing: 0.5px;}
 
-#countdown-display {
+/* Fixed: Changed from #countdown-display to .countdown-row to match HTML */
+.countdown-row {
     display: flex;
     justify-content: center;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allows blocks to drop to the next line on iPhone */
     font-family: 'Courier New', Courier, monospace;
     font-variant-numeric: tabular-nums;
     margin-bottom: 15px;
@@ -54,15 +60,17 @@ h2 { margin: 0 0 20px 0; color: #38bdf8; font-weight: 500; letter-spacing: 0.5px
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex: 1 1 auto; /* Allows subtle squishing on small screens */
 }
 
 .time-block span { font-size: 1.5rem; font-weight: bold; color: #f1f5f9; }
 .time-block label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
 
-.time-block.sub-ms { min-width: 65px; }
-.time-block.sub-ms span { color: #38bdf8; }
-.time-block.sub-ns { min-width: 95px; }
-.time-block.sub-ns span { color: #06b6d4; font-size: 1.3rem; margin-top: 2px;}
+/* Fixed class names to match the HTML */
+.time-block.highlight-ms { min-width: 65px; }
+.time-block.highlight-ms span { color: #38bdf8; }
+.time-block.highlight-ns { min-width: 95px; }
+.time-block.highlight-ns span { color: #06b6d4; font-size: 1.3rem; margin-top: 2px;}
 
 #status-text { color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px; }
 
@@ -103,12 +111,10 @@ h2 { margin: 0 0 20px 0; color: #38bdf8; font-weight: 500; letter-spacing: 0.5px
 
 .input-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for desktop */
     gap: 10px;
     margin-bottom: 20px;
 }
-
-@media(max-width: 450px) { .input-grid { grid-template-columns: repeat(3, 1fr); } }
 
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label { font-size: 0.75rem; color: #94a3b8; }
@@ -121,6 +127,8 @@ input[type="number"], input[type="time"] {
     border-radius: 8px;
     font-weight: bold;
     outline: none;
+    width: 100%;
+    box-sizing: border-box;
 }
 input:disabled { opacity: 0.4; }
 
@@ -180,3 +188,16 @@ button.btn-warning:hover { background: #d97706; }
 }
 
 .hidden { display: none !important; }
+
+/* Mobile Optimizations */
+@media(max-width: 450px) { 
+    body { padding: 20px 0; }
+    .input-grid { grid-template-columns: repeat(2, 1fr); } /* Fixed: 2 columns on mobile so inputs aren't crushed */
+    .countdown-row { gap: 5px; }
+    .time-block { min-width: 42px; padding: 6px; }
+    .time-block span { font-size: 1.2rem; }
+    .time-block.highlight-ns { min-width: 80px; }
+    .time-block.highlight-ns span { font-size: 1.1rem; }
+    .days-picker { flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .bath-icon { font-size: 2.2rem; }
+}
