@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bath Time Reminder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="reminder-card">
+        <div class="icon-header">🛁</div>
+        <h1>Bath Reminder</h1>
+        <p class="subtitle">Set a timer to prepare your bath</p>
+
+        <div id="setup-container">
+            <div class="input-group">
+                <input type="number" id="minutes-input" min="1" max="120" value="20">
+                <span>minutes</span>
+            </div>
+            <button id="btn-start" class="btn-primary">Set Reminder</button>
+        </div>
+
+        <div id="countdown-container" class="hidden">
+            <div id="timer-display">00:00</div>
+            <button id="btn-cancel" class="btn-secondary">Cancel</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
