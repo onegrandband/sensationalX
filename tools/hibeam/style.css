@@ -4,19 +4,30 @@ body {
     background-color: #121212;
     color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    
+    /* Perfect centering setup */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    
+    /* Using dynamic viewport height to prevent mobile address bar shifting */
+    min-height: 100dvh; 
+    width: 100vw;
     overflow: hidden;
 }
 
 .flashlight-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    width: 100%;
 }
 
 h1 {
     font-size: 1.8rem;
+    margin-top: 0;
     margin-bottom: 40px;
     letter-spacing: 1px;
 }
@@ -61,4 +72,5 @@ h1 {
     margin-top: 30px;
     font-size: 0.9rem;
     color: #666;
+    min-height: 20px; /* Prevents layout shifting when text changes */
 }
