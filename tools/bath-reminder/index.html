@@ -21,7 +21,10 @@
                 <div class="time-block sub-ns"><span id="lbl-ns">000000</span><label>Ns</label></div>
             </div>
             <div id="status-text">No active timers</div>
-            <button id="btn-clear-active" class="btn-danger hidden">Cancel Active Timer</button>
+            <div class="action-row">
+                <button id="btn-edit-active" class="btn-warning hidden">✏️ Edit</button>
+                <button id="btn-clear-active" class="btn-danger hidden">❌ Cancel</button>
+            </div>
         </header>
 
         <main class="control-panel">
@@ -31,7 +34,7 @@
             </div>
 
             <div id="panel-once" class="panel-content">
-                <h3>Set Relative Duration</h3>
+                <h3 id="once-title">Set Relative Duration</h3>
                 <div class="input-grid">
                     <div class="field"><label>Weeks</label><input type="number" id="in-wk" min="0" value="0"></div>
                     <div class="field"><label>Days</label><input type="number" id="in-day" min="0" value="0"></div>
@@ -39,13 +42,13 @@
                     <div class="field"><label>Mins</label><input type="number" id="in-min" min="0" value="20"></div>
                     <div class="field"><label>Secs</label><input type="number" id="in-sec" min="0" value="0"></div>
                     <div class="field"><label>Ms</label><input type="number" id="in-ms" min="0" value="0"></div>
-                    <div class="field"><label>Ns</label><input type="number" id="in-ns" min="0" value="0"></div>
+                    <div class="field"><label>Ns</label><input type="number" id="in-ns" min="0" value="0" disabled></div>
                 </div>
                 <button id="btn-start-once" class="btn-primary">Start One-Time Timer</button>
             </div>
 
             <div id="panel-repeat" class="panel-content hidden">
-                <h3>Set Recurring Days & Time</h3>
+                <h3 id="repeat-title">Set Recurring Days & Time</h3>
                 <div class="days-picker">
                     <label><input type="checkbox" name="sched-day" value="1"> M</label>
                     <label><input type="checkbox" name="sched-day" value="2"> T</label>
