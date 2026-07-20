@@ -2,34 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Blues Song Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Blues Audio Station</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>DeltaBot 9000</h1>
-            <p class="subtitle">AI Blues Song Generator</p>
-        </header>
+    <div class="app-container">
+        <main class="audio-deck">
+            <h1>SX BLUES</h1>
+            <p class="deck-subtitle">Procedural Blues Beat Engine</p>
 
-        <main>
-            <div class="controls">
-                <button id="generate-btn">Generate New Blues Track</button>
+            <div class="visualizer-box">
+                <div id="status-display">Status: Ready to Jam</div>
+                <div id="bar-indicator">Bar: 0 / 12</div>
             </div>
 
-            <div id="output-card" class="output-card hidden">
-                <div class="track-meta">
-                    <h2 id="song-title">Song Title</h2>
-                    <p id="song-meta">Tempo: 90 BPM | Key: E Minor</p>
+            <div class="audio-controls">
+                <button id="btn-play" class="btn-primary">▶ Generate & Play Beat</button>
+                <button id="btn-stop" class="btn-secondary" disabled>■ Stop</button>
+            </div>
+
+            <div class="download-suite">
+                <label for="format-select">Export Container Format:</label>
+                <div class="download-row">
+                    <select id="format-select">
+                        <option value="wav">WAV (Lossless Master)</option>
+                        <option value="mp3">MP3 (Compressed Audio)</option>
+                        <option value="flac">FLAC (Free Lossless)</option>
+                        <option value="m4a">M4A (Apple Audio)</option>
+                        <option value="m4r">M4R (iPhone Ringtone Beta)</option>
+                    </select>
+                    <button id="btn-download" class="btn-download" disabled>💾 Download Track</button>
                 </div>
-                <hr>
-                <div id="song-lyrics" class="lyrics-body">
-                    </div>
             </div>
         </main>
+
+        <footer class="lyrics-drawer">
+            <button id="btn-trigger-lyrics" class="btn-text-only">📇 Lyrics Generator</button>
+            <div id="lyrics-output-target" class="lyrics-display hidden">
+                </div>
+        </footer>
     </div>
 
     <script src="script.js"></script>
+    <script src="script2.js"></script>
 </body>
 </html>
