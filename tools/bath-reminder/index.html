@@ -1,73 +1,83 @@
-<div class="main-container">
-    <header class="app-header">
-        <h1>SensationalX Bath Reminders</h1>
-    </header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SensationalX Bath Reminders</title>
+    <!-- This is the crucial link that was missing, connecting your styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
 
-    <main>
-        <!-- Top Section: High-Precision Timer Blocks -->
-        <section id="timer-section" class="timer-section">
-            <div class="timer-block">WK</div>
-            <div class="timer-block number-large">00</div>
-            <div class="timer-block">DAY</div>
-            <div class="timer-block number-large">00</div>
-            <div class="timer-block">HR</div>
-            <div class="timer-block number-large">00</div>
-            <div class="timer-block">MIN</div>
-            <div class="timer-block number-large">00</div>
-            <div class="timer-block">SEC</div>
-            <div class="timer-block number-large">00</div>
-            <div class="timer-block">MS</div>
-            <div class="timer-block number-large">000</div>
-            <div class="timer-block">NS</div>
-            <div class="timer-block number-large">000000</div>
-        </section>
+    <div class="app-container">
+        <header id="main-timer-card" class="timer-card">
+            <div class="bath-icon-wrapper">
+                <div class="pulse-ring"></div>
+                <div class="bath-icon">Docs 🛁</div>
+            </div>
+            
+            <h2>Next Bath Countdown</h2>
+            
+            <!-- Fixed: Matches the CSS class now -->
+            <div class="countdown-row">
+                <div class="time-block"><span id="lbl-wk">00</span><label>Wk</label></div>
+                <div class="time-block"><span id="lbl-day">00</span><label>Day</label></div>
+                <div class="time-block"><span id="lbl-hr">00</span><label>Hr</label></div>
+                <div class="time-block"><span id="lbl-min">00</span><label>Min</label></div>
+                <div class="time-block"><span id="lbl-sec">00</span><label>Sec</label></div>
+                <div class="time-block highlight-ms"><span id="lbl-ms">000</span><label>Ms</label></div>
+                <div class="time-block highlight-ns"><span id="lbl-ns">000000</span><label>Ns</label></div>
+            </div>
+            
+            <div id="status-text">No active timers</div>
+            
+            <div class="action-row">
+                <button id="btn-edit-active" class="btn-action btn-warning hidden">✏️ Edit</button>
+                <button id="btn-clear-active" class="btn-action btn-danger hidden">❌ Cancel</button>
+            </div>
+        </header>
 
-        <p class="status-text">No active timers</p>
-
-        <!-- Middle & Bottom Section: Controls & Form -->
-        <section id="controls-section" class="controls-section">
-            <div class="tabs-row">
-                <button class="tab-btn active">One-Time Timer</button>
-                <button class="tab-btn">Weekly Schedule</button>
+        <main class="control-panel">
+            <div class="tabs">
+                <button id="tab-once" class="tab-btn active">One-Time Timer</button>
+                <button id="tab-repeat" class="tab-btn">Weekly Schedule</button>
             </div>
 
-            <h2>Set Relative Duration</h2>
-
-            <form class="timer-form">
-                <!-- Field Group: Labels and Inputs are paired -->
-                <div id="form-fields" class="form-fields-grid">
-                    <div class="field-group">
-                        <label for="weeks">Weeks</label>
-                        <input type="number" id="weeks" value="0">
-                    </div>
-                    <div class="field-group">
-                        <label for="days">Days</label>
-                        <input type="number" id="days" value="0">
-                    </div>
-                    <div class="field-group">
-                        <label for="hours">Hours</label>
-                        <input type="number" id="hours" value="0">
-                    </div>
-                    <div class="field-group">
-                        <label for="mins">Mins</label>
-                        <input type="number" id="mins" value="20">
-                    </div>
-                    <div class="field-group">
-                        <label for="secs">Secs</label>
-                        <input type="number" id="secs" value="0">
-                    </div>
-                    <div class="field-group">
-                        <label for="ms">Ms</label>
-                        <input type="number" id="ms" value="0">
-                    </div>
-                    <div class="field-group">
-                        <label for="ns">Ns</label>
-                        <input type="number" id="ns" value="0">
-                    </div>
+            <div id="panel-once" class="panel-content">
+                <h3 id="once-title">Set Relative Duration</h3>
+                <div class="input-grid">
+                    <div class="field"><label>Weeks</label><input type="number" id="in-wk" min="0" value="0"></div>
+                    <div class="field"><label>Days</label><input type="number" id="in-day" min="0" value="0"></div>
+                    <div class="field"><label>Hours</label><input type="number" id="in-hr" min="0" value="0"></div>
+                    <div class="field"><label>Mins</label><input type="number" id="in-min" min="0" value="20"></div>
+                    <div class="field"><label>Secs</label><input type="number" id="in-sec" min="0" value="0"></div>
+                    <div class="field"><label>Ms</label><input type="number" id="in-ms" min="0" value="0"></div>
                 </div>
+                <button id="btn-start-once" class="btn-primary">Start One-Time Timer</button>
+            </div>
 
-                <button type="submit" class="start-btn">Start One-Time Timer</button>
-            </form>
-        </section>
-    </main>
-</div>
+            <div id="panel-repeat" class="panel-content hidden">
+                <h3 id="repeat-title">Set Recurring Days & Time</h3>
+                <div class="days-picker">
+                    <label><input type="checkbox" name="sched-day" value="1"> <span>M</span></label>
+                    <label><input type="checkbox" name="sched-day" value="2"> <span>T</span></label>
+                    <label><input type="checkbox" name="sched-day" value="3"> <span>W</span></label>
+                    <label><input type="checkbox" name="sched-day" value="4"> <span>T</span></label>
+                    <label><input type="checkbox" name="sched-day" value="5"> <span>F</span></label>
+                    <label><input type="checkbox" name="sched-day" value="6"> <span>S</span></label>
+                    <label><input type="checkbox" name="sched-day" value="0"> <span>S</span></label>
+                </div>
+                <div class="time-picker-row">
+                    <label for="sched-time">Target Time:</label>
+                    <input type="time" id="sched-time" value="20:00">
+                </div>
+                <button id="btn-save-schedule" class="btn-primary">Save Repeating Schedule</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Your existing JS file -->
+    <script src="script.js"></script>
+</body>
+</html>
