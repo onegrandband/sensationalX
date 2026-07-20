@@ -1,17 +1,20 @@
-// State Matrix
 let activeTimerTarget = null; 
 let activeSchedule = null;    
 let animationFrameId = null;
-let isEditingMode = false;   // Variable tracking active text fields editing state
+let isEditingMode = false;   
 
-// Constants
+// Dynamic Audio Loop Properties
+let alarmAudioCtx = null;
+let alarmOscillator = null;
+let alarmInterval = null;
+
 const MS_PER_SEC = 1000;
 const MS_PER_MIN = MS_PER_SEC * 60;
 const MS_PER_HR = MS_PER_MIN * 60;
 const MS_PER_DAY = MS_PER_HR * 24;
 const MS_PER_WK = MS_PER_DAY * 7;
 
-// DOM Registries
+// DOM Mappings
 const lblWk = document.getElementById('lbl-wk');
 const lblDay = document.getElementById('lbl-day');
 const lblHr = document.getElementById('lbl-hr');
@@ -20,6 +23,7 @@ const lblSec = document.getElementById('lbl-sec');
 const lblMs = document.getElementById('lbl-ms');
 const lblNs = document.getElementById('lbl-ns');
 const statusText = document.getElementById('status-text');
+const mainCard = document.getElementById('main-timer-card');
 const btnClearActive = document.getElementById('btn-clear-active');
 const btnEditActive = document.getElementById('btn-edit-active');
 
@@ -27,11 +31,8 @@ const tabOnce = document.getElementById('tab-once');
 const tabRepeat = document.getElementById('tab-repeat');
 const panelOnce = document.getElementById('panel-once');
 const panelRepeat = document.getElementById('panel-repeat');
-
 const btnOnceSubmit = document.getElementById('btn-start-once');
 const btnRepeatSubmit = document.getElementById('btn-save-schedule');
-const onceTitle = document.getElementById('once-title');
-const repeatTitle = document.getElementById('repeat-title');
 
 window.addEventListener('DOMContentLoaded', () => {
     loadDataFromStorage();
@@ -48,7 +49,6 @@ window.addEventListener('DOMContentLoaded', () => {
 function loadDataFromStorage() {
     const storedTarget = localStorage.getItem('bath_target_timestamp');
     const storedSchedule = localStorage.getItem('bath_repeat_schedule');
-    
     if (storedTarget) activeTimerTarget = parseInt(storedTarget);
     if (storedSchedule) activeSchedule = JSON.parse(storedSchedule);
 }
@@ -57,13 +57,14 @@ function startSyncLoop() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     btnClearActive.classList.remove('hidden');
     btnEditActive.classList.remove('hidden');
+    mainCard.classList.add('active-running');
     
     function update() {
         const now = Date.now();
         let diff = activeTimerTarget - now;
 
         if (diff <= 0) {
-            triggerAlarmEvent();
+            triggerAlarmLoop();
             return;
         }
 
@@ -83,39 +84,68 @@ function startSyncLoop() {
         lblMs.innerText = String(milliseconds).padStart(3, '0');
         lblNs.innerText = String(nanoseconds).padStart(6, '0');
 
-        statusText.innerText = activeSchedule ? "Running Auto-Schedule Pattern" : "Running One-Time Countdown";
+        statusText.innerText = activeSchedule ? "📅 Recurring Schedule Armed" : "⏳ One-Time Timer Armed";
         animationFrameId = requestAnimationFrame(update);
     }
     update();
 }
 
-// Edit Mode Activation Engine
+// Continuous Sound Loop (Fixed for Safari Interaction Restriction Rules)
+function triggerAlarmLoop() {
+    cancelAnimationFrame(animationFrameId);
+    mainCard.classList.remove('active-running');
+    statusText.innerText = "🚨 Time's Up! Water is Ready.";
+
+    if (!alarmAudioCtx) {
+        alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    // Play rhythmic pulsing sound cycles until cleared
+    alarmInterval = setInterval(() => {
+        let osc = alarmAudioCtx.createOscillator();
+        let gain = alarmAudioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, alarmAudioCtx.currentTime); // High clear D5 pitch
+        gain.gain.setValueAtTime(0.25, alarmAudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, alarmAudioCtx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(alarmAudioCtx.destination);
+        osc.start();
+        osc.stop(alarmAudioCtx.currentTime + 0.3);
+    }, 400);
+
+    setTimeout(() => {
+        alert("🛁 Time to take your bath!");
+        stopAlarmLoop();
+        if (activeSchedule) calculateNextScheduledOccurrence();
+        else clearActiveTimerState();
+    }, 100);
+}
+
+function stopAlarmLoop() {
+    if (alarmInterval) {
+        clearInterval(alarmInterval);
+        alarmInterval = null;
+    }
+}
+
 function enterEditingMode() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     isEditingMode = true;
-    
     btnEditActive.classList.add('hidden');
-    statusText.innerText = "Editing Active System Timer - Count Paused";
+    mainCard.classList.remove('active-running');
+    statusText.innerText = "✏️ Editing Active Configuration...";
 
     if (activeSchedule) {
-        // Edit Schedule Mode Pipeline
         switchTabFocus('repeat');
-        
-        // Check corresponding schedule day boxes
         document.querySelectorAll('input[name="sched-day"]').forEach(cb => {
             cb.checked = activeSchedule.days.includes(parseInt(cb.value));
         });
         document.getElementById('sched-time').value = activeSchedule.time;
-        
-        // Transform standard buttons to warning colors indicating edit compilation overrides
-        btnRepeatSubmit.innerText = "Confirm Changes & Update Schedule";
+        btnRepeatSubmit.innerText = "Update Schedule";
         btnRepeatSubmit.classList.add('edit-mode');
-        repeatTitle.innerText = "✏️ Modifying Scheduled Target Parameters";
-        repeatTitle.classList.add('edit-highlight');
     } else {
-        // Edit Manual Relative Timer Pipeline
         switchTabFocus('once');
-        
         let remainingDiff = activeTimerTarget - Date.now();
         if (remainingDiff < 0) remainingDiff = 0;
 
@@ -126,7 +156,6 @@ function enterEditingMode() {
         const seconds = Math.floor(remainingDiff / MS_PER_SEC);
         const milliseconds = Math.floor(remainingDiff % MS_PER_SEC);
 
-        // Load values back to inputs
         document.getElementById('in-wk').value = weeks;
         document.getElementById('in-day').value = days;
         document.getElementById('in-hr').value = hours;
@@ -134,50 +163,21 @@ function enterEditingMode() {
         document.getElementById('in-sec').value = seconds;
         document.getElementById('in-ms').value = milliseconds;
 
-        btnOnceSubmit.innerText = "Confirm Changes & Update Timer";
+        btnOnceSubmit.innerText = "Update Timer";
         btnOnceSubmit.classList.add('edit-mode');
-        onceTitle.innerText = "✏️ Modifying One-Time Duration Parameters";
-        onceTitle.classList.add('edit-highlight');
     }
 }
 
 function exitEditingModeUIReset() {
     isEditingMode = false;
-    
     btnOnceSubmit.innerText = "Start One-Time Timer";
     btnOnceSubmit.classList.remove('edit-mode');
-    onceTitle.innerText = "Set Relative Duration";
-    onceTitle.classList.remove('edit-highlight');
-
     btnRepeatSubmit.innerText = "Save Repeating Schedule";
     btnRepeatSubmit.classList.remove('edit-mode');
-    repeatTitle.innerText = "Set Recurring Days & Time";
-    repeatTitle.classList.remove('edit-highlight');
-}
-
-function triggerAlarmEvent() {
-    cancelAnimationFrame(animationFrameId);
-    
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-    osc.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 1);
-
-    alert("🛁 Bath Time! Your scheduled configuration target is up.");
-
-    if (activeSchedule) {
-        calculateNextScheduledOccurrence();
-    } else {
-        clearActiveTimerState();
-    }
 }
 
 function calculateNextScheduledOccurrence() {
     if (!activeSchedule || activeSchedule.days.length === 0) return;
-
     const now = new Date();
     const [targetHrs, targetMins] = activeSchedule.time.split(':').map(Number);
     let absoluteClosestTarget = null;
@@ -204,8 +204,10 @@ function calculateNextScheduledOccurrence() {
 
 function clearActiveTimerState() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    stopAlarmLoop();
     activeTimerTarget = null;
     localStorage.removeItem('bath_target_timestamp');
+    mainCard.classList.remove('active-running');
     
     lblWk.innerText = "00"; lblDay.innerText = "00"; lblHr.innerText = "00";
     lblMin.innerText = "00"; lblSec.innerText = "00"; lblMs.innerText = "000"; lblNs.innerText = "000000";
@@ -217,7 +219,6 @@ function clearActiveTimerState() {
 }
 
 function setupEventListeners() {
-    // Save or Update One-Time Timer
     btnOnceSubmit.addEventListener('click', () => {
         activeSchedule = null;
         localStorage.removeItem('bath_repeat_schedule');
@@ -230,26 +231,22 @@ function setupEventListeners() {
         const ms = parseInt(document.getElementById('in-ms').value) || 0;
 
         const totalAddedMs = (wk * MS_PER_WK) + (d * MS_PER_DAY) + (h * MS_PER_HR) + (m * MS_PER_MIN) + (s * MS_PER_SEC) + ms;
-        
-        if (totalAddedMs <= 0) return alert("Please enter an amount of time greater than 0.");
+        if (totalAddedMs <= 0) return alert("Please enter a valid time value.");
 
         activeTimerTarget = Date.now() + totalAddedMs;
         localStorage.setItem('bath_target_timestamp', activeTimerTarget);
-        
         exitEditingModeUIReset();
         startSyncLoop();
     });
 
-    // Save or Update Repeating Schedule
     btnRepeatSubmit.addEventListener('click', () => {
         const checkedBoxes = document.querySelectorAll('input[name="sched-day"]:checked');
         const selectedTime = document.getElementById('sched-time').value;
 
-        if (checkedBoxes.length === 0) return alert("Please select at least one day of the week.");
-        if (!selectedTime) return alert("Please specify a target schedule timeline entry.");
+        if (checkedBoxes.length === 0) return alert("Select at least one day.");
+        if (!selectedTime) return alert("Specify a time.");
 
         const daysArray = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
-        
         activeSchedule = { days: daysArray, time: selectedTime };
         localStorage.setItem('bath_repeat_schedule', JSON.stringify(activeSchedule));
         
@@ -257,10 +254,7 @@ function setupEventListeners() {
         calculateNextScheduledOccurrence();
     });
 
-    // Edit Button Action Trigger
     btnEditActive.addEventListener('click', enterEditingMode);
-
-    // Clear / Cancel Button Trigger
     btnClearActive.addEventListener('click', () => {
         localStorage.removeItem('bath_repeat_schedule');
         activeSchedule = null;
@@ -280,11 +274,11 @@ function switchTabFocus(mode) {
 
 function initTabs() {
     tabOnce.addEventListener('click', () => {
-        if(isEditingMode) return alert("Finish updating or cancel your current edits before changing views.");
+        if(isEditingMode) return alert("Save or cancel your current edit mode modifications first.");
         switchTabFocus('once');
     });
     tabRepeat.addEventListener('click', () => {
-        if(isEditingMode) return alert("Finish updating or cancel your current edits before changing views.");
+        if(isEditingMode) return alert("Save or cancel your current edit mode modifications first.");
         switchTabFocus('repeat');
     });
 }
