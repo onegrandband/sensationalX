@@ -1,0 +1,64 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.flashlight-container {
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+}
+
+.power-btn {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Button state when flashlight is OFF */
+.power-btn.off {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    color: #888;
+    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.05), 0 10px 20px rgba(0,0,0,0.6);
+}
+
+/* Button state when flashlight is ON */
+.power-btn.on {
+    background: linear-gradient(145deg, #ffca28, #ffb300);
+    color: #121212;
+    box-shadow: 0 0 40px rgba(255, 202, 40, 0.6);
+}
+
+.icon {
+    font-size: 2.5rem;
+}
+
+#status-msg {
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: #666;
+}
