@@ -104,7 +104,28 @@ const initialProjects = [
         icon: "user-search"
     },
     {
-        id: 11,
+       id: 11,
+        title: "Audio Wave",
+        category: "music",
+        status: "active",
+        excerpt: "Audio Waves",
+        creator: "zee12",
+        likes: 2,
+        icon: "audio"
+    },
+    {
+        id: 12,
+        title: "Funny",
+        category: "art",
+        status: "active",
+        excerpt: "Funny Jokes!",
+        creator: "zee12",
+        likes: 2,
+        icon: "user-search"
+    },
+    {
+        
+        id: 13,
         title: "Create a Project!",
         category: "art",
         status: "completed",
