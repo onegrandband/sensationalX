@@ -18,8 +18,9 @@
             </div>
 
             <div class="audio-controls">
-                <button id="btn-play" class="btn-primary">▶ Generate & Play Beat</button>
-                <button id="btn-stop" class="btn-secondary" disabled>■ Stop</button>
+                <!-- Added type="button" to prevent accidental form submissions -->
+                <button type="button" id="btn-play" class="btn-primary">▶ Generate & Play Beat</button>
+                <button type="button" id="btn-stop" class="btn-secondary" disabled>■ Stop</button>
             </div>
 
             <div class="download-suite">
@@ -32,15 +33,14 @@
                         <option value="m4a">M4A (Apple Audio)</option>
                         <option value="m4r">M4R (iPhone Ringtone Beta)</option>
                     </select>
-                    <button id="btn-download" class="btn-download" disabled>💾 Download Track</button>
+                    <button type="button" id="btn-download" class="btn-download" disabled>💾 Download Track</button>
                 </div>
             </div>
         </main>
 
         <footer class="lyrics-drawer">
-            <button id="btn-trigger-lyrics" class="btn-text-only">📇 Lyrics Generator</button>
-            <div id="lyrics-output-target" class="lyrics-display hidden">
-                </div>
+            <button type="button" id="btn-trigger-lyrics" class="btn-text-only">📇 Lyrics Generator</button>
+            <div id="lyrics-output-target" class="lyrics-display hidden"></div>
         </footer>
     </div>
 
