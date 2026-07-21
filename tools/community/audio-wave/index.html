@@ -5,18 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Wave Visualizer</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+    <!-- Top Right Settings Cog -->
+    <button id="settings-open-btn" class="icon-btn top-right">
+        <i data-lucide="settings"></i>
+    </button>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings :3</h2>
+                <button id="settings-close-btn" class="icon-btn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="settings-options">
+                <div class="setting-row">
+                    <span>Show Playhead</span>
+                    <button id="playhead-toggle" class="toggle-btn">ON</button>
+                </div>
+                <div class="setting-row">
+                    <span>Visual Style</span>
+                    <button id="style-toggle" class="toggle-btn">Sensational Bars</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
     <div class="app-container">
         <header>
             <h1>WaveForm DAW</h1>
             <p>Upload an audio file to view, edit, and visualize waves</p>
-            
-            <!-- Top Settings Bar -->
-            <div class="settings-bar" style="margin-top: 10px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                <button id="playhead-sb-btn" style="background-color: #2ecc71; color: white;">Playhead Show On SB: ON</button>
-                <button id="style-toggle-btn" style="background-color: #7928ca; color: white;">Style: Sensational Bars</button>
-            </div>
         </header>
 
         <main>
@@ -33,11 +55,16 @@
         </main>
     </div>
 
-    <!-- Our 5 Scripts -->
+    <!-- Our 5 Scripts (Must be in this exact order) -->
     <script src="script1.js"></script>
     <script src="script2.js"></script>
     <script src="script3.js"></script>
     <script src="script4.js"></script>
     <script src="script5.js"></script>
+
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
