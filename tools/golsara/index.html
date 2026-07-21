@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golsara.info - Your Universal Info Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container nav-container">
+            <a href="#" class="logo">Golsara<span>.info</span></a>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search guides, fixes, resources...">
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>The Hub for Everything.</h1>
+            <p>Find community sources all on Golsara.info.</p>
+            
+            <!-- Category Filter Buttons -->
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Info</button>
+                <button class="filter-btn" data-filter="tech">Tech & Repairs</button>
+                <button class="filter-btn" data-filter="guides">Quick Guides</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="container main-content">
+        <div class="grid" id="infoGrid">
+
+            <!-- Card 1: Tech -->
+            <article class="card" data-category="tech">
+                <div class="card-tag tech">Tech & Repairs</div>
+                <h3>How to Troubleshoot & Fix Your Phone Screen Issues</h3>
+                <p>Dealing with an unresponsive touch screen, ghost touches, or a cracked display? Here's a step-by-step checklist before taking it to a repair shop.</p>
+                <a href="#" class="read-more">Read Guide &rarr;</a>
+            </article>
+
+            <!-- Card 3: Tech -->
+            <article class="card" data-category="tech">
+                <div class="card-tag tech">Random Topics</div>
+                <h3>We will share random tips, guides, and INFO on everything we can!</h3>
+                <p>Open-source info page.</p>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Golsara.info. Open access to knowledge and community support.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
