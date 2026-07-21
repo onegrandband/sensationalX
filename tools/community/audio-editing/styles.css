@@ -1,0 +1,25 @@
+:root{
+  --bg:#0b0c0f;--panel:#111216;--muted:#8b8f98;--accent:#ff8a50;
+  --height-toolbar:56px;
+}
+*{box-sizing:border-box}
+#app{display:flex;flex-direction:column;height:100vh}
+.toolbar{height:var(--height-toolbar);display:flex;align-items:center;padding:8px 12px;gap:12px;background:linear-gradient(180deg, #0f1114, #0b0c0f);border-bottom:1px solid #151518}
+.toolbar button{background:#15161a;border:1px solid #232428;color:var(--muted);padding:8px 12px;border-radius:6px;cursor:pointer}
+.toolbar .bpm{display:flex;align-items:center;gap:8px}
+.main{display:flex;flex:1;min-height:0}
+.sidebar{width:240px;background:var(--panel);border-right:1px solid #151518;padding:8px;overflow:auto}
+.center{flex:1;display:flex;flex-direction:column;min-width:0}
+.channel-rack{background:#0f1113;padding:8px;border-bottom:1px solid #151518;display:flex;gap:8px;align-items:flex-start;overflow:auto}
+.channel{background:#121316;padding:8px;border-radius:6px;border:1px solid #1a1b1e;min-width:220px}
+.step-grid{display:grid;grid-template-columns:repeat(16,28px);gap:6px;margin-top:8px}
+.step{width:28px;height:28px;background:#111214;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.step.on{background:linear-gradient(180deg,#ff8a50,#ffb28a);color:#111}
+.piano-roll{flex:1;display:flex;gap:8px;padding:8px;overflow:auto}
+.piano-keys{width:60px;background:#0f1113;border-right:1px solid #151518;display:flex;flex-direction:column}
+.roll-grid{flex:1;background:#0d0e10;padding:8px;overflow:auto;border-radius:6px;display:grid;grid-auto-rows:28px}
+.note{position:absolute;background:linear-gradient(180deg,#ff8a50,#ff8a50);border-radius:4px;height:24px;cursor:pointer}
+.mixer{height:160px;background:#0f1113;border-top:1px solid #151518;padding:8px;display:flex;gap:12px;align-items:end;overflow:auto}
+.fader{width:60px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.fader input[type=range]{writing-mode:bt-lr;transform:rotate(-90deg);width:100px}
+.small{font-size:12px;color:var(--muted)}
