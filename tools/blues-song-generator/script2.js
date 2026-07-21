@@ -29,47 +29,13 @@ const titlesFirst = ["Midnight", "Dusty Road", "Low Down", "Broken String", "Emp
 const titlesLast = ["Blues", "Lament", "Trouble", "Stomp", "Heartache", "Boogie", "Train"];
 const keys = ["E Minor", "A Major", "G Major", "C Seventh", "D Minor"];
 
-// DOM Elements
-const generateBtn = document.getElementById('generate-btn');
-const outputCard = document.getElementById('output-card');
-const songTitle = document.getElementById('song-title');
-const songMeta = document.getElementById('song-meta');
-const songLyrics = document.getElementById('song-lyrics');
+// FIX: Target the actual IDs that exist in your index.html
+const generateBtn = document.getElementById('btn-trigger-lyrics');
+const outputCard = document.getElementById('lyrics-output-target');
 
 // Helper function to pick random items
 function getRandomItem(array) {
     return array[Math.floor(Math.random() * array.length)];
-}
-
-// Generation Logic
-function generateBluesSong() {
-    // 1. Generate Metadata
-    const title = `${getRandomItem(titlesFirst)} ${getRandomItem(titlesLast)}`;
-    const key = getRandomItem(keys);
-    const tempo = Math.floor(Math.random() * (110 - 70 + 1)) + 70; // 70 to 110 BPM
-
-    // 2. Generate Lyric Structure (Verse 1, Verse 2, Chorus, Verse 3)
-    let lyricsHTML = '';
-
-    // Verse 1
-    lyricsHTML += `<div class="verse">${createVerse()}</div>`;
-    
-    // Verse 2
-    lyricsHTML += `<div class="verse">${createVerse()}</div>`;
-    
-    // Chorus
-    lyricsHTML += `<div class="chorus">[CHORUS]<br>${getRandomItem(choruses)}</div>`;
-    
-    // Verse 3
-    lyricsHTML += `<div class="verse">${createVerse()}</div>`;
-
-    // 3. Render to UI
-    songTitle.innerText = title;
-    songMeta.innerText = `Tempo: ${tempo} BPM | Key: ${key}`;
-    songLyrics.innerHTML = lyricsHTML;
-
-    // Show card if hidden
-    outputCard.classList.remove('hidden');
 }
 
 // Constructs a traditional AAB blues verse
@@ -83,6 +49,34 @@ function createVerse() {
     
     // Traditional blues repeats the first line twice (A-A-B)
     return `${lineA}<br>${lineA}<br>${lineB}`;
+}
+
+// Generation Logic
+function generateBluesSong() {
+    // 1. Generate Metadata
+    const title = `${getRandomItem(titlesFirst)} ${getRandomItem(titlesLast)}`;
+    const key = getRandomItem(keys);
+    const tempo = Math.floor(Math.random() * (110 - 70 + 1)) + 70; // 70 to 110 BPM
+
+    // 2. Generate Lyric Structure (Verse 1, Verse 2, Chorus, Verse 3)
+    let lyricsHTML = '';
+
+    lyricsHTML += `<div style="margin-bottom: 15px;">${createVerse()}</div>`;
+    lyricsHTML += `<div style="margin-bottom: 15px;">${createVerse()}</div>`;
+    lyricsHTML += `<div style="margin-bottom: 15px; font-weight: bold;">[CHORUS]<br>${getRandomItem(choruses)}</div>`;
+    lyricsHTML += `<div style="margin-bottom: 15px;">${createVerse()}</div>`;
+
+    // 3. Inject Title, Meta, and Lyrics into the output target
+    outputCard.innerHTML = `
+        <h3 style="margin: 0 0 5px 0; color: #45f3ff;">${title}</h3>
+        <div style="font-size: 0.8rem; color: #888; margin-bottom: 15px; border-bottom: 1px solid #2e3944; padding-bottom: 10px;">
+            Tempo: ${tempo} BPM | Key: ${key}
+        </div>
+        <div>${lyricsHTML}</div>
+    `;
+
+    // Show card if hidden
+    outputCard.classList.remove('hidden');
 }
 
 // Event Listener
