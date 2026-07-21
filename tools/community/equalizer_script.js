@@ -7,6 +7,7 @@ const exportFormatSelect = document.getElementById('exportFormat');
 const trackInfo = document.getElementById('trackInfo');
 const canvas = document.getElementById('waveformCanvas');
 const canvasContainer = document.getElementById('canvasContainer');
+const deleteDataBtn = document.getElementById('deleteDataBtn');
 const ctx = canvas.getContext('2d');
 const eqGrid = document.getElementById('eqGrid');
 
@@ -52,16 +53,65 @@ function initEQUI() {
             if (eqFilters[index]) {
                 eqFilters[index].gain.value = val;
             }
+            saveEQSettings();
         });
     });
+    loadEQSettings();
 }
 initEQUI();
+
+function saveEQSettings() {
+    const settings = eqBands.map((_, index) => {
+        const slider = document.getElementById(`eq-${index}`);
+        return slider ? parseFloat(slider.value) : 0;
+    });
+    localStorage.setItem('studio_eq_settings', JSON.stringify(settings));
+}
+
+function loadEQSettings() {
+    const saved = localStorage.getItem('studio_eq_settings');
+    if (saved) {
+        try {
+            const settings = JSON.parse(saved);
+            settings.forEach((val, index) => {
+                const slider = document.getElementById(`eq-${index}`);
+                const valDisplay = document.getElementById(`val-${index}`);
+                if (slider && valDisplay) {
+                    slider.value = val;
+                    valDisplay.textContent = `${val > 0 ? '+' : ''}${val.toFixed(1)} dB`;
+                    if (eqFilters[index]) {
+                        eqFilters[index].gain.value = val;
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("Failed to load saved EQ data:", e);
+        }
+    }
+}
+
+deleteDataBtn.addEventListener('click', () => {
+    if (confirm("Are you sure you would like to delete your saved data? Any unsaved changes will be deleted permanently.")) {
+        localStorage.removeItem('studio_eq_settings');
+        eqBands.forEach((_, index) => {
+            const slider = document.getElementById(`eq-${index}`);
+            const valDisplay = document.getElementById(`val-${index}`);
+            if (slider && valDisplay) {
+                slider.value = 0;
+                valDisplay.textContent = "0.0 dB";
+                if (eqFilters[index]) {
+                    eqFilters[index].gain.value = 0;
+                }
+            }
+        });
+        trackInfo.textContent = "Saved data cleared successfully.";
+    }
+});
 
 audioFileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Cleanly extract base name without any extension issues
     const lastDot = file.name.lastIndexOf('.');
     loadedFileName = lastDot !== -1 ? file.name.substring(0, lastDot) : file.name;
     
@@ -304,7 +354,7 @@ exportBtn.addEventListener('click', async () => {
         offlineSource.start(0);
 
         const renderedBuffer = await offlineCtx.startRendering();
-        const format = exportFormatSelect.value; // 'wav', 'mp3', 'flac', 'm4a', 'm4r'
+        const format = exportFormatSelect.value;
 
         let blob;
         if (format === 'mp3') {
@@ -317,7 +367,6 @@ exportBtn.addEventListener('click', async () => {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        // Clean output name using base name + selected format extension explicitly
         a.download = `${loadedFileName}_eq.${format}`;
         document.body.appendChild(a);
         a.click();
