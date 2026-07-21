@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Audio Spectrogram</title>
+    <title>Audio File Spectrogram Visualizer</title>
     <style>
         body {
             margin: 0;
@@ -28,10 +28,40 @@
             color: #8b9bb4;
             font-size: 0.9rem;
             margin-bottom: 20px;
+            text-align: center;
+            max-width: 500px;
         }
 
         #controls {
             margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .file-upload-label {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .file-upload-label:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+        }
+
+        input[type="file"] {
+            display: none;
         }
 
         button {
@@ -47,14 +77,16 @@
             transition: all 0.2s ease;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             background: linear-gradient(135deg, #4f46e5, #4338ca);
             transform: translateY(-1px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
         }
 
-        button:active {
-            transform: translateY(1px);
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         .canvas-container {
@@ -68,61 +100,148 @@
         canvas {
             display: block;
         }
+
+        #trackInfo {
+            font-size: 0.9rem;
+            color: #10b981;
+            margin-bottom: 15px;
+            font-weight: 500;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Live Audio Spectrogram</h1>
-    <p>Speak, play music, or make sound near your microphone to visualize frequencies over time.</p>
+    <h1>Audio File Spectrogram</h1>
+    <p>Upload an MP3, WAV, or FLAC file to visualize its frequencies over time.</p>
     
     <div id="controls">
-        <button id="startBtn">Start Microphone</button>
+        <label class="file-upload-label">
+            Choose Audio File
+            <input type="file" id="audioFile" accept=".mp3,.wav,.flac">
+        </label>
+        <button id="playBtn" disabled>Play</button>
+        <button id="pauseBtn" disabled>Pause</button>
     </div>
+
+    <div id="trackInfo"></div>
 
     <div class="canvas-container">
         <canvas id="spectrogram" width="800" height="400"></canvas>
     </div>
 
     <script>
-        const startBtn = document.getElementById('startBtn');
+        const audioFileInput = document.getElementById('audioFile');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const trackInfo = document.getElementById('trackInfo');
         const canvas = document.getElementById('spectrogram');
         const ctx = canvas.getContext('2d');
 
-        let audioCtx, analyser, microphone, dataArray;
-        let isRunning = false;
+        let audioCtx, analyser, sourceNode;
+        let audioBuffer = null;
+        let startTime = 0;
+        let pauseOffset = 0;
+        let isPlaying = false;
+        let animationId = null;
 
-        startBtn.addEventListener('click', async () => {
-            if (isRunning) return;
+        audioFileInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            trackInfo.textContent = `Loading: ${file.name}...`;
+            stopAudio();
 
             try {
-                // Request microphone access
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                const arrayBuffer = await file.arrayBuffer();
                 
-                // Initialize Web Audio API
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 1024; // Frequency resolution
-                analyser.smoothingTimeConstant = 0.1; // Fast response time
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
 
-                microphone = audioCtx.createMediaStreamSource(stream);
-                microphone.connect(analyser);
-
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
-
-                // Hide button and start loop
-                startBtn.style.display = 'none';
-                isRunning = true;
-                visualize();
+                audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                trackInfo.textContent = `Loaded: ${file.name}`;
+                playBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseOffset = 0;
             } catch (err) {
-                alert('Microphone access was denied or is not supported by your browser: ' + err.message);
+                trackInfo.textContent = '';
+                alert('Error decoding audio file. Make sure it is a valid MP3, WAV, or FLAC file: ' + err.message);
             }
         });
 
-        function visualize() {
-            requestAnimationFrame(visualize);
+        playBtn.addEventListener('click', () => {
+            if (!audioBuffer || isPlaying) return;
 
-            // Pull frequency data into array
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            sourceNode = audioCtx.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 1024;
+            analyser.smoothingTimeConstant = 0.1;
+
+            sourceNode.connect(analyser);
+            analyser.connect(audioCtx.destination);
+
+            sourceNode.onended = () => {
+                if (isPlaying && audioCtx.currentTime - startTime >= audioBuffer.duration) {
+                    stopAudio();
+                }
+            };
+
+            sourceNode.start(0, pauseOffset);
+            startTime = audioCtx.currentTime - pauseOffset;
+            isPlaying = true;
+
+            playBtn.disabled = true;
+            pauseBtn.disabled = false;
+            audioFileInput.disabled = true;
+
+            visualize();
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            if (!isPlaying) return;
+
+            pauseOffset = audioCtx.currentTime - startTime;
+            stopAudioPlaybackOnly();
+
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            audioFileInput.disabled = false;
+        });
+
+        function stopAudioPlaybackOnly() {
+            if (sourceNode) {
+                try { sourceNode.stop(); } catch(e) {}
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            isPlaying = false;
+        }
+
+        function stopAudio() {
+            stopAudioPlaybackOnly();
+            pauseOffset = 0;
+            if (playBtn) playBtn.disabled = !audioBuffer;
+            if (pauseBtn) pauseBtn.disabled = true;
+            if (audioFileInput) audioFileInput.disabled = false;
+        }
+
+        function visualize() {
+            if (!isPlaying) return;
+            animationId = requestAnimationFrame(visualize);
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
             analyser.getByteFrequencyData(dataArray);
 
             const width = canvas.width;
