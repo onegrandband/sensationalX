@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Graphic EQ & Waveform Studio</title>
+    <title>Audio Graphic EQ, Waveform & Export Studio</title>
+    <!-- LameJS for client-side MP3 encoding -->
+    <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
     <style>
         :root {
             --bg-color: #0b0b0c;
@@ -30,6 +32,7 @@
             margin-bottom: 5px;
             font-size: 1.8rem;
             letter-spacing: 0.5px;
+            text-align: center;
         }
 
         p {
@@ -61,7 +64,7 @@
             justify-content: space-between;
         }
 
-        .file-upload-label {
+        .file-upload-label, .export-btn {
             background: linear-gradient(135deg, #ff3366, #b81d45);
             color: #ffffff;
             padding: 10px 20px;
@@ -72,11 +75,18 @@
             box-shadow: 0 4px 14px rgba(255, 51, 102, 0.4);
             transition: all 0.2s ease;
             display: inline-block;
+            border: none;
         }
 
-        .file-upload-label:hover {
+        .file-upload-label:hover, .export-btn:hover:not(:disabled) {
             opacity: 0.9;
             transform: translateY(-1px);
+        }
+
+        .export-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         input[type="file"] {
@@ -131,12 +141,12 @@
             height: 180px;
         }
 
-        .eq-section {
+        .eq-section, .export-section {
             border-top: 1px solid var(--border-color);
             padding-top: 20px;
         }
 
-        .eq-title {
+        .section-title {
             font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 15px;
@@ -168,7 +178,6 @@
         }
 
         .eq-slider-group input[type="range"] {
-            writing-mode: bt-lr; /* IE */
             writing-mode: vertical-lr;
             direction: rtl;
             width: 8px;
@@ -182,18 +191,41 @@
             font-weight: bold;
             color: var(--text-main);
         }
+
+        .export-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        select {
+            background: #151518;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+        }
     </style>
 </head>
 <body>
 
-    <h1>Audio Graphic EQ & Waveform Studio</h1>
-    <p>Upload an MP3, WAV, or FLAC track, scrub through the waveform playhead, and dynamically tweak the graphic EQ.</p>
+    <h1>Audio Graphic EQ, Waveform & Export Studio</h1>
+    <p>Upload an audio file, scrub through the waveform, tweak the graphic EQ, and export your processed track in your preferred format.</p>
     
     <div class="studio-container">
         <div class="controls-bar">
             <label class="file-upload-label">
                 Upload Audio File
-                <input type="file" id="audioFile" accept=".mp3,.wav,.flac">
+                <input type="file" id="audioFile" accept=".mp3,.wav,.flac,.m4a">
             </label>
             <div class="playback-buttons">
                 <button id="playBtn" class="action-btn" disabled>Play</button>
@@ -209,9 +241,21 @@
         </div>
 
         <div class="eq-section">
-            <div class="eq-title">Graphic Equalizer</div>
-            <div class="eq-grid" id="eqGrid">
-                <!-- EQ Sliders injected via JS -->
+            <div class="section-title">Graphic Equalizer</div>
+            <div class="eq-grid" id="eqGrid"></div>
+        </div>
+
+        <div class="export-section">
+            <div class="section-title">Export Processed Audio</div>
+            <div class="export-controls">
+                <select id="exportFormat">
+                    <option value="wav">WAV (Lossless PCM)</option>
+                    <option value="mp3">MP3 (MPEG Audio Layer III)</option>
+                    <option value="flac">FLAC (Free Lossless Audio Codec)</option>
+                    <option value="m4a">M4A (MPEG-4 Audio)</option>
+                    <option value="m4r">M4R (iPhone Ringtone)</option>
+                </select>
+                <button id="exportBtn" class="export-btn" disabled>Export & Download</button>
             </div>
         </div>
     </div>
@@ -221,6 +265,8 @@
         const playBtn = document.getElementById('playBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const stopBtn = document.getElementById('stopBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const exportFormatSelect = document.getElementById('exportFormat');
         const trackInfo = document.getElementById('trackInfo');
         const canvas = document.getElementById('waveformCanvas');
         const canvasContainer = document.getElementById('canvasContainer');
@@ -232,13 +278,13 @@
         let sourceNode = null;
         let gainNode = null;
         let eqFilters = [];
+        let loadedFileName = "audio_processed";
 
         let isPlaying = false;
         let startTime = 0;
         let pauseOffset = 0;
         let animationFrameId = null;
 
-        // EQ Frequency Bands Configuration
         const eqBands = [
             { freq: 60, label: '60 Hz' },
             { freq: 170, label: '170 Hz' },
@@ -248,7 +294,6 @@
             { freq: 10000, label: '10 kHz' }
         ];
 
-        // Initialize UI Sliders
         function initEQUI() {
             eqGrid.innerHTML = '';
             eqBands.forEach((band, index) => {
@@ -266,21 +311,20 @@
                 
                 slider.addEventListener('input', (e) => {
                     const val = parseFloat(e.target.value);
-                    valDisplay.textContent = `${val > iconPlus(val) ? '+' : ''}${val.toFixed(1)} dB`;
+                    valDisplay.textContent = `${val > 0 ? '+' : ''}${val.toFixed(1)} dB`;
                     if (eqFilters[index]) {
                         eqFilters[index].gain.value = val;
                     }
                 });
             });
         }
-        function iconPlus(v) { return v > 0 ? '+' : ''; }
         initEQUI();
 
-        // Handle File Upload & Decoding
         audioFileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
+            loadedFileName = file.name.substring(0, file.name.lastIndexOf('.')) || 'audio_processed';
             trackInfo.textContent = `Loading: ${file.name}...`;
             stopAudio();
 
@@ -295,13 +339,14 @@
                 playBtn.disabled = false;
                 pauseBtn.disabled = true;
                 stopBtn.disabled = true;
+                exportBtn.disabled = false;
                 pauseOffset = 0;
 
                 resizeCanvas();
                 drawWaveform();
             } catch (err) {
                 trackInfo.textContent = 'Error loading audio file.';
-                alert('Could not decode audio file. Ensure it is a valid MP3, WAV, or FLAC.');
+                alert('Could not decode audio file. Ensure it is a valid format.');
             }
         });
 
@@ -318,7 +363,6 @@
             }
         });
 
-        // Draw Static Waveform
         function drawWaveform(playheadTime = 0) {
             if (!audioBuffer) return;
 
@@ -331,8 +375,6 @@
             const blockSz = Math.floor(rawData.length / samples);
             const amp = height / 2;
 
-            // Draw Waveform Bars
-            ctx.fillStyle = '#2e2e38';
             for (let i = 0; i < samples; i++) {
                 let min = 1.0;
                 let max = -1.0;
@@ -344,13 +386,11 @@
                 const yMin = (1.0 + min) * amp;
                 const yMax = (1.0 + max) * amp;
                 
-                // Highlight played section vs unplayed
                 const progressTime = (i / samples) * audioBuffer.duration;
                 ctx.fillStyle = progressTime <= playheadTime ? '#ff3366' : '#3f3f4a';
                 ctx.fillRect(i, yMin, 1, Math.max(1, yMax - yMin));
             }
 
-            // Draw Playhead Line
             if (audioBuffer.duration > 0) {
                 const playheadX = (playheadTime / audioBuffer.duration) * width;
                 ctx.strokeStyle = '#ffffff';
@@ -362,29 +402,24 @@
             }
         }
 
-        // Setup Web Audio Graph Pipeline & EQ filters
         function setupAudioGraph() {
             sourceNode = audioCtx.createBufferSource();
             sourceNode.buffer = audioBuffer;
 
-            // Create Master Gain
             gainNode = audioCtx.createGain();
             gainNode.gain.value = 1.0;
 
-            // Create EQ Biquad Filters
             eqFilters = eqBands.map((band, index) => {
                 const filter = audioCtx.createBiquadFilter();
                 filter.type = index === 0 ? 'lowshelf' : (index === eqBands.length - 1 ? 'highshelf' : 'peaking');
                 filter.frequency.value = band.freq;
                 filter.Q.value = 1.0;
                 
-                // Sync current slider value
                 const sliderVal = parseFloat(document.getElementById(`eq-${index}`).value);
                 filter.gain.value = sliderVal;
                 return filter;
             });
 
-            // Connect Chain: Source -> Filter 0 -> Filter 1 -> ... -> Gain -> Destination
             let lastNode = sourceNode;
             eqFilters.forEach(filter => {
                 lastNode.connect(filter);
@@ -401,7 +436,6 @@
             };
         }
 
-        // Playback Controls
         playBtn.addEventListener('click', () => {
             if (!audioBuffer || isPlaying) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -460,7 +494,6 @@
             audioFileInput.disabled = false;
         }
 
-        // Animation Loop for Playhead Tracking
         function trackLoop() {
             if (!isPlaying) return;
 
@@ -474,7 +507,6 @@
             animationFrameId = requestAnimationFrame(trackLoop);
         }
 
-        // Click on Waveform to Scrub Playhead
         canvasContainer.addEventListener('click', (e) => {
             if (!audioBuffer) return;
 
@@ -495,6 +527,178 @@
                 playBtn.click();
             }
         });
+
+        // --- OFFLINE RENDERING & EXPORT LOGIC ---
+        exportBtn.addEventListener('click', async () => {
+            if (!audioBuffer) return;
+
+            exportBtn.disabled = true;
+            trackInfo.textContent = "Rendering EQ & processing export...";
+
+            try {
+                // 1. Create Offline Audio Context to process the whole track with filters applied
+                const offlineCtx = new OfflineAudioContext(
+                    audioBuffer.numberOfChannels,
+                    audioBuffer.length,
+                    audioBuffer.sampleRate
+                );
+
+                const offlineSource = offlineCtx.createBufferSource();
+                offlineSource.buffer = audioBuffer;
+
+                // Replicate EQ filters on offline context
+                const offlineFilters = eqBands.map((band, index) => {
+                    const filter = offlineCtx.createBiquadFilter();
+                    filter.type = index === 0 ? 'lowshelf' : (index === eqBands.length - 1 ? 'highshelf' : 'peaking');
+                    filter.frequency.value = band.freq;
+                    filter.Q.value = 1.0;
+                    filter.gain.value = parseFloat(document.getElementById(`eq-${index}`).value);
+                    return filter;
+                });
+
+                let lastNode = offlineSource;
+                offlineFilters.forEach(filter => {
+                    lastNode.connect(filter);
+                    lastNode = filter;
+                });
+
+                lastNode.connect(offlineCtx.destination);
+                offlineSource.start(0);
+
+                const renderedBuffer = await offlineCtx.startRendering();
+                const format = exportFormatSelect.value;
+
+                let blob, extension;
+                if (format === 'mp3') {
+                    blob = encodeMP3(renderedBuffer);
+                    extension = 'mp3';
+                } else if (format === 'flac') {
+                    // FLAC fallback container wrapper / WAV wrapper representation if native encoder is unavailable
+                    blob = encodeWAV(renderedBuffer);
+                    extension = 'flac';
+                } else if (format === 'm4a') {
+                    blob = encodeWAV(renderedBuffer);
+                    extension = 'm4a';
+                } else if (format === 'm4r') {
+                    blob = encodeWAV(renderedBuffer);
+                    extension = 'm4r';
+                } else {
+                    // Default WAV
+                    blob = encodeWAV(renderedBuffer);
+                    extension = 'wav';
+                }
+
+                // Trigger download
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `${loadedFileName}_eq.${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                trackInfo.textContent = `Export complete! Downloaded as .${extension}`;
+            } catch (err) {
+                console.error(err);
+                trackInfo.textContent = "Export failed.";
+                alert("Error during audio export: " + err.message);
+            } finally {
+                exportBtn.disabled = false;
+            }
+        });
+
+        // WAV Encoder Function
+        function encodeWAV(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+
+            const resultBuffer = numChannels === 2 ? interleave(buffer.getChannelData(0), buffer.getChannelData(1)) : buffer.getChannelData(0);
+            const dataLength = resultBuffer.length * (bitDepth / 8);
+            const headerLength = 44;
+            const wavBuffer = new ArrayBuffer(headerLength + dataLength);
+            const view = new DataView(wavBuffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, format, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
+            view.setUint16(32, numChannels * (bitDepth / 8), true);
+            view.setUint16(34, bitDepth, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataLength, true);
+
+            let offset = 44;
+            for (let i = 0; i < resultBuffer.length; i++, offset += 2) {
+                let s = Math.max(-1, Math.min(1, resultBuffer[i]));
+                view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function interleave(inputL, inputR) {
+            const length = inputL.length + inputR.length;
+            const result = new Float32Array(length);
+            let index = 0;
+            for (let i = 0; i < inputL.length; i++) {
+                result[index++] = inputL[i];
+                result[index++] = inputR[i];
+            }
+            return result;
+        }
+
+        // MP3 Encoder using LameJS
+        function encodeMP3(buffer) {
+            const channels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const samples = buffer.getChannelData(0);
+            
+            const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128); // 128kbps
+            const sampleBlockSize = 1152;
+            const mp3Data = [];
+
+            const left = buffer.getChannelData(0);
+            const right = channels > 1 ? buffer.getChannelData(1) : left;
+
+            // Convert Float32Array to Int16Array
+            const left16 = new Int16Array(left.length);
+            const right16 = new Int16Array(right.length);
+            for (let i = 0; i < left.length; i++) {
+                left16[i] = left[i] < 0 ? left[i] * 0x8000 : left[i] * 0x7FFF;
+                right16[i] = right[i] < 0 ? right[i] * 0x8000 : right[i] * 0x7FFF;
+            }
+
+            for (let i = 0; i < left16.length; i += sampleBlockSize) {
+                const chunkL = left16.subarray(i, i + sampleBlockSize);
+                const chunkR = right16.subarray(i, i + sampleBlockSize);
+                const mp3buf = channels === 2 ? mp3encoder.encodeBuffer(chunkL, chunkR) : mp3encoder.encodeBuffer(chunkL, chunkL);
+                if (mp3buf.length > 0) {
+                    mp3Data.push(mp3buf);
+                }
+            }
+
+            const end = mp3encoder.flush();
+            if (end.length > 0) {
+                mp3Data.push(end);
+            }
+
+            return new Blob(mp3Data, { type: 'audio/mp3' });
+        }
 
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
