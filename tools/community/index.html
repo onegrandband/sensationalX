@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CommunityHub - Explore Projects</title>
+  
+  <!-- Lucide Icons Library -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,7 +25,9 @@
             </ul>
         </nav>
         <div class="user-actions">
-            <button class="btn-primary" id="submit-project-btn">Submit a Project</button>
+            <button class="btn-primary" id="submit-project-btn">
+                <i data-lucide="plus-circle" class="icon-sm"></i> Submit a Project
+            </button>
         </div>
     </header>
 
@@ -34,7 +40,10 @@
             <div class="search-container">
                 <form id="project-search-form" onsubmit="event.preventDefault();">
                     <div class="search-input-wrapper">
-                        <input type="text" id="project-search" placeholder="Search projects, games, or tools..." autocomplete="off">
+                        <div class="input-icon-group">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="project-search" placeholder="Search projects, games, or tools..." autocomplete="off">
+                        </div>
                         <button type="submit" class="search-submit-btn">Search</button>
                     </div>
                     <div class="filters-wrapper">
@@ -76,18 +85,27 @@
             <div class="section-header">
                 <h2 id="results-count">Showing All Projects</h2>
                 <div class="view-toggle">
-                    <button class="toggle-btn active" id="grid-view-btn" aria-label="Grid view">Grid</button>
-                    <button class="toggle-btn" id="list-view-btn" aria-label="List view">List</button>
+                    <button class="toggle-btn active" id="grid-view-btn" aria-label="Grid view">
+                        <i data-lucide="layout-grid" class="icon-sm"></i> Grid
+                    </button>
+                    <button class="toggle-btn" id="list-view-btn" aria-label="List view">
+                        <i data-lucide="list" class="icon-sm"></i> List
+                    </button>
                 </div>
             </div>
+            
             <div id="active-filters" class="active-filters-container"></div>
+            
             <div class="projects-grid" id="projects-grid"></div>
-            <div class="pagination">
-                <button class="pagination-btn disabled" id="prev-page" disabled>Previous</button>
-                <div class="page-numbers">
-                    <button class="page-num active">1</button>
-                </div>
-                <button class="pagination-btn" id="next-page">Next</button>
+
+            <div class="pagination" id="pagination-container">
+                <button class="pagination-btn" id="prev-page" disabled>
+                    <i data-lucide="chevron-left" class="icon-sm"></i> Previous
+                </button>
+                <div class="page-numbers" id="page-numbers"></div>
+                <button class="pagination-btn" id="next-page">
+                    Next <i data-lucide="chevron-right" class="icon-sm"></i>
+                </button>
             </div>
         </section>
     </main>
