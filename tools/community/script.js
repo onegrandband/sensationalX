@@ -27,9 +27,9 @@ const initialProjects = [
         category: "games",
         status: "active",
         excerpt: "Test your aim in this virtual axe-throwing simulator. Hit the bullseye to unlock custom axes!",
-        creator: "axe-throwing",
+        creator: "zee12",
         likes: 2,
-        icon: "zee12"
+        icon: "axe"
     },
     {
         id: 4,
@@ -104,7 +104,7 @@ const initialProjects = [
         icon: "user-search"
     },
     {
-       id: 11,
+        id: 11,
         title: "Audio Wave",
         category: "music",
         status: "active",
@@ -116,7 +116,7 @@ const initialProjects = [
     {
         id: 12,
         title: "Funny",
-        category: "art",
+        category: "humor",
         status: "active",
         excerpt: "Funny Jokes!",
         creator: "zee12",
@@ -124,7 +124,6 @@ const initialProjects = [
         icon: "user-search"
     },
     {
-        
         id: 13,
         title: "Create a Project!",
         category: "art",
@@ -148,6 +147,13 @@ let currentFilters = {
     sort: 'trending'
 };
 
+// Safe Lucide helper
+function safeInitIcons() {
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+        lucide.createIcons();
+    }
+}
+
 // DOM Elements
 const searchInput = document.getElementById('project-search');
 const categorySelect = document.getElementById('category-select');
@@ -168,45 +174,45 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAndRender();
 });
 
-// Event Listeners
+// Event Listeners with Safe Optional Chaining (?.)
 function setupEventListeners() {
-    searchInput.addEventListener('input', (e) => {
+    searchInput?.addEventListener('input', (e) => {
         currentFilters.search = e.target.value.toLowerCase().trim();
         currentPage = 1;
         updateAndRender();
     });
 
-    categorySelect.addEventListener('change', (e) => {
+    categorySelect?.addEventListener('change', (e) => {
         currentFilters.category = e.target.value;
         currentPage = 1;
         updateAndRender();
     });
 
-    statusSelect.addEventListener('change', (e) => {
+    statusSelect?.addEventListener('change', (e) => {
         currentFilters.status = e.target.value;
         currentPage = 1;
         updateAndRender();
     });
 
-    sortSelect.addEventListener('change', (e) => {
+    sortSelect?.addEventListener('change', (e) => {
         currentFilters.sort = e.target.value;
         currentPage = 1;
         updateAndRender();
     });
 
-    gridViewBtn.addEventListener('click', () => {
-        projectsGrid.classList.remove('list-view');
-        gridViewBtn.classList.add('active');
-        listViewBtn.classList.remove('active');
+    gridViewBtn?.addEventListener('click', () => {
+        projectsGrid?.classList.remove('list-view');
+        gridViewBtn?.classList.add('active');
+        listViewBtn?.classList.remove('active');
     });
 
-    listViewBtn.addEventListener('click', () => {
-        projectsGrid.classList.add('list-view');
-        listViewBtn.classList.add('active');
-        gridViewBtn.classList.remove('active');
+    listViewBtn?.addEventListener('click', () => {
+        projectsGrid?.classList.add('list-view');
+        listViewBtn?.classList.add('active');
+        gridViewBtn?.classList.remove('active');
     });
 
-    prevPageBtn.addEventListener('click', () => {
+    prevPageBtn?.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
             renderProjects();
@@ -214,7 +220,7 @@ function setupEventListeners() {
         }
     });
 
-    nextPageBtn.addEventListener('click', () => {
+    nextPageBtn?.addEventListener('click', () => {
         const totalPages = Math.ceil(projects.length / itemsPerPage);
         if (currentPage < totalPages) {
             currentPage++;
@@ -223,7 +229,7 @@ function setupEventListeners() {
         }
     });
 
-    document.getElementById('submit-project-btn').addEventListener('click', () => {
+    document.getElementById('submit-project-btn')?.addEventListener('click', () => {
         alert("Project submission form feature coming soon!");
     });
 }
@@ -242,9 +248,7 @@ function updateAndRender() {
 
     if (currentFilters.sort === 'newest') {
         filtered.sort((a, b) => b.id - a.id);
-    } else if (currentFilters.sort === 'popular') {
-        filtered.sort((a, b) => b.likes - a.likes);
-    } else { // trending
+    } else if (currentFilters.sort === 'popular' || currentFilters.sort === 'trending') {
         filtered.sort((a, b) => b.likes - a.likes);
     }
 
@@ -254,27 +258,30 @@ function updateAndRender() {
 }
 
 function renderProjects() {
+    if (!projectsGrid) return;
     projectsGrid.innerHTML = '';
 
     if (projects.length === 0) {
         projectsGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--color-text-muted);">
-                <i data-lucide="search-x" style="width: 48px; height: 48px; margin-bottom: 12px; color: var(--color-primary);"></i>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main);">No projects found</h3>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--color-text-muted, #888);">
+                <i data-lucide="search-x" style="width: 48px; height: 48px; margin-bottom: 12px; color: var(--color-primary, #ff3366);"></i>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main, #000);">No projects found</h3>
                 <p>Try adjusting your search terms or filters.</p>
             </div>
         `;
-        resultsCount.textContent = "Showing 0 projects";
+        if (resultsCount) resultsCount.textContent = "Showing 0 projects";
         renderPagination(0);
-        lucide.createIcons();
+        safeInitIcons();
         return;
     }
 
-    resultsCount.textContent = `Showing ${projects.length} project${projects.length === 1 ? '' : 's'}`;
+    if (resultsCount) {
+        resultsCount.textContent = `Showing ${projects.length} project${projects.length === 1 ? '' : 's'}`;
+    }
 
     // Pagination slicing
     const totalPages = Math.ceil(projects.length / itemsPerPage);
-    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedProjects = projects.slice(startIndex, startIndex + itemsPerPage);
@@ -298,7 +305,7 @@ function renderProjects() {
                 <p class="project-excerpt">${project.excerpt}</p>
                 <div class="project-meta">
                     <span class="project-creator">By <strong>${project.creator}</strong></span>
-                    <span class="project-likes" onclick="likeProject(${project.id})">
+                    <span class="project-likes" onclick="likeProject(${project.id})" style="cursor: pointer;">
                         <i data-lucide="heart" class="icon-sm"></i> ${project.likes}
                     </span>
                 </div>
@@ -308,20 +315,17 @@ function renderProjects() {
     });
 
     renderPagination(totalPages);
-    lucide.createIcons();
+    safeInitIcons();
 }
 
 function renderPagination(totalPages) {
+    if (!pageNumbersContainer) return;
     pageNumbersContainer.innerHTML = '';
 
-    if (totalPages <= 1) {
-        prevPageBtn.disabled = true;
-        nextPageBtn.disabled = true;
-        return;
-    }
+    if (prevPageBtn) prevPageBtn.disabled = currentPage <= 1;
+    if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages || totalPages === 0;
 
-    prevPageBtn.disabled = currentPage === 1;
-    nextPageBtn.disabled = currentPage === totalPages;
+    if (totalPages <= 1) return;
 
     for (let i = 1; i <= totalPages; i++) {
         const btn = document.createElement('button');
@@ -342,15 +346,16 @@ window.likeProject = function(projectId) {
         project.likes += 1;
         updateAndRender();
     }
-}
+};
 
 function renderActiveFilterTags() {
+    if (!activeFiltersContainer) return;
     activeFiltersContainer.innerHTML = '';
 
     if (currentFilters.search) {
         createTag(`Search: "${currentFilters.search}"`, () => {
             currentFilters.search = '';
-            searchInput.value = '';
+            if (searchInput) searchInput.value = '';
             currentPage = 1;
             updateAndRender();
         });
@@ -359,7 +364,7 @@ function renderActiveFilterTags() {
     if (currentFilters.category !== 'all') {
         createTag(`Category: ${currentFilters.category}`, () => {
             currentFilters.category = 'all';
-            categorySelect.value = 'all';
+            if (categorySelect) categorySelect.value = 'all';
             currentPage = 1;
             updateAndRender();
         });
@@ -368,23 +373,23 @@ function renderActiveFilterTags() {
     if (currentFilters.status !== 'all') {
         createTag(`Status: ${currentFilters.status}`, () => {
             currentFilters.status = 'all';
-            statusSelect.value = 'all';
+            if (statusSelect) statusSelect.value = 'all';
             currentPage = 1;
             updateAndRender();
         });
     }
 
-    lucide.createIcons();
+    safeInitIcons();
 }
 
 function createTag(text, onRemove) {
     const tag = document.createElement('span');
     tag.className = 'filter-tag';
-    tag.innerHTML = `${text} <i data-lucide="x" class="remove-icon"></i>`;
-    tag.querySelector('.remove-icon').addEventListener('click', onRemove);
+    tag.innerHTML = `${text} <i data-lucide="x" class="remove-icon" style="cursor: pointer;"></i>`;
+    tag.querySelector('.remove-icon')?.addEventListener('click', onRemove);
     activeFiltersContainer.appendChild(tag);
 }
 
 function scrollToGrid() {
-    projectsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    projectsGrid?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
