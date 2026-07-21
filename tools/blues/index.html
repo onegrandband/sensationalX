@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Blues Audio Station</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <main class="audio-deck">
+            <h1>SX BLUES</h1>
+            <p class="deck-subtitle">Procedural Blues Beat Engine</p>
+
+            <div class="visualizer-box">
+                <div id="status-display">Status: Ready to Jam</div>
+                <div id="bar-indicator">Bar: 0 / 12</div>
+            </div>
+
+            <div class="audio-controls">
+                <button type="button" id="btn-play" class="btn-primary">▶ Generate & Play Beat</button>
+                <button type="button" id="btn-stop" class="btn-secondary" disabled>■ Stop</button>
+            </div>
+
+            <div class="download-suite">
+                <label for="format-select">Export Container Format:</label>
+                <div class="download-row">
+                    <select id="format-select">
+                        <option value="wav">WAV (Lossless Master)</option>
+                        <option value="webm">WebM (Compressed Audio)</option>
+                    </select>
+                    <button type="button" id="btn-download" class="btn-download" disabled>💾 Download Track</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="lyrics-drawer">
+            <button type="button" id="btn-trigger-lyrics" class="btn-text-only">📇 Lyrics Generator</button>
+            <div id="lyrics-output-target" class="lyrics-display hidden"></div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="script2.js"></script>
+</body>
+</html>
