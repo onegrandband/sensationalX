@@ -1,4 +1,3 @@
-Run this Python script for a fun phone-in-rice game!
 import time
 
 class Phone:
@@ -20,6 +19,6 @@ class Phone:
         
         print("Result: Rice dust made a sticky paste inside the phone.")
         print("Result: The phone is now permanently broken due to rust.")
-
+print("Fun Python Phone-To-Rice Game!")
 my_phone = Phone()
 my_phone.put_in_rice()
