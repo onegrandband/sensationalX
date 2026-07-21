@@ -4,6 +4,7 @@ const initialProjects = [
     {
         id: 1,
         title: "Ant Smasher Game",
+        url: "https://sensationalx.com/tools/community/ants", // Replace with your exact URL
         category: "games",
         status: "active",
         excerpt: "A fun, fast-paced arcade game where you tap to smash invading ants before they cross the screen!",
@@ -14,6 +15,7 @@ const initialProjects = [
     {
         id: 2,
         title: "Apple Catch Game",
+        url: "https://sensationalx.com/tools/community/apple",
         category: "games",
         status: "active",
         excerpt: "Control your basket and catch the falling golden apples. Don't let them hit the ground!",
@@ -24,6 +26,7 @@ const initialProjects = [
     {
         id: 3,
         title: "Axe Throwing Game",
+        url: "https://sensationalx.com/tools/community/axe-throwing",
         category: "games",
         status: "active",
         excerpt: "Test your aim in this virtual axe-throwing simulator. Hit the bullseye to unlock custom axes!",
@@ -34,6 +37,7 @@ const initialProjects = [
     {
         id: 4,
         title: "Banana Catcher Game",
+        url: "https://sensationalx.com/tools/community/banana",
         category: "games",
         status: "active",
         excerpt: "Can you catch all of the bananas before time runs out?",
@@ -44,6 +48,7 @@ const initialProjects = [
     {
         id: 5,
         title: "Bell Ringer Game",
+        url: "https://sensationalx.com/tools/community/bell",
         category: "games",
         status: "active",
         excerpt: "Timing is everything! Ring the festive bells at the exact peak of their swing to score combos.",
@@ -54,6 +59,7 @@ const initialProjects = [
     {
         id: 6,
         title: "Catch the Kitty Game",
+        url: "https://sensationalx.com/tools/community/cat",
         category: "games",
         status: "active",
         excerpt: "A cute, physics-based puzzle-catching adventure where you coax energetic kittens into cozy baskets.",
@@ -66,6 +72,7 @@ const initialProjects = [
     {
         id: 7,
         title: "Audio Converter",
+        url: "https://sensationalx.com/tools/community/audio-converter",
         category: "web-tools",
         status: "completed",
         excerpt: "Convert audio easily.",
@@ -76,6 +83,7 @@ const initialProjects = [
     {
         id: 8,
         title: "Video Converter Page",
+        url: "https://sensationalx.com/tools/community/video-converter",
         category: "web-tools",
         status: "completed",
         excerpt: "Convert videos!",
@@ -86,6 +94,7 @@ const initialProjects = [
     {
         id: 9,
         title: "Pride Page",
+        url: "https://sensationalx.com/tools/community/pride",
         category: "art",
         status: "completed",
         excerpt: "A pride page.",
@@ -96,36 +105,51 @@ const initialProjects = [
     {
         id: 10,
         title: "Pixel Art",
+        url: "https://sensationalx.com/tools/community/art.html",
         category: "art",
         status: "active",
         excerpt: "Pixel Art Maker",
         creator: "zee12",
         likes: 2,
-        icon: "user-search"
+        icon: "palette"
     },
     {
         id: 11,
         title: "Audio Wave",
+        url: "https://sensationalx.com/tools/community/audio-wave",
         category: "music",
         status: "active",
         excerpt: "Audio Waves",
         creator: "zee12",
         likes: 2,
-        icon: "audio"
+        icon: "activity"
     },
     {
         id: 12,
-        title: "Funny",
-        category: "humor",
+        title: "Gem Clicker",
+        url: "https://sensationalx.com/tools/community/gemclicker",
+        category: "games",
         status: "active",
-        excerpt: "Funny Jokes!",
-        creator: "zee12",
+        excerpt: "Gem Clicking incremental game.",
+        creator: "jonah-oijinnka",
         likes: 2,
-        icon: "user-search"
+        icon: "gem"
     },
     {
         id: 13,
+        title: "Funny",
+        url: "https://sensationalx.com/tools/community/jokester",
+        category: "humor",
+        status: "active",
+        excerpt: "Funny Jokes!",
+        creator: "sensationalx-testing",
+        likes: 2,
+        icon: "laugh"
+    },
+    {
+        id: 14,
         title: "Create a Project!",
+        url: "https://sensationalx.com/[YOUR_URL_HERE]",
         category: "art",
         status: "completed",
         excerpt: "Create a new community project here.",
@@ -301,7 +325,7 @@ function renderProjects() {
             </div>
             <div class="project-card-content">
                 <span class="project-category">${project.category.replace('-', ' ').toUpperCase()}</span>
-                <h3><a href="#project-${project.id}" class="project-link">${project.title}</a></h3>
+                <h3><a href="${project.url}" class="project-link">${project.title}</a></h3>
                 <p class="project-excerpt">${project.excerpt}</p>
                 <div class="project-meta">
                     <span class="project-creator">By <strong>${project.creator}</strong></span>
