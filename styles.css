@@ -1,0 +1,31 @@
+/* Custom Audio Animations */
+@keyframes custom-bounce {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+}
+.animate-visualizer-bar {
+    transform-origin: bottom;
+    animation: custom-bounce 1s infinite ease-in-out;
+}
+
+/* Reader Mode Overrides */
+body.reader-mode {
+    background-color: #fcfcfc !important;
+    color: #1a1a1a !important;
+    font-family: Georgia, serif !important;
+}
+body.reader-mode header, 
+body.reader-mode #bottomPlayer,
+body.reader-mode .dark\:bg-\[\#1c1c1f\] {
+    background-color: #ffffff !important;
+    border-color: #e5e5e5 !important;
+}
+body.reader-mode .dark\:text-white { color: #000000 !important; }
+body.reader-mode .text-gray-400 { color: #4a4a4a !important; }
+
+/* Site Gate Utility Classes */
+.site-gate-hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+}
