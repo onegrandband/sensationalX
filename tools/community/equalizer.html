@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Graphic Equalizer</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #0f111a;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            font-size: 1.6rem;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        p {
+            color: #8b9bb4;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .warning {
+            color: #f59e0b;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        #controls {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        button.secondary {
+            background: #1e293b;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+            border: 1px solid #334155;
+        }
+
+        button.secondary:hover {
+            background: #334155;
+        }
+
+        .eq-panel {
+            background-color: #1a1d2d;
+            border: 1px solid #2a324a;
+            border-radius: 16px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 650px;
+            box-sizing: border-box;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .eq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #2a324a;
+            padding-bottom: 12px;
+        }
+
+        .eq-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .eq-sliders {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            height: 220px;
+            align-items: center;
+        }
+
+        .eq-slider-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .eq-slider-group input[type="range"] {
+            writing-mode: bt-lr;
+            writing-mode: vertical-lr;
+            direction: rtl;
+            width: 10px;
+            height: 140px;
+            accent-color: #6366f1;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .eq-label {
+            font-size: 0.75rem;
+            color: #8b9bb4;
+            font-weight: 500;
+        }
+
+        .eq-value {
+            font-size: 0.7rem;
+            color: #6366f1;
+            font-weight: 600;
+            height: 16px;
+        }
+
+        .footer-actions {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>7-Band Graphic Equalizer</h1>
+    <p>Process your microphone audio live through customizable equalizer filters.</p>
+    
+    <div class="warning">⚠️ Use headphones to prevent acoustic feedback (screeching) from speakers.</div>
+
+    <div id="controls">
+        <button id="startBtn">Start Equalizer</button>
+    </div>
+
+    <div class="eq-panel" id="eqPanel">
+        <div class="eq-header">
+            <div class="eq-title">Master Equalizer Rack</div>
+            <button class="secondary" id="resetBtn" style="padding: 6px 14px; font-size: 0.8rem;">Reset to Flat</button>
+        </div>
+        <div class="eq-sliders" id="eqSlidersContainer">
+            <!-- Sliders generated via JS -->
+        </div>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const eqPanel = document.getElementById('eqPanel');
+        const eqSlidersContainer = document.getElementById('eqSlidersContainer');
+
+        let audioCtx, microphone, gainNode;
+        let filters = [];
+        let sliderElements = [];
+        let isRunning = false;
+
+        // 7-Band EQ specification
+        const eqBands = [
+            { label: '60 Hz', freq: 60, type: 'lowshelf' },
+            { label: '150 Hz', freq: 150, type: 'peaking' },
+            { label: '400 Hz', freq: 400, type: 'peaking' },
+            { label: '1 kHz', freq: 1000, type: 'peaking' },
+            { label: '2.5 kHz', freq: 2500, type: 'peaking' },
+            { label: '6 kHz', freq: 6000, type: 'peaking' },
+            { label: '16 kHz', freq: 16000, type: 'highshelf' }
+        ];
+
+        startBtn.addEventListener('click', async () => {
+            if (isRunning) return;
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    }, 
+                    video: false 
+                });
+                
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                microphone = audioCtx.createMediaStreamSource(stream);
+
+                // Master gain node to control overall output safely
+                gainNode = audioCtx.createGain();
+                gainNode.gain.value = 1.0;
+
+                // Build filter chain
+                let lastNode = microphone;
+                filters = eqBands.map((band, index) => {
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = band.type;
+                    filter.frequency.value = band.freq;
+                    filter.gain.value = 0; // Flat response initially
+                    if (band.type === 'peaking') {
+                        filter.Q.value = 1.4; // Filter bandwidth quality factor
+                    }
+
+                    lastNode.connect(filter);
+                    lastNode = filter;
+                    return filter;
+                });
+
+                // Connect final filter to master gain, then to speakers
+                lastNode.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                // Build UI Sliders
+                buildSliders();
+
+                startBtn.style.display = 'none';
+                eqPanel.style.display = 'block';
+                isRunning = true;
+
+            } catch (err) {
+                alert('Microphone access was denied or is not supported: ' + err.message);
+            }
+        });
+
+        function buildSliders() {
+            eqSlidersContainer.innerHTML = '';
+            sliderElements = [];
+
+            eqBands.forEach((band, index) => {
+                const group = document.createElement('div');
+                group.className = 'eq-slider-group';
+
+                const valueDisplay = document.createElement('span');
+                valueDisplay.className = 'eq-value';
+                valueDisplay.textContent = '0.0 dB';
+
+                const slider = document.createElement('input');
+                slider.type = 'range';
+                slider.min = '-20';
+                slider.max = '20';
+                slider.step = '0.5';
+                slider.value = '0';
+
+                slider.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    filters[index].gain.value = val;
+                    valueDisplay.textContent = (val > 0 ? '+' : '') + val.toFixed(1) + ' dB';
+                });
+
+                const label = document.createElement('span');
+                label.className = 'eq-label';
+                label.textContent = band.label;
+
+                group.appendChild(valueDisplay);
+                group.appendChild(slider);
+                group.appendChild(label);
+                eqSlidersContainer.appendChild(group);
+
+                sliderElements.push({ slider, valueDisplay, filter: filters[index] });
+            });
+        }
+
+        resetBtn.addEventListener('click', () => {
+            sliderElements.forEach(item => {
+                item.slider.value = '0';
+                item.filter.gain.value = 0;
+                item.valueDisplay.textContent = '0.0 dB';
+            });
+        });
+    </script>
+</body>
+</html>
