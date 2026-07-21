@@ -1,3 +1,4 @@
+// I have added FFmpeg because Lame.js does not work.
 const audioFileInput = document.getElementById('audioFile');
 const playBtn = document.getElementById('playBtn');
 const pauseBtn = document.getElementById('pauseBtn');
