@@ -1,4 +1,4 @@
-// Updated Database containing all your custom assets, games, and pages
+// Database containing custom assets, games, and projects
 const initialProjects = [
     // --- GAMES ---
     {
@@ -62,7 +62,7 @@ const initialProjects = [
         img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80"
     },
 
-    // --- UTILITIES / 404 PAGES ---
+    // --- UTILITIES / TOOLS / PAGES ---
     {
         id: 7,
         title: "Audio Converter - 404 Error Page",
@@ -115,8 +115,11 @@ const initialProjects = [
     }
 ];
 
-// Local state
+// App State
 let projects = [...initialProjects];
+let currentPage = 1;
+const itemsPerPage = 6;
+
 let currentFilters = {
     search: '',
     category: 'all',
@@ -134,32 +137,39 @@ const resultsCount = document.getElementById('results-count');
 const gridViewBtn = document.getElementById('grid-view-btn');
 const listViewBtn = document.getElementById('list-view-btn');
 const activeFiltersContainer = document.getElementById('active-filters');
+const prevPageBtn = document.getElementById('prev-page');
+const nextPageBtn = document.getElementById('next-page');
+const pageNumbersContainer = document.getElementById('page-numbers');
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
-    renderProjects();
     setupEventListeners();
+    updateAndRender();
 });
 
-// Setup Event Listeners
+// Event Listeners
 function setupEventListeners() {
     searchInput.addEventListener('input', (e) => {
         currentFilters.search = e.target.value.toLowerCase().trim();
+        currentPage = 1;
         updateAndRender();
     });
 
     categorySelect.addEventListener('change', (e) => {
         currentFilters.category = e.target.value;
+        currentPage = 1;
         updateAndRender();
     });
 
     statusSelect.addEventListener('change', (e) => {
         currentFilters.status = e.target.value;
+        currentPage = 1;
         updateAndRender();
     });
 
     sortSelect.addEventListener('change', (e) => {
         currentFilters.sort = e.target.value;
+        currentPage = 1;
         updateAndRender();
     });
 
@@ -175,8 +185,25 @@ function setupEventListeners() {
         gridViewBtn.classList.remove('active');
     });
 
+    prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderProjects();
+            scrollToGrid();
+        }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(projects.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderProjects();
+            scrollToGrid();
+        }
+    });
+
     document.getElementById('submit-project-btn').addEventListener('click', () => {
-        alert("This button will let users submit their custom layouts!");
+        alert("Project submission form feature coming soon!");
     });
 }
 
@@ -196,7 +223,7 @@ function updateAndRender() {
         filtered.sort((a, b) => b.id - a.id);
     } else if (currentFilters.sort === 'popular') {
         filtered.sort((a, b) => b.likes - a.likes);
-    } else {
+    } else { // trending
         filtered.sort((a, b) => b.likes - a.likes);
     }
 
@@ -210,45 +237,82 @@ function renderProjects() {
 
     if (projects.length === 0) {
         projectsGrid.innerHTML = `
-            <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
-                <span style="font-size: 48px;">🔍</span>
-                <h3 style="margin-top: 16px;">No matches found</h3>
-                <p>Try refining your keywords or checking different categories.</p>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--color-text-muted);">
+                <i data-lucide="search-x" style="width: 48px; height: 48px; margin-bottom: 12px; color: var(--color-primary);"></i>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main);">No projects found</h3>
+                <p>Try adjusting your search terms or filters.</p>
             </div>
         `;
         resultsCount.textContent = "Showing 0 projects";
+        renderPagination(0);
+        lucide.createIcons();
         return;
     }
 
     resultsCount.textContent = `Showing ${projects.length} project${projects.length === 1 ? '' : 's'}`;
 
-    projects.forEach(project => {
+    // Pagination slicing
+    const totalPages = Math.ceil(projects.length / itemsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedProjects = projects.slice(startIndex, startIndex + itemsPerPage);
+
+    paginatedProjects.forEach(project => {
         const card = document.createElement('article');
         card.className = 'project-card';
-        card.setAttribute('data-category', project.category);
-        card.setAttribute('data-status', project.status);
 
-        let statusClass = 'badge-active';
-        if (project.status === 'completed') statusClass = 'badge-completed';
-        if (project.status === 'planning') statusClass = 'badge-planning';
+        let badgeClass = 'badge-active';
+        if (project.status === 'completed') badgeClass = 'badge-completed';
+        if (project.status === 'planning') badgeClass = 'badge-planning';
 
         card.innerHTML = `
             <div class="project-thumbnail">
                 <img src="${project.img}" alt="${project.title} Thumbnail" class="project-img">
-                <span class="badge ${statusClass}">${project.status.charAt(0).toUpperCase() + project.status.slice(1)}</span>
+                <span class="badge ${badgeClass}">${project.status}</span>
             </div>
             <div class="project-card-content">
                 <span class="project-category">${project.category.replace('-', ' ').toUpperCase()}</span>
                 <h3><a href="#project-${project.id}" class="project-link">${project.title}</a></h3>
                 <p class="project-excerpt">${project.excerpt}</p>
                 <div class="project-meta">
-                    <span class="project-creator">Creator: <strong>${project.creator}</strong></span>
-                    <span class="project-likes" onclick="likeProject(${project.id})">❤️ ${project.likes}</span>
+                    <span class="project-creator">By <strong>${project.creator}</strong></span>
+                    <span class="project-likes" onclick="likeProject(${project.id})">
+                        <i data-lucide="heart" class="icon-sm"></i> ${project.likes}
+                    </span>
                 </div>
             </div>
         `;
         projectsGrid.appendChild(card);
     });
+
+    renderPagination(totalPages);
+    lucide.createIcons();
+}
+
+function renderPagination(totalPages) {
+    pageNumbersContainer.innerHTML = '';
+
+    if (totalPages <= 1) {
+        prevPageBtn.disabled = true;
+        nextPageBtn.disabled = true;
+        return;
+    }
+
+    prevPageBtn.disabled = currentPage === 1;
+    nextPageBtn.disabled = currentPage === totalPages;
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.className = `page-num ${i === currentPage ? 'active' : ''}`;
+        btn.textContent = i;
+        btn.addEventListener('click', () => {
+            currentPage = i;
+            renderProjects();
+            scrollToGrid();
+        });
+        pageNumbersContainer.appendChild(btn);
+    }
 }
 
 window.likeProject = function(projectId) {
@@ -266,6 +330,7 @@ function renderActiveFilterTags() {
         createTag(`Search: "${currentFilters.search}"`, () => {
             currentFilters.search = '';
             searchInput.value = '';
+            currentPage = 1;
             updateAndRender();
         });
     }
@@ -274,6 +339,7 @@ function renderActiveFilterTags() {
         createTag(`Category: ${currentFilters.category}`, () => {
             currentFilters.category = 'all';
             categorySelect.value = 'all';
+            currentPage = 1;
             updateAndRender();
         });
     }
@@ -282,15 +348,22 @@ function renderActiveFilterTags() {
         createTag(`Status: ${currentFilters.status}`, () => {
             currentFilters.status = 'all';
             statusSelect.value = 'all';
+            currentPage = 1;
             updateAndRender();
         });
     }
+
+    lucide.createIcons();
 }
 
 function createTag(text, onRemove) {
     const tag = document.createElement('span');
     tag.className = 'filter-tag';
-    tag.innerHTML = `${text} <span aria-label="Remove filter">&times;</span>`;
-    tag.querySelector('span').addEventListener('click', onRemove);
+    tag.innerHTML = `${text} <i data-lucide="x" class="remove-icon"></i>`;
+    tag.querySelector('.remove-icon').addEventListener('click', onRemove);
     activeFiltersContainer.appendChild(tag);
+}
+
+function scrollToGrid() {
+    projectsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
