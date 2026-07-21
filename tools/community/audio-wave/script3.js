@@ -1,5 +1,7 @@
-// script3.js - Fixed Waveform Engine & Settings Manager
+// script3.js - Fixed Waveform Engine & Modal Settings
 
+// Ensure global state exists to prevent crashes
+window.WaveState = window.WaveState || {};
 Object.assign(window.WaveState, {
     canvasCtx: null,
     canvasWidth: 0,
@@ -9,12 +11,14 @@ Object.assign(window.WaveState, {
     isDragging: false,
     hoverTime: 0,
     visualStyle: localStorage.getItem('wave_visualStyle') || 'sensational',
-    showPlayheadOnSB: localStorage.getItem('wave_showPlayheadSB') !== 'false', // Default ON
+    showPlayhead: localStorage.getItem('wave_showPlayhead') !== 'false', // Default ON
     animationFrameId: null
 });
 
 function initCanvas() {
     const state = window.WaveState;
+    if (!state.elements || !state.elements.canvas) return; // Safety check
+
     const canvas = state.elements.canvas;
     state.canvasCtx = canvas.getContext('2d');
 
@@ -31,58 +35,65 @@ function initCanvas() {
     window.addEventListener('resize', resize);
     resize();
     setupCanvasInteractions();
-    setupSettingsButtons();
+    setupSettingsModal();
 }
 
-function setupSettingsButtons() {
+function setupSettingsModal() {
     const state = window.WaveState;
     
-    // 1. Playhead Toggle Button
-    const playheadBtn = document.getElementById('playhead-sb-btn');
-    if (playheadBtn) {
-        const updatePlayheadBtn = () => {
-            playheadBtn.innerText = `Playhead Show On SB: ${state.showPlayheadOnSB ? 'ON' : 'OFF'}`;
-            playheadBtn.style.backgroundColor = state.showPlayheadOnSB ? '#2ecc71' : '#e74c3c';
-        };
-        updatePlayheadBtn();
+    // Elements
+    const openBtn = document.getElementById('settings-open-btn');
+    const closeBtn = document.getElementById('settings-close-btn');
+    const modal = document.getElementById('settings-modal');
+    const playheadToggle = document.getElementById('playhead-toggle');
+    const styleToggle = document.getElementById('style-toggle');
 
-        playheadBtn.addEventListener('click', () => {
-            state.showPlayheadOnSB = !state.showPlayheadOnSB;
-            localStorage.setItem('wave_showPlayheadSB', state.showPlayheadOnSB);
-            updatePlayheadBtn();
-        });
-    }
+    if (!modal) return;
 
-    // 2. Style Toggle Button
-    const styleBtn = document.getElementById('style-toggle-btn');
-    if (styleBtn) {
-        const updateStyleBtn = () => {
-            styleBtn.innerText = state.visualStyle === 'sensational' ? 'Style: Sensational Bars' : 'Style: Original Wave';
-        };
-        updateStyleBtn();
+    // Open/Close Modal
+    openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
 
-        styleBtn.addEventListener('click', () => {
-            state.visualStyle = state.visualStyle === 'sensational' ? 'original' : 'sensational';
-            localStorage.setItem('wave_visualStyle', state.visualStyle);
-            updateStyleBtn();
-        });
-    }
+    // 1. Playhead Toggle
+    const updatePlayheadUI = () => {
+        playheadToggle.innerText = state.showPlayhead ? 'ON' : 'OFF';
+        playheadToggle.style.backgroundColor = state.showPlayhead ? '#2ecc71' : '#e74c3c';
+    };
+    updatePlayheadUI();
+
+    playheadToggle.addEventListener('click', () => {
+        state.showPlayhead = !state.showPlayhead;
+        localStorage.setItem('wave_showPlayhead', state.showPlayhead);
+        updatePlayheadUI();
+    });
+
+    // 2. Style Toggle
+    const updateStyleUI = () => {
+        styleToggle.innerText = state.visualStyle === 'sensational' ? 'Sensational Bars' : 'Original Wave';
+        styleToggle.style.backgroundColor = state.visualStyle === 'sensational' ? '#7928ca' : '#0077ff';
+    };
+    updateStyleUI();
+
+    styleToggle.addEventListener('click', () => {
+        state.visualStyle = state.visualStyle === 'sensational' ? 'original' : 'sensational';
+        localStorage.setItem('wave_visualStyle', state.visualStyle);
+        updateStyleUI();
+    });
 }
 
-// Fixed Peak Extraction to prevent sawtooth/maxed-out bar glitches
+// Fixed Peak Extraction
 function extractWaveformPeaks() {
     const state = window.WaveState;
     if (!state.audioBuffer) return;
 
     const buffer = state.audioBuffer;
     const rawData = buffer.getChannelData(0);
-    const totalBars = 90; // Clean, uniform bar count
+    const totalBars = 90;
     const samplesPerBar = Math.floor(rawData.length / totalBars);
     state.waveformPeaks = [];
 
-    let globalMax = 0.0001; // Avoid divide by zero
+    let globalMax = 0.0001; 
 
-    // Pass 1: Compute root-mean-square average peak per segment
     const rawPeaks = [];
     for (let i = 0; i < totalBars; i++) {
         let blockStart = samplesPerBar * i;
@@ -96,25 +107,22 @@ function extractWaveformPeaks() {
         if (rms > globalMax) globalMax = rms;
     }
 
-    // Pass 2: Normalize so bars fit perfectly in the viewport
     for (let i = 0; i < totalBars; i++) {
         state.waveformPeaks.push(rawPeaks[i] / globalMax);
     }
 }
 
-// Fixed Sensational Audio Bar Visualizer
+// Sensational Audio Bar Visualizer
 function drawSensationalBarWaveform(ctx, width, height) {
     const state = window.WaveState;
-    
     const gradient = ctx.createLinearGradient(0, 0, width, 0);
-    gradient.addColorStop(0, '#ff00aa');   // Pink
-    gradient.addColorStop(0.5, '#a020f0'); // Purple
-    gradient.addColorStop(1, '#00f0ff');   // Cyan
+    gradient.addColorStop(0, '#ff00aa');   
+    gradient.addColorStop(0.5, '#a020f0'); 
+    gradient.addColorStop(1, '#00f0ff');   
 
     ctx.save();
     
     if (state.isPlaying && state.analyser) {
-        // LIVE PLAYING FREQUENCY SPECTRUM
         const bufferLength = state.analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
         state.analyser.getByteFrequencyData(dataArray);
@@ -135,7 +143,6 @@ function drawSensationalBarWaveform(ctx, width, height) {
             ctx.fill();
         }
     } else if (state.waveformPeaks.length > 0) {
-        // STATIC WAVEFORM VIEW
         const peaks = state.waveformPeaks;
         const barWidth = width / peaks.length;
 
@@ -149,7 +156,6 @@ function drawSensationalBarWaveform(ctx, width, height) {
             ctx.fill();
         }
     }
-
     ctx.restore();
 }
 
@@ -212,12 +218,8 @@ function drawOverlays(ctx, width, height) {
     const duration = state.audioBuffer ? state.audioBuffer.duration : 0;
     if (duration === 0) return;
 
-    // Check setting for Sensational Bars mode
-    if (state.visualStyle === 'sensational' && !state.showPlayheadOnSB) {
-        return; // Skip rendering playhead and selection if setting is OFF
-    }
-
-    if (state.selection.active) {
+    // Always show selection box if dragging or active
+    if (state.selection.active || state.isDragging) {
         const startX = (state.selection.start / duration) * width;
         const endX = (state.selection.end / duration) * width;
         ctx.save();
@@ -228,30 +230,33 @@ function drawOverlays(ctx, width, height) {
         ctx.restore();
     }
 
-    let currentPos = state.isPlaying 
-        ? state.audioContext.currentTime - state.startedAt 
-        : state.pausedAt;
+    // ONLY SHOW PLAYHEAD IF SETTING IS ON
+    if (state.showPlayhead) {
+        let currentPos = state.isPlaying 
+            ? state.audioContext.currentTime - state.startedAt 
+            : state.pausedAt;
 
-    const playheadX = (currentPos / duration) * width;
+        const playheadX = (currentPos / duration) * width;
 
-    ctx.save();
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = '#ffffff';
-    ctx.beginPath();
-    ctx.moveTo(playheadX, 0);
-    ctx.lineTo(playheadX, height);
-    ctx.stroke();
+        ctx.save();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(playheadX, 0);
+        ctx.lineTo(playheadX, height);
+        ctx.stroke();
 
-    ctx.fillStyle = '#ff0055';
-    ctx.beginPath();
-    ctx.moveTo(playheadX - 6, 0);
-    ctx.lineTo(playheadX + 6, 0);
-    ctx.lineTo(playheadX, 10);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
+        ctx.fillStyle = '#ff0055';
+        ctx.beginPath();
+        ctx.moveTo(playheadX - 6, 0);
+        ctx.lineTo(playheadX + 6, 0);
+        ctx.lineTo(playheadX, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+    }
 }
 
 function setupCanvasInteractions() {
@@ -275,9 +280,10 @@ function setupCanvasInteractions() {
         state.selection.active = false;
 
         if (state.isPlaying) {
-            pauseAudio();
+            // Optional check for pauseAudio existence
+            if (typeof pauseAudio === 'function') pauseAudio();
             state.pausedAt = clickedTime;
-            playAudio();
+            if (typeof playAudio === 'function') playAudio();
         } else {
             state.pausedAt = clickedTime;
         }
@@ -330,6 +336,7 @@ function renderLoop() {
     state.animationFrameId = requestAnimationFrame(renderLoop);
 }
 
+// Watcher to extract peaks when an audio file is uploaded
 setInterval(() => {
     if (window.WaveState && window.WaveState.audioBuffer && window.WaveState.waveformPeaks.length === 0) {
         extractWaveformPeaks();
