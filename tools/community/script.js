@@ -7,9 +7,9 @@ const initialProjects = [
         category: "games",
         status: "active",
         excerpt: "A fun, fast-paced arcade game where you tap to smash invading ants before they cross the screen!",
-        creator: "ants",
-        likes: 142,
-        img: "https://images.unsplash.com/photo-1551009175-15bdf9dcb580?auto=format&fit=crop&w=400&q=80"
+        creator: "zee12",
+        likes: 8,
+        icon: "bug"
     },
     {
         id: 2,
@@ -17,9 +17,9 @@ const initialProjects = [
         category: "games",
         status: "active",
         excerpt: "Control your basket and catch the falling golden apples. Don't let them hit the ground!",
-        creator: "apple",
-        likes: 118,
-        img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=400&q=80"
+        creator: "zee12",
+        likes: 9,
+        icon: "apple"
     },
     {
         id: 3,
@@ -28,18 +28,18 @@ const initialProjects = [
         status: "active",
         excerpt: "Test your aim in this virtual axe-throwing simulator. Hit the bullseye to unlock custom axes!",
         creator: "axe-throwing",
-        likes: 189,
-        img: "https://images.unsplash.com/photo-1595206133361-b1fe343e5e23?auto=format&fit=crop&w=400&q=80"
+        likes: 2,
+        icon: "zee12"
     },
     {
         id: 4,
         title: "Banana Catcher Game",
         category: "games",
         status: "active",
-        excerpt: "A chaotic catching game featuring falling bananas and crazy monkey power-ups.",
-        creator: "banana",
-        likes: 95,
-        img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=400&q=80"
+        excerpt: "Can you catch all of the bananas before time runs out?",
+        creator: "zee12",
+        likes: 4,
+        icon: "banana"
     },
     {
         id: 5,
@@ -47,9 +47,9 @@ const initialProjects = [
         category: "games",
         status: "active",
         excerpt: "Timing is everything! Ring the festive bells at the exact peak of their swing to score combos.",
-        creator: "bell",
-        likes: 67,
-        img: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?auto=format&fit=crop&w=400&q=80"
+        creator: "jonah-oijinnka",
+        likes: 3,
+        icon: "bell"
     },
     {
         id: 6,
@@ -57,61 +57,61 @@ const initialProjects = [
         category: "games",
         status: "active",
         excerpt: "A cute, physics-based puzzle-catching adventure where you coax energetic kittens into cozy baskets.",
-        creator: "cat",
-        likes: 243,
-        img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80"
+        creator: "agas12",
+        likes: 12,
+        icon: "cat"
     },
 
     // --- UTILITIES / TOOLS / PAGES ---
     {
         id: 7,
-        title: "Audio Converter - 404 Error Page",
+        title: "Audio Converter",
         category: "web-tools",
         status: "completed",
-        excerpt: "A themed, retro-styled cassette layout error page for lost audio conversion routes.",
-        creator: "audio-converter",
-        likes: 54,
-        img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80"
+        excerpt: "Convert audio easily.",
+        creator: "sensationalx",
+        likes: 8,
+        icon: "cassette"
     },
     {
         id: 8,
-        title: "Video Converter - 404 Error Page",
+        title: "Video Converter Page",
         category: "web-tools",
         status: "completed",
-        excerpt: "A custom 404 glitch-art styled screen representing broken video translation paths.",
-        creator: "video-converter",
-        likes: 72,
-        img: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=400&q=80"
+        excerpt: "Convert videos!",
+        creator: "sensationalx",
+        likes: 12,
+        icon: "video"
     },
     {
         id: 9,
-        title: "Pride Theme 404 Page",
+        title: "Pride Page",
         category: "art",
         status: "completed",
-        excerpt: "A vibrant, custom pride-themed 404 page celebrating identity while pointing users safely back home.",
-        creator: "pride",
-        likes: 312,
-        img: "https://images.unsplash.com/photo-1572537144122-f155981245b7?auto=format&fit=crop&w=400&q=80"
+        excerpt: "A pride page.",
+        creator: "zee12",
+        likes: 2,
+        icon: "flag"
     },
     {
         id: 10,
-        title: "Gender Not Found 404 Page",
+        title: "Pixel Art",
         category: "art",
-        status: "completed",
-        excerpt: "A custom-styled 404 page featuring a witty 'Gender Not Found: Please select custom values' theme.",
-        creator: "transf",
-        likes: 389,
-        img: "https://images.unsplash.com/photo-1611590027211-b954fd027b51?auto=format&fit=crop&w=400&q=80"
+        status: "active",
+        excerpt: "Pixel Art Maker",
+        creator: "zee12",
+        likes: 2,
+        icon: "user-search"
     },
     {
         id: 11,
-        title: "Transmasc Styled 404 Page",
+        title: "Create a Project!",
         category: "art",
         status: "completed",
-        excerpt: "A beautifully styled error fallback page featuring transmasculine palette pride flag graphics.",
-        creator: "transm",
-        likes: 274,
-        img: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=400&q=80"
+        excerpt: "Create a new community project here.",
+        creator: "sensationalx",
+        likes: 9,
+        icon: "palette"
     }
 ];
 
@@ -268,7 +268,7 @@ function renderProjects() {
 
         card.innerHTML = `
             <div class="project-thumbnail">
-                <img src="${project.img}" alt="${project.title} Thumbnail" class="project-img">
+                <i data-lucide="${project.icon}" class="project-hero-icon"></i>
                 <span class="badge ${badgeClass}">${project.status}</span>
             </div>
             <div class="project-card-content">
