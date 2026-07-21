@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Golsara | Home</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background: #f9f9f9; }
+        input { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; box-sizing: border-box; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #fff; margin-bottom: 10px; padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        a { text-decoration: none; color: #0066cc; font-size: 18px; font-weight: bold; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Golsara Index</h1>
+    <input type="text" id="searchInput" onkeyup="filterLinks()" placeholder="Search sites...">
+
+    <ul id="linkList">
+        <li><a href="ai-music-is-evolving.html">AI Music Detection Is Evolving and How to Detect It</a></li>
+        <li><a href="ai-videos-keep-evolving.html">How to Detect AI Video Detection</a></li>
+        <li><a href="detector.html">AI Writing Detection Tool</a></li>
+        <li><a href="dont-put-your-phone-in-rice-heres-why.html">Rice Phone Care After Water Damage</a></li>
+        <li><a href="how-to-detect-ai-images.html">AI Image Detection</a></li>
+        <li><a href="how-to-detect-ai-writing.html">AI Writing Detection Guide</a></li>
+        <li><a href="html-tips.html">HTML Code Tips</a></li>
+        <li><a href="phone-in-rice.py.html">Phone in Rice Game Script</a></li>
+        <li><a href="what-it-really-means-to-be-trans.html">What It Really Means Means to Be Transgender</a></li>
+    </ul>
+
+    <script>
+        function filterLinks() {
+            let input = document.getElementById('searchInput');
+            let filter = input.value.toLowerCase();
+            let list = document.getElementById('linkList');
+            let li = list.getElementsByTagName('li');
+
+            for (let i = 0; i < li.length; i++) {
+                let a = li[i].getElementsByTagName('a')[0];
+                let text = a.textContent || a.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    li[i].classList.remove('hidden');
+                } else {
+                    li[i].classList.add('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
