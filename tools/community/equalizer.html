@@ -3,301 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Graphic Equalizer</title>
+    <title>Audio Graphic EQ & Waveform Studio</title>
     <style>
+        :root {
+            --bg-color: #0b0b0c;
+            --card-bg: #1c1c1f;
+            --border-color: #2a2a2e;
+            --accent: #ff3366;
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+        }
+
         body {
             margin: 0;
-            background-color: #0f111a;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 30px 20px;
         }
 
         h1 {
             margin-bottom: 5px;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             letter-spacing: 0.5px;
-            text-align: center;
         }
 
         p {
-            color: #8b9bb4;
-            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
             margin-bottom: 25px;
             text-align: center;
-            max-width: 500px;
+            max-width: 600px;
         }
 
-        .warning {
-            color: #f59e0b;
-            font-size: 0.8rem;
-            margin-bottom: 20px;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            padding: 8px 14px;
-            border-radius: 6px;
-            text-align: center;
+        .studio-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        #controls {
-            margin-bottom: 25px;
+        .controls-bar {
             display: flex;
             gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
-        button {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        .file-upload-label {
+            background: linear-gradient(135deg, #ff3366, #b81d45);
             color: #ffffff;
-            border: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             font-size: 0.95rem;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 14px rgba(255, 51, 102, 0.4);
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .file-upload-label:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .playback-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button.action-btn {
+            background: #2a2a2e;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        button:hover {
-            background: linear-gradient(135deg, #4f46e5, #4338ca);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        button.action-btn:hover:not(:disabled) {
+            background: #3a3a3e;
+            border-color: var(--accent);
         }
 
-        button.secondary {
-            background: #1e293b;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-            border: 1px solid #334155;
+        button.action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
-        button.secondary:hover {
-            background: #334155;
-        }
-
-        .eq-panel {
-            background-color: #1a1d2d;
-            border: 1px solid #2a324a;
-            border-radius: 16px;
-            padding: 30px 20px;
-            width: 100%;
-            max-width: 650px;
-            box-sizing: border-box;
-            display: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        .eq-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #2a324a;
-            padding-bottom: 12px;
-        }
-
-        .eq-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #cbd5e1;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .eq-sliders {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            height: 220px;
-            align-items: center;
-        }
-
-        .eq-slider-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-            height: 100%;
-            justify-content: space-between;
-        }
-
-        .eq-slider-group input[type="range"] {
-            writing-mode: bt-lr;
-            writing-mode: vertical-lr;
-            direction: rtl;
-            width: 10px;
-            height: 140px;
-            accent-color: #6366f1;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-
-        .eq-label {
-            font-size: 0.75rem;
-            color: #8b9bb4;
+        #trackInfo {
+            font-size: 0.9rem;
+            color: var(--accent);
             font-weight: 500;
         }
 
-        .eq-value {
-            font-size: 0.7rem;
-            color: #6366f1;
-            font-weight: 600;
-            height: 16px;
+        .canvas-container {
+            position: relative;
+            background-color: #000000;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
         }
 
-        .footer-actions {
-            margin-top: 25px;
+        canvas {
+            display: block;
+            width: 100%;
+            height: 180px;
+        }
+
+        .eq-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .eq-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .eq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 16px;
+        }
+
+        .eq-slider-group {
+            background: #151518;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 10px;
             display: flex;
-            justify-content: flex-end;
+            flex-direction: column;
+            align-items: center;
             gap: 10px;
+        }
+
+        .eq-slider-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .eq-slider-group input[type="range"] {
+            writing-mode: bt-lr; /* IE */
+            writing-mode: vertical-lr;
+            direction: rtl;
+            width: 8px;
+            height: 110px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .eq-value {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--text-main);
         }
     </style>
 </head>
 <body>
 
-    <h1>7-Band Graphic Equalizer</h1>
-    <p>Process your microphone audio live through customizable equalizer filters.</p>
+    <h1>Audio Graphic EQ & Waveform Studio</h1>
+    <p>Upload an MP3, WAV, or FLAC track, scrub through the waveform playhead, and dynamically tweak the graphic EQ.</p>
     
-    <div class="warning">⚠️ Use headphones to prevent acoustic feedback (screeching) from speakers.</div>
-
-    <div id="controls">
-        <button id="startBtn">Start Equalizer</button>
-    </div>
-
-    <div class="eq-panel" id="eqPanel">
-        <div class="eq-header">
-            <div class="eq-title">Master Equalizer Rack</div>
-            <button class="secondary" id="resetBtn" style="padding: 6px 14px; font-size: 0.8rem;">Reset to Flat</button>
+    <div class="studio-container">
+        <div class="controls-bar">
+            <label class="file-upload-label">
+                Upload Audio File
+                <input type="file" id="audioFile" accept=".mp3,.wav,.flac">
+            </label>
+            <div class="playback-buttons">
+                <button id="playBtn" class="action-btn" disabled>Play</button>
+                <button id="pauseBtn" class="action-btn" disabled>Pause</button>
+                <button id="stopBtn" class="action-btn" disabled>Stop</button>
+            </div>
         </div>
-        <div class="eq-sliders" id="eqSlidersContainer">
-            <!-- Sliders generated via JS -->
+
+        <div id="trackInfo">No file loaded</div>
+
+        <div class="canvas-container" id="canvasContainer">
+            <canvas id="waveformCanvas"></canvas>
+        </div>
+
+        <div class="eq-section">
+            <div class="eq-title">Graphic Equalizer</div>
+            <div class="eq-grid" id="eqGrid">
+                <!-- EQ Sliders injected via JS -->
+            </div>
         </div>
     </div>
 
     <script>
-        const startBtn = document.getElementById('startBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const eqPanel = document.getElementById('eqPanel');
-        const eqSlidersContainer = document.getElementById('eqSlidersContainer');
+        const audioFileInput = document.getElementById('audioFile');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const trackInfo = document.getElementById('trackInfo');
+        const canvas = document.getElementById('waveformCanvas');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const ctx = canvas.getContext('2d');
+        const eqGrid = document.getElementById('eqGrid');
 
-        let audioCtx, microphone, gainNode;
-        let filters = [];
-        let sliderElements = [];
-        let isRunning = false;
+        let audioCtx = null;
+        let audioBuffer = null;
+        let sourceNode = null;
+        let gainNode = null;
+        let eqFilters = [];
 
-        // 7-Band EQ specification
+        let isPlaying = false;
+        let startTime = 0;
+        let pauseOffset = 0;
+        let animationFrameId = null;
+
+        // EQ Frequency Bands Configuration
         const eqBands = [
-            { label: '60 Hz', freq: 60, type: 'lowshelf' },
-            { label: '150 Hz', freq: 150, type: 'peaking' },
-            { label: '400 Hz', freq: 400, type: 'peaking' },
-            { label: '1 kHz', freq: 1000, type: 'peaking' },
-            { label: '2.5 kHz', freq: 2500, type: 'peaking' },
-            { label: '6 kHz', freq: 6000, type: 'peaking' },
-            { label: '16 kHz', freq: 16000, type: 'highshelf' }
+            { freq: 60, label: '60 Hz' },
+            { freq: 170, label: '170 Hz' },
+            { freq: 350, label: '350 Hz' },
+            { freq: 1000, label: '1 kHz' },
+            { freq: 3500, label: '3.5 kHz' },
+            { freq: 10000, label: '10 kHz' }
         ];
 
-        startBtn.addEventListener('click', async () => {
-            if (isRunning) return;
-
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: false,
-                        autoGainControl: false
-                    }, 
-                    video: false 
-                });
-                
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                microphone = audioCtx.createMediaStreamSource(stream);
-
-                // Master gain node to control overall output safely
-                gainNode = audioCtx.createGain();
-                gainNode.gain.value = 1.0;
-
-                // Build filter chain
-                let lastNode = microphone;
-                filters = eqBands.map((band, index) => {
-                    const filter = audioCtx.createBiquadFilter();
-                    filter.type = band.type;
-                    filter.frequency.value = band.freq;
-                    filter.gain.value = 0; // Flat response initially
-                    if (band.type === 'peaking') {
-                        filter.Q.value = 1.4; // Filter bandwidth quality factor
-                    }
-
-                    lastNode.connect(filter);
-                    lastNode = filter;
-                    return filter;
-                });
-
-                // Connect final filter to master gain, then to speakers
-                lastNode.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-
-                // Build UI Sliders
-                buildSliders();
-
-                startBtn.style.display = 'none';
-                eqPanel.style.display = 'block';
-                isRunning = true;
-
-            } catch (err) {
-                alert('Microphone access was denied or is not supported: ' + err.message);
-            }
-        });
-
-        function buildSliders() {
-            eqSlidersContainer.innerHTML = '';
-            sliderElements = [];
-
+        // Initialize UI Sliders
+        function initEQUI() {
+            eqGrid.innerHTML = '';
             eqBands.forEach((band, index) => {
                 const group = document.createElement('div');
                 group.className = 'eq-slider-group';
+                group.innerHTML = `
+                    <label>${band.label}</label>
+                    <input type="range" id="eq-${index}" min="-20" max="20" step="0.5" value="0">
+                    <span class="eq-value" id="val-${index}">0.0 dB</span>
+                `;
+                eqGrid.appendChild(group);
 
-                const valueDisplay = document.createElement('span');
-                valueDisplay.className = 'eq-value';
-                valueDisplay.textContent = '0.0 dB';
-
-                const slider = document.createElement('input');
-                slider.type = 'range';
-                slider.min = '-20';
-                slider.max = '20';
-                slider.step = '0.5';
-                slider.value = '0';
-
+                const slider = group.querySelector('input');
+                const valDisplay = group.querySelector(`#val-${index}`);
+                
                 slider.addEventListener('input', (e) => {
                     const val = parseFloat(e.target.value);
-                    filters[index].gain.value = val;
-                    valueDisplay.textContent = (val > 0 ? '+' : '') + val.toFixed(1) + ' dB';
+                    valDisplay.textContent = `${val > iconPlus(val) ? '+' : ''}${val.toFixed(1)} dB`;
+                    if (eqFilters[index]) {
+                        eqFilters[index].gain.value = val;
+                    }
                 });
-
-                const label = document.createElement('span');
-                label.className = 'eq-label';
-                label.textContent = band.label;
-
-                group.appendChild(valueDisplay);
-                group.appendChild(slider);
-                group.appendChild(label);
-                eqSlidersContainer.appendChild(group);
-
-                sliderElements.push({ slider, valueDisplay, filter: filters[index] });
             });
         }
+        function iconPlus(v) { return v > 0 ? '+' : ''; }
+        initEQUI();
 
-        resetBtn.addEventListener('click', () => {
-            sliderElements.forEach(item => {
-                item.slider.value = '0';
-                item.filter.gain.value = 0;
-                item.valueDisplay.textContent = '0.0 dB';
-            });
+        // Handle File Upload & Decoding
+        audioFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            trackInfo.textContent = `Loading: ${file.name}...`;
+            stopAudio();
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                
+                trackInfo.textContent = `Loaded: ${file.name} (${formatTime(audioBuffer.duration)})`;
+                playBtn.disabled = false;
+                pauseBtn.disabled = true;
+                stopBtn.disabled = true;
+                pauseOffset = 0;
+
+                resizeCanvas();
+                drawWaveform();
+            } catch (err) {
+                trackInfo.textContent = 'Error loading audio file.';
+                alert('Could not decode audio file. Ensure it is a valid MP3, WAV, or FLAC.');
+            }
         });
+
+        function resizeCanvas() {
+            canvas.width = canvasContainer.clientWidth * window.devicePixelRatio;
+            canvas.height = 180 * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        window.addEventListener('resize', () => {
+            if (audioBuffer) {
+                resizeCanvas();
+                drawWaveform();
+            }
+        });
+
+        // Draw Static Waveform
+        function drawWaveform(playheadTime = 0) {
+            if (!audioBuffer) return;
+
+            const width = canvasContainer.clientWidth;
+            const height = 180;
+            ctx.clearRect(0, 0, width, height);
+
+            const rawData = audioBuffer.getChannelData(0);
+            const samples = width;
+            const blockSz = Math.floor(rawData.length / samples);
+            const amp = height / 2;
+
+            // Draw Waveform Bars
+            ctx.fillStyle = '#2e2e38';
+            for (let i = 0; i < samples; i++) {
+                let min = 1.0;
+                let max = -1.0;
+                for (let j = 0; j < blockSz; j++) {
+                    const val = rawData[i * blockSz + j];
+                    if (val < min) min = val;
+                    if (val > max) max = val;
+                }
+                const yMin = (1.0 + min) * amp;
+                const yMax = (1.0 + max) * amp;
+                
+                // Highlight played section vs unplayed
+                const progressTime = (i / samples) * audioBuffer.duration;
+                ctx.fillStyle = progressTime <= playheadTime ? '#ff3366' : '#3f3f4a';
+                ctx.fillRect(i, yMin, 1, Math.max(1, yMax - yMin));
+            }
+
+            // Draw Playhead Line
+            if (audioBuffer.duration > 0) {
+                const playheadX = (playheadTime / audioBuffer.duration) * width;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(playheadX, 0);
+                ctx.lineTo(playheadX, height);
+                ctx.stroke();
+            }
+        }
+
+        // Setup Web Audio Graph Pipeline & EQ filters
+        function setupAudioGraph() {
+            sourceNode = audioCtx.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+
+            // Create Master Gain
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = 1.0;
+
+            // Create EQ Biquad Filters
+            eqFilters = eqBands.map((band, index) => {
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = index === 0 ? 'lowshelf' : (index === eqBands.length - 1 ? 'highshelf' : 'peaking');
+                filter.frequency.value = band.freq;
+                filter.Q.value = 1.0;
+                
+                // Sync current slider value
+                const sliderVal = parseFloat(document.getElementById(`eq-${index}`).value);
+                filter.gain.value = sliderVal;
+                return filter;
+            });
+
+            // Connect Chain: Source -> Filter 0 -> Filter 1 -> ... -> Gain -> Destination
+            let lastNode = sourceNode;
+            eqFilters.forEach(filter => {
+                lastNode.connect(filter);
+                lastNode = filter;
+            });
+
+            lastNode.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            sourceNode.onended = () => {
+                if (isPlaying && (audioCtx.currentTime - startTime >= audioBuffer.duration - pauseOffset)) {
+                    stopAudio();
+                }
+            };
+        }
+
+        // Playback Controls
+        playBtn.addEventListener('click', () => {
+            if (!audioBuffer || isPlaying) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            setupAudioGraph();
+
+            sourceNode.start(0, pauseOffset);
+            startTime = audioCtx.currentTime;
+            isPlaying = true;
+
+            playBtn.disabled = true;
+            pauseBtn.disabled = false;
+            stopBtn.disabled = false;
+            audioFileInput.disabled = true;
+
+            trackLoop();
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            if (!isPlaying) return;
+            pauseOffset += audioCtx.currentTime - startTime;
+            stopPlaybackOnly();
+
+            playBtn.disabled = false;
+            pauseBtn.disabled = true;
+            stopBtn.disabled = false;
+            audioFileInput.disabled = false;
+        });
+
+        stopBtn.addEventListener('click', () => {
+            stopAudio();
+        });
+
+        function stopPlaybackOnly() {
+            if (sourceNode) {
+                try { sourceNode.stop(); } catch (e) {}
+                sourceNode.disconnect();
+                sourceNode = null;
+            }
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            isPlaying = false;
+        }
+
+        function stopAudio() {
+            stopPlaybackOnly();
+            pauseOffset = 0;
+            if (audioBuffer) {
+                drawWaveform(0);
+                playBtn.disabled = false;
+            }
+            pauseBtn.disabled = true;
+            stopBtn.disabled = true;
+            audioFileInput.disabled = false;
+        }
+
+        // Animation Loop for Playhead Tracking
+        function trackLoop() {
+            if (!isPlaying) return;
+
+            const currentPlaybackTime = pauseOffset + (audioCtx.currentTime - startTime);
+            if (currentPlaybackTime >= audioBuffer.duration) {
+                stopAudio();
+                return;
+            }
+
+            drawWaveform(currentPlaybackTime);
+            animationFrameId = requestAnimationFrame(trackLoop);
+        }
+
+        // Click on Waveform to Scrub Playhead
+        canvasContainer.addEventListener('click', (e) => {
+            if (!audioBuffer) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickRatio = clickX / rect.width;
+            const targetTime = clickRatio * audioBuffer.duration;
+
+            const wasPlaying = isPlaying;
+            if (isPlaying) {
+                stopPlaybackOnly();
+            }
+
+            pauseOffset = targetTime;
+            drawWaveform(targetTime);
+
+            if (wasPlaying) {
+                playBtn.click();
+            }
+        });
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
     </script>
 </body>
 </html>
