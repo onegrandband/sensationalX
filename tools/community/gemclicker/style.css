@@ -1,64 +1,101 @@
-/* Base Styles */
+/* CSS Variables for Themes */
+:root {
+    --bg-main: #1a1a2e;
+    --bg-panel: #16213e;
+    --bg-clicker: #0f3460;
+    --text-main: white;
+    --text-muted: #aaa;
+    --accent: #e94560;
+    --accent-hover: #ff5773;
+    --border: #0f3460;
+}
+
+/* Light Mode Variables */
+body.light-mode {
+    --bg-main: #e0e6ed;
+    --bg-panel: #ffffff;
+    --bg-clicker: #cdd9e5;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --accent: #e74c3c;
+    --accent-hover: #c0392b;
+    --border: #bdc3c7;
+}
+
+/* Neon Hacker Mode Variables */
+body.neon-mode {
+    --bg-main: #000000;
+    --bg-panel: #0a0a0a;
+    --bg-clicker: #050505;
+    --text-main: #00ff00;
+    --text-muted: #008800;
+    --accent: #00ff00;
+    --accent-hover: #33ff33;
+    --border: #00ff00;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    user-select: none; /* Prevents highlighting text while clicking */
+    user-select: none;
 }
 
 body {
-    background-color: #1a1a2e;
-    color: #e94560;
+    background-color: var(--bg-main);
+    color: var(--accent);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    transition: background-color 0.5s, color 0.5s;
 }
 
 #game-container {
     display: flex;
-    width: 900px;
-    height: 600px;
-    background-color: #16213e;
+    width: 1000px;
+    height: 650px;
+    background-color: var(--bg-panel);
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     overflow: hidden;
+    border: 2px solid var(--border);
 }
 
-/* Left Side: Clicker Area */
 #clicker-section {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    background-color: #0f3460;
-    border-right: 4px solid #1a1a2e;
+    background-color: var(--bg-clicker);
+    border-right: 4px solid var(--bg-main);
 }
 
 #title {
     margin-bottom: 20px;
     font-size: 2.5rem;
-    color: #fff;
-    text-shadow: 0 0 10px #e94560;
+    color: var(--text-main);
+    text-shadow: 0 0 10px var(--accent);
 }
 
 #score-board {
     text-align: center;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.2);
     padding: 15px 30px;
     border-radius: 10px;
     margin-bottom: 50px;
-    color: white;
+    color: var(--text-main);
+    border: 1px solid var(--border);
 }
 
 #gem-count {
-    color: #e94560;
-    font-size: 2rem;
+    color: var(--accent);
+    font-size: 2.5rem;
+    font-weight: bold;
 }
 
-/* The Gem Itself */
 #gem-container {
     flex-grow: 1;
     display: flex;
@@ -69,50 +106,47 @@ body {
 #main-gem {
     width: 200px;
     height: 200px;
-    background-color: #e94560;
+    background-color: var(--accent);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     cursor: pointer;
     transition: transform 0.05s ease;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-#main-gem:active {
-    transform: scale(0.9);
-}
+#main-gem:active { transform: scale(0.9); }
 
-/* Right Side: Menus */
 #menu-section {
-    width: 400px;
+    width: 450px;
     display: flex;
     flex-direction: column;
-    background-color: #1a1a2e;
+    background-color: var(--bg-main);
 }
 
 #tabs {
     display: flex;
+    flex-wrap: wrap;
+    background-color: var(--bg-panel);
 }
 
 .tab-btn {
-    flex: 1;
-    padding: 15px;
-    background-color: #16213e;
-    color: white;
+    flex: 1 1 30%;
+    padding: 12px 5px;
+    background-color: var(--bg-panel);
+    color: var(--text-main);
     border: none;
     border-bottom: 3px solid transparent;
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: bold;
     transition: background 0.2s;
 }
 
-.tab-btn:hover {
-    background-color: #0f3460;
-}
+.tab-btn:hover { background-color: var(--bg-clicker); }
 
 .tab-btn.active {
-    background-color: #1a1a2e;
-    border-bottom: 3px solid #e94560;
-    color: #e94560;
+    background-color: var(--bg-main);
+    border-bottom: 3px solid var(--accent);
+    color: var(--accent);
 }
 
 .shop-panel {
@@ -122,21 +156,101 @@ body {
     overflow-y: auto;
 }
 
-.shop-panel.active {
-    display: block;
-}
+.shop-panel.active { display: block; }
 
 .shop-panel h3 {
-    color: white;
+    color: var(--text-main);
     margin-bottom: 15px;
     text-align: center;
-    border-bottom: 1px solid #e94560;
+    border-bottom: 1px solid var(--accent);
     padding-bottom: 10px;
 }
 
-.placeholder-text {
-    color: #aaa;
-    text-align: center;
-    font-style: italic;
-    margin-top: 20px;
+.shop-item {
+    background-color: var(--bg-panel);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
 }
+
+.shop-item:hover {
+    border-color: var(--accent);
+    background-color: var(--bg-main);
+}
+
+.shop-item-info h4 {
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+.shop-item-info p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.buy-btn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.buy-btn:hover { background-color: var(--accent-hover); }
+
+.buy-btn:disabled {
+    background-color: var(--border);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.equip-btn {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Footer Style */
+#footer {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: bold;
+    pointer-events: none;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+/* Toasts (Achievement Popups) */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+.toast {
+    background-color: var(--accent);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    animation: slideIn 0.5s forwards, fadeOut 0.5s 3.5s forwards;
+    font-weight: bold;
+}
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
