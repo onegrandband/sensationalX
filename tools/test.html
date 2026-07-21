@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX Record Manager</title>
+</head>
+<body>
+
+    <header>
+        <h1>SensationalX Record Entry</h1>
+        <p>Fill out the form below to add a new record to the database.</p>
+    </header>
+
+    <main>
+        <form id="recordForm">
+            <fieldset>
+                <legend>Basic Information</legend>
+                
+                <div>
+                    <label for="recordTitle">Record Title:</label>
+                    <input type="text" id="recordTitle" name="recordTitle" required placeholder="e.g., The Spot Rocker">
+                </div>
+
+                <div>
+                    <label for="artistName">Artist / Creator:</label>
+                    <input type="text" id="artistName" name="artistName" required placeholder="e.g., Sensational & The Dirty Sample">
+                </div>
+
+                <div>
+                    <label for="releaseYear">Release Year:</label>
+                    <input type="number" id="releaseYear" name="releaseYear" min="1900" max="2099" placeholder="e.g., 2023">
+                </div>
+
+                <div>
+                    <label for="genre">Genre:</label>
+                    <input type="text" id="genre" name="genre" placeholder="e.g., Hip Hop / Rap">
+                </div>
+            </fieldset>
+          
+            <fieldset>
+                <legend>Format & Inventory</legend>
+                
+                <div>
+                    <label for="mediaFormat">Format:</label>
+                    <select id="mediaFormat" name="mediaFormat">
+                        <option value="" disabled selected>Select a format</option>
+                        <option value="vinyl">Vinyl (LP/7")</option>
+                        <option value="cassette">Cassette</option>
+                        <option value="cd">CD</option>
+                        <option value="digital">Digital Release</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="recordCondition">Condition:</label>
+                    <select id="recordCondition" name="recordCondition">
+                        <option value="" disabled selected>Select condition</option>
+                        <option value="mint">Mint (M)</option>
+                        <option value="nearMint">Near Mint (NM)</option>
+                        <option value="veryGoodPlus">Very Good Plus (VG+)</option>
+                        <option value="veryGood">Very Good (VG)</option>
+                        <option value="good">Good (G)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="purchasePrice">Purchase Price ($):</label>
+                    <input type="number" id="purchasePrice" name="purchasePrice" min="0.00" step="0.01" placeholder="0.00">
+                </div>
+
+                <div>
+                    <label for="quantity">Quantity in Stock:</label>
+                    <input type="number" id="quantity" name="quantity" min="0" value="1">
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Additional Details</legend>
+
+                <div>
+                    <label for="notes">Notes or Tracklist:</label>
+                    <textarea id="notes" name="notes" rows="4" placeholder="Enter tracklist, pressing details, or sleeve condition notes here..."></textarea>
+                </div>
+
+                <div>
+                    <button type="submit">Save Record</button>
+                    <button type="reset">Clear Form</button>
+                </div>
+            </fieldset>
+        </form>
+    </main>
+
+</body>
+</html>
