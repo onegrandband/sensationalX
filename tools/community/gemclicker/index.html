@@ -1,1 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Gem Clicker :3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Left Side: The Main Game -->
+        <div id="clicker-section">
+            <h1 id="title">Gem Clicker</h1>
+            
+            <div id="score-board">
+                <h2>Gems: <span id="gem-count">0</span></h2>
+                <p>Gems per second: <span id="gps-count">0</span></p>
+            </div>
 
+            <!-- The clickable gem -->
+            <div id="gem-container">
+                <div id="main-gem" class="skin-default"></div>
+            </div>
+        </div>
+
+        <!-- Right Side: The Menus -->
+        <div id="menu-section">
+            <div id="tabs">
+                <button class="tab-btn active" id="tab-upgrades">Upgrades</button>
+                <button class="tab-btn" id="tab-skins">Skins</button>
+            </div>
+
+            <!-- Upgrades Shop (Logic will be in script2.js later!) -->
+            <div id="shop-upgrades" class="shop-panel active">
+                <h3>Upgrade Shop</h3>
+                <div id="upgrades-list">
+                    <!-- Upgrades will be injected here by JS later -->
+                    <p class="placeholder-text">Loading upgrades...</p>
+                </div>
+            </div>
+
+            <!-- Skins Shop (Logic will be in script3.js later!) -->
+            <div id="shop-skins" class="shop-panel">
+                <h3>Skin Shop</h3>
+                <div id="skins-list">
+                    <!-- Skins will be injected here by JS later -->
+                    <p class="placeholder-text">Loading skins...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Scripts -->
+    <script src="script.js"></script>
+    <!-- We will add script2.js, script3.js, etc. here later! -->
+</body>
+</html>
