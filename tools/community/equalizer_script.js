@@ -1,4 +1,3 @@
-// I have added FFmpeg because Lame.js does not work.
 const audioFileInput = document.getElementById('audioFile');
 const playBtn = document.getElementById('playBtn');
 const pauseBtn = document.getElementById('pauseBtn');
@@ -25,6 +24,11 @@ let pauseOffset = 0;
 let animationFrameId = null;
 
 let ffmpegInstance = null;
+
+// Warn user if opened via file:// protocol which breaks FFmpeg Web Workers & WASM blob loading
+if (window.location.protocol === 'file:') {
+    alert("⚠️ Notice: You are running this app via the file:// protocol. FFmpeg.wasm requires a local web server (like VS Code Live Server or python -m http.server) to run Web Workers and WASM correctly without hanging.");
+}
 
 const eqBands = [
     { freq: 60, label: '60 Hz' },
@@ -321,15 +325,19 @@ canvasContainer.addEventListener('click', (e) => {
     }
 });
 
-// --- FFMPEX LOADING & EXPORT LOGIC ---
+// --- ROBUST FFMPEX EXPORT LOGIC WITH ERROR HANDLING ---
 async function getFFmpegInstance() {
     if (ffmpegInstance && ffmpegInstance.loaded) return ffmpegInstance;
     
+    if (!window.FFmpegWASM || !window.FFmpegUtil) {
+        throw new Error("FFmpeg libraries failed to load from CDN. Check your internet connection.");
+    }
+
     const { FFmpeg } = window.FFmpegWASM;
     const { toBlobURL } = window.FFmpegUtil;
 
-    ffmpegInstance = new FFmpeg();
-    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+    ffmpegInstance = new FFmpeg({ log: true });
+    const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
     
     trackInfo.textContent = "Loading FFmpeg core (WASM)...";
     await ffmpegInstance.load({
@@ -422,9 +430,9 @@ exportBtn.addEventListener('click', async () => {
 
         trackInfo.textContent = `Export complete! Downloaded as .${format}`;
     } catch (err) {
-        console.error(err);
-        trackInfo.textContent = "Export failed.";
-        alert("Error during FFmpeg export: " + err.message);
+        console.error("FFmpeg Export Error:", err);
+        trackInfo.textContent = "Export failed. Check console for details.";
+        alert("Error during FFmpeg export: " + err.message + "\n\n(Tip: Ensure you are running via a local web server, not file://)");
     } finally {
         exportBtn.disabled = false;
     }
