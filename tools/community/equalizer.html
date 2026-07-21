@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Graphic EQ, Waveform & Export Studio</title>
-    <!-- LameJS for client-side MP3 encoding -->
-    <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+    <!-- FFmpeg WASM UMD scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/ffmpeg.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
     <style>
         :root {
             --bg-color: #0b0b0c;
@@ -248,7 +249,7 @@
     <div class="header-container">
         <div class="title-group">
             <h1>Audio Graphic EQ, Waveform & Export Studio</h1>
-            <p>Upload an audio file, scrub through the waveform, tweak the graphic EQ, and export your processed track.</p>
+            <p>Upload an audio file, scrub through the waveform, tweak the graphic EQ, and export using FFmpeg.</p>
         </div>
         <button id="deleteDataBtn" class="delete-data-btn">Delete Changes</button>
     </div>
@@ -278,7 +279,7 @@
         </div>
 
         <div class="export-section">
-            <div class="section-title">Export Processed Audio</div>
+            <div class="section-title">Export Processed Audio (FFmpeg)</div>
             <div class="export-controls">
                 <select id="exportFormat">
                     <option value="wav">WAV (Lossless PCM)</option>
@@ -293,6 +294,6 @@
     </div>
 
     <!-- External Script File -->
-    <script src="equalizer_script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
