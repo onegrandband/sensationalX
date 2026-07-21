@@ -28,19 +28,46 @@
             padding: 30px 20px;
         }
 
+        .header-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .title-group {
+            text-align: left;
+        }
+
         h1 {
-            margin-bottom: 5px;
+            margin: 0 0 5px 0;
             font-size: 1.8rem;
             letter-spacing: 0.5px;
-            text-align: center;
         }
 
         p {
             color: var(--text-muted);
             font-size: 0.95rem;
-            margin-bottom: 25px;
-            text-align: center;
-            max-width: 600px;
+            margin: 0;
+        }
+
+        .delete-data-btn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .delete-data-btn:hover {
+            background: rgba(255, 51, 102, 0.1);
+            border-color: var(--accent);
         }
 
         .studio-container {
@@ -218,8 +245,13 @@
 </head>
 <body>
 
-    <h1>Audio Graphic EQ, Waveform & Export Studio</h1>
-    <p>Upload an audio file, scrub through the waveform, tweak the graphic EQ, and export your processed track in your preferred format.</p>
+    <div class="header-container">
+        <div class="title-group">
+            <h1>Audio Graphic EQ, Waveform & Export Studio</h1>
+            <p>Upload an audio file, scrub through the waveform, tweak the graphic EQ, and export your processed track.</p>
+        </div>
+        <button id="deleteDataBtn" class="delete-data-btn">Delete Changes</button>
+    </div>
     
     <div class="studio-container">
         <div class="controls-bar">
