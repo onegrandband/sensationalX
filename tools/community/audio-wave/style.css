@@ -1,0 +1,93 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 90%;
+    max-width: 800px;
+    background-color: #1e1e1e;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+header {
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    color: #00ffcc;
+    letter-spacing: 2px;
+}
+
+header p {
+    color: #aaaaaa;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.visualizer-container {
+    width: 100%;
+    height: 250px;
+    background-color: #0a0a0a;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #333;
+    margin-bottom: 1.5rem;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+input[type="file"] {
+    background-color: #333;
+    padding: 0.5rem;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+}
+
+button {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #00ffcc;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+button:hover:not(:disabled) {
+    background-color: #00cca3;
+}
+
+button:disabled {
+    background-color: #555;
+    color: #888;
+    cursor: not-allowed;
+}
