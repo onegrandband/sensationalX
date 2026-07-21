@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Wave Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>WaveForm</h1>
+            <p>Upload an audio file to see the waves</p>
+        </header>
+
+        <main>
+            <div class="visualizer-container">
+                <canvas id="wave-canvas"></canvas>
+            </div>
+
+            <div class="controls">
+                <input type="file" id="audio-upload" accept="audio/*">
+                <button id="play-btn" disabled>Play</button>
+                <button id="pause-btn" disabled>Pause</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Our 5 Scripts in order -->
+    <script src="script1.js"></script>
+    <script src="script2.js"></script>
+    <script src="script3.js"></script>
+    <script src="script4.js"></script>
+    <script src="script5.js"></script>
+</body>
+</html>
