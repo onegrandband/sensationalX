@@ -1,0 +1,223 @@
+html, body { 
+  margin: 0; 
+  padding: 0; 
+  width: 100%; 
+  height: 100%; 
+  background-color: #0b0c10; 
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Roboto, monospace; 
+  overflow-x: hidden; 
+  color: #c5c6c7; 
+} 
+
+body { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+} 
+
+.app-container { 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; 
+  max-width: 550px; 
+  height: 90dvh; 
+  padding: 20px; 
+  box-sizing: border-box; 
+} 
+
+.audio-deck { 
+  width: 100%; 
+  background: #1f2833; 
+  border: 2px solid #45f3ff; 
+  border-radius: 12px; 
+  padding: 30px; 
+  box-sizing: border-box; 
+  text-align: center; 
+  box-shadow: 0 15px 35px rgba(0, 242, 254, 0.1); 
+  margin: auto 0; 
+} 
+
+h1 { 
+  color: #45f3ff; 
+  margin: 0 0 5px 0; 
+  font-size: 2rem; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+} 
+
+.deck-subtitle { 
+  color: #66fcf1; 
+  margin: 0 0 25px 0; 
+  font-size: 0.9rem; 
+  text-transform: uppercase; 
+} 
+
+.visualizer-box { 
+  background: #0b0c10; 
+  border-radius: 6px; 
+  padding: 15px; 
+  margin-bottom: 25px; 
+  border-left: 4px solid #66fcf1; 
+  font-family: 'Courier New', Courier, monospace; 
+  text-align: left; 
+} 
+
+#status-display { 
+  color: #66fcf1; 
+  font-weight: bold; 
+  margin-bottom: 5px; 
+} 
+
+#bar-indicator { 
+  color: #888; 
+  font-size: 0.85rem; 
+} 
+
+.audio-controls { 
+  display: flex; 
+  gap: 15px; 
+  margin-bottom: 30px; 
+  width: 100%; 
+} 
+
+button { 
+  font-family: inherit; 
+  font-weight: bold; 
+  border-radius: 6px; 
+  border: none; 
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+  -webkit-tap-highlight-color: transparent; 
+} 
+
+.btn-primary { 
+  flex: 2; 
+  background: #66fcf1; 
+  color: #0b0c10; 
+  padding: 15px; 
+  font-size: 1rem; 
+} 
+
+.btn-primary:hover { 
+  background: #45f3ff; 
+} 
+
+.btn-primary:disabled { 
+  background: #444; 
+  color: #888; 
+  cursor: not-allowed; 
+} 
+
+.btn-secondary { 
+  flex: 1; 
+  background: #1f2833; 
+  color: #ff5555; 
+  border: 2px solid #ff5555; 
+  padding: 15px; 
+} 
+
+.btn-secondary:hover { 
+  background: #ff5555; 
+  color: #fff; 
+} 
+
+.btn-secondary:disabled { 
+  border-color: #444; 
+  color: #444; 
+  cursor: not-allowed; 
+  background: none; 
+} 
+
+.download-suite { 
+  text-align: left; 
+  border-top: 1px solid #2e3944; 
+  padding-top: 20px; 
+  width: 100%; 
+} 
+
+.download-suite label { 
+  font-size: 0.8rem; 
+  color: #888; 
+  display: block; 
+  margin-bottom: 8px; 
+  text-transform: uppercase; 
+} 
+
+.download-row { 
+  display: flex; 
+  gap: 10px; 
+  width: 100%; 
+} 
+
+select { 
+  flex: 1; 
+  background: #0b0c10; 
+  color: #fff; 
+  border: 1px solid #45f3ff; 
+  padding: 10px; 
+  border-radius: 6px; 
+  font-family: inherit; 
+} 
+
+.btn-download { 
+  background: #25d366; 
+  color: #fff; 
+  padding: 10px 15px; 
+} 
+
+.btn-download:disabled { 
+  background: #444; 
+  color: #888; 
+  cursor: not-allowed; 
+} 
+
+.lyrics-drawer { 
+  width: 100%; 
+  text-align: center; 
+  margin-top: 20px; 
+} 
+
+.btn-text-only { 
+  background: none; 
+  color: #888; 
+  font-size: 0.9rem; 
+  text-decoration: underline; 
+  padding: 10px; 
+} 
+
+.btn-text-only:hover { 
+  color: #66fcf1; 
+} 
+
+.lyrics-display { 
+  background: #11141a; 
+  border: 1px dashed #444; 
+  padding: 20px; 
+  border-radius: 8px; 
+  margin-top: 10px; 
+  max-height: 180px; 
+  overflow-y: auto; 
+  text-align: left; 
+  white-space: pre-line; 
+  font-family: 'Courier New', Courier, monospace; 
+  font-size: 0.95rem; 
+  line-height: 1.5; 
+  animation: slideUp 0.3s ease-out; 
+} 
+
+.hidden { 
+  display: none !important; 
+} 
+
+@keyframes slideUp { 
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  } 
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  } 
+}
