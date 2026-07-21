@@ -1,4 +1,4 @@
-// script3.js - Dual Waveform Renderer (Original Oscilloscope vs. Sensational Spectrum Bars)
+// script3.js - Fixed Waveform Engine & Settings Manager
 
 Object.assign(window.WaveState, {
     canvasCtx: null,
@@ -8,7 +8,8 @@ Object.assign(window.WaveState, {
     selection: { start: 0, end: 0, active: false },
     isDragging: false,
     hoverTime: 0,
-    visualStyle: localStorage.getItem('wave_visualStyle') || 'sensational', // Loaded from localStorage!
+    visualStyle: localStorage.getItem('wave_visualStyle') || 'sensational',
+    showPlayheadOnSB: localStorage.getItem('wave_showPlayheadSB') !== 'false', // Default ON
     animationFrameId: null
 });
 
@@ -30,98 +31,121 @@ function initCanvas() {
     window.addEventListener('resize', resize);
     resize();
     setupCanvasInteractions();
-    setupStyleToggle();
+    setupSettingsButtons();
 }
 
-// Save & restore style choice
-function setupStyleToggle() {
+function setupSettingsButtons() {
     const state = window.WaveState;
-    const toggleBtn = document.getElementById('style-toggle-btn');
-    if (!toggleBtn) return;
+    
+    // 1. Playhead Toggle Button
+    const playheadBtn = document.getElementById('playhead-sb-btn');
+    if (playheadBtn) {
+        const updatePlayheadBtn = () => {
+            playheadBtn.innerText = `Playhead Show On SB: ${state.showPlayheadOnSB ? 'ON' : 'OFF'}`;
+            playheadBtn.style.backgroundColor = state.showPlayheadOnSB ? '#2ecc71' : '#e74c3c';
+        };
+        updatePlayheadBtn();
 
-    function updateBtnLabel() {
-        toggleBtn.innerText = state.visualStyle === 'sensational' 
-            ? 'Style: Sensational Bars' 
-            : 'Style: Original Wave';
+        playheadBtn.addEventListener('click', () => {
+            state.showPlayheadOnSB = !state.showPlayheadOnSB;
+            localStorage.setItem('wave_showPlayheadSB', state.showPlayheadOnSB);
+            updatePlayheadBtn();
+        });
     }
 
-    updateBtnLabel();
+    // 2. Style Toggle Button
+    const styleBtn = document.getElementById('style-toggle-btn');
+    if (styleBtn) {
+        const updateStyleBtn = () => {
+            styleBtn.innerText = state.visualStyle === 'sensational' ? 'Style: Sensational Bars' : 'Style: Original Wave';
+        };
+        updateStyleBtn();
 
-    toggleBtn.addEventListener('click', () => {
-        state.visualStyle = state.visualStyle === 'sensational' ? 'original' : 'sensational';
-        localStorage.setItem('wave_visualStyle', state.visualStyle); // Save to localStorage
-        updateBtnLabel();
-    });
+        styleBtn.addEventListener('click', () => {
+            state.visualStyle = state.visualStyle === 'sensational' ? 'original' : 'sensational';
+            localStorage.setItem('wave_visualStyle', state.visualStyle);
+            updateStyleBtn();
+        });
+    }
 }
 
+// Fixed Peak Extraction to prevent sawtooth/maxed-out bar glitches
 function extractWaveformPeaks() {
     const state = window.WaveState;
     if (!state.audioBuffer) return;
 
     const buffer = state.audioBuffer;
     const rawData = buffer.getChannelData(0);
-    const samples = 120; // Number of vertical bars across the screen
-    const blockSize = Math.floor(rawData.length / samples);
+    const totalBars = 90; // Clean, uniform bar count
+    const samplesPerBar = Math.floor(rawData.length / totalBars);
     state.waveformPeaks = [];
 
-    for (let i = 0; i < samples; i++) {
-        let blockStart = blockSize * i;
-        let max = 0;
-        for (let j = 0; j < blockSize; j++) {
-            let val = Math.abs(rawData[blockStart + j]);
-            if (val > max) max = val;
+    let globalMax = 0.0001; // Avoid divide by zero
+
+    // Pass 1: Compute root-mean-square average peak per segment
+    const rawPeaks = [];
+    for (let i = 0; i < totalBars; i++) {
+        let blockStart = samplesPerBar * i;
+        let sum = 0;
+        for (let j = 0; j < samplesPerBar; j++) {
+            const val = rawData[blockStart + j];
+            sum += val * val;
         }
-        state.waveformPeaks.push(max);
+        const rms = Math.sqrt(sum / samplesPerBar);
+        rawPeaks.push(rms);
+        if (rms > globalMax) globalMax = rms;
+    }
+
+    // Pass 2: Normalize so bars fit perfectly in the viewport
+    for (let i = 0; i < totalBars; i++) {
+        state.waveformPeaks.push(rawPeaks[i] / globalMax);
     }
 }
 
-// -------------------------------------------------------------
-// SENSATIONAL AUDIO BAR VISUALIZER RENDERER (Pink to Cyan Gradient)
-// -------------------------------------------------------------
+// Fixed Sensational Audio Bar Visualizer
 function drawSensationalBarWaveform(ctx, width, height) {
     const state = window.WaveState;
     
-    // Create Pink/Magenta -> Purple -> Cyan Gradient (Matches screenshots!)
     const gradient = ctx.createLinearGradient(0, 0, width, 0);
-    gradient.addColorStop(0, '#ff00aa');   // Neon Pink
-    gradient.addColorStop(0.5, '#a020f0'); // Vibrant Purple
-    gradient.addColorStop(1, '#00f0ff');   // Neon Cyan
+    gradient.addColorStop(0, '#ff00aa');   // Pink
+    gradient.addColorStop(0.5, '#a020f0'); // Purple
+    gradient.addColorStop(1, '#00f0ff');   // Cyan
 
     ctx.save();
     
     if (state.isPlaying && state.analyser) {
-        // REAL-TIME FREQUENCY SPECTRUM BARS WHEN PLAYING
+        // LIVE PLAYING FREQUENCY SPECTRUM
         const bufferLength = state.analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
         state.analyser.getByteFrequencyData(dataArray);
 
-        const barWidth = (width / bufferLength) * 1.8;
-        let x = 0;
+        const barCount = 70;
+        const barWidth = width / barCount;
+        const step = Math.floor(bufferLength / barCount);
 
-        for (let i = 0; i < bufferLength; i++) {
-            const barHeight = (dataArray[i] / 255) * (height * 0.85);
+        for (let i = 0; i < barCount; i++) {
+            const index = i * step;
+            const normalizedVal = dataArray[index] / 255;
+            const barHeight = Math.max(4, normalizedVal * (height * 0.82));
+            const x = i * barWidth;
 
             ctx.fillStyle = gradient;
-            // Draw rounded-top bars sticking up from bottom
             ctx.beginPath();
             ctx.roundRect(x, height - barHeight, barWidth - 2, barHeight, [3, 3, 0, 0]);
             ctx.fill();
-
-            x += barWidth;
         }
     } else if (state.waveformPeaks.length > 0) {
-        // STATIC AUDIO BUFFER WAVEFORM BARS
+        // STATIC WAVEFORM VIEW
         const peaks = state.waveformPeaks;
         const barWidth = width / peaks.length;
-        const gap = 2;
 
         for (let i = 0; i < peaks.length; i++) {
             const x = i * barWidth;
-            const barHeight = Math.max(4, peaks[i] * (height * 0.85));
+            const barHeight = Math.max(4, peaks[i] * (height * 0.82));
 
             ctx.fillStyle = gradient;
             ctx.beginPath();
-            ctx.roundRect(x, height - barHeight, barWidth - gap, barHeight, [3, 3, 0, 0]);
+            ctx.roundRect(x, height - barHeight, barWidth - 2, barHeight, [3, 3, 0, 0]);
             ctx.fill();
         }
     }
@@ -129,7 +153,6 @@ function drawSensationalBarWaveform(ctx, width, height) {
     ctx.restore();
 }
 
-// ORIGINAL WAVEFORM RENDERER
 function drawStaticWaveform(ctx, width, height) {
     const state = window.WaveState;
     if (state.waveformPeaks.length === 0) return;
@@ -148,7 +171,7 @@ function drawStaticWaveform(ctx, width, height) {
 
     for (let i = 0; i < peaks.length; i++) {
         const x = i * barWidth;
-        const peakHeight = peaks[i] * (height * 0.85);
+        const peakHeight = peaks[i] * (height * 0.82);
         ctx.fillRect(x, centerY - (peakHeight / 2), barWidth + 0.5, peakHeight);
     }
     ctx.restore();
@@ -188,6 +211,11 @@ function drawOverlays(ctx, width, height) {
     const state = window.WaveState;
     const duration = state.audioBuffer ? state.audioBuffer.duration : 0;
     if (duration === 0) return;
+
+    // Check setting for Sensational Bars mode
+    if (state.visualStyle === 'sensational' && !state.showPlayheadOnSB) {
+        return; // Skip rendering playhead and selection if setting is OFF
+    }
 
     if (state.selection.active) {
         const startX = (state.selection.start / duration) * width;
@@ -253,8 +281,6 @@ function setupCanvasInteractions() {
         } else {
             state.pausedAt = clickedTime;
         }
-
-        localStorage.setItem('wave_pausedAt', state.pausedAt); // Persist position
     });
 
     canvas.addEventListener('mousemove', (e) => {
@@ -291,7 +317,6 @@ function renderLoop() {
         ctx.fillStyle = '#0a0a0a';
         ctx.fillRect(0, 0, w, h);
 
-        // CHOICE BETWEEN VISUAL STYLES
         if (state.visualStyle === 'sensational') {
             drawSensationalBarWaveform(ctx, w, h);
         } else {
