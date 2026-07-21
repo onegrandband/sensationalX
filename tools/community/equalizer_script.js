@@ -23,6 +23,8 @@ let startTime = 0;
 let pauseOffset = 0;
 let animationFrameId = null;
 
+let ffmpegInstance = null;
+
 const eqBands = [
     { freq: 60, label: '60 Hz' },
     { freq: 170, label: '170 Hz' },
@@ -318,12 +320,29 @@ canvasContainer.addEventListener('click', (e) => {
     }
 });
 
-// --- OFFLINE RENDERING & EXPORT LOGIC ---
+// --- FFMPEX LOADING & EXPORT LOGIC ---
+async function getFFmpegInstance() {
+    if (ffmpegInstance && ffmpegInstance.loaded) return ffmpegInstance;
+    
+    const { FFmpeg } = window.FFmpegWASM;
+    const { toBlobURL } = window.FFmpegUtil;
+
+    ffmpegInstance = new FFmpeg();
+    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+    
+    trackInfo.textContent = "Loading FFmpeg core (WASM)...";
+    await ffmpegInstance.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+    });
+    return ffmpegInstance;
+}
+
 exportBtn.addEventListener('click', async () => {
     if (!audioBuffer) return;
 
     exportBtn.disabled = true;
-    trackInfo.textContent = "Rendering EQ & processing export...";
+    trackInfo.textContent = "Rendering EQ offline...";
 
     try {
         const offlineCtx = new OfflineAudioContext(
@@ -354,16 +373,43 @@ exportBtn.addEventListener('click', async () => {
         offlineSource.start(0);
 
         const renderedBuffer = await offlineCtx.startRendering();
-        const format = exportFormatSelect.value;
+        const format = exportFormatSelect.value; // 'wav', 'mp3', 'flac', 'm4a', 'm4r'
 
-        let blob;
+        const wavBlob = encodeWAV(renderedBuffer);
+        const wavArrayBuffer = await wavBlob.arrayBuffer();
+
+        trackInfo.textContent = `Transcoding to .${format} via FFmpeg...`;
+        const ffmpeg = await getFFmpegInstance();
+
+        const inputFileName = 'input.wav';
+        const outputFileName = `output.${format === 'm4r' ? 'm4a' : format}`;
+
+        await ffmpeg.writeFile(inputFileName, new Uint8Array(wavArrayBuffer));
+
+        let ffmpegArgs = ['-i', inputFileName];
         if (format === 'mp3') {
-            blob = encodeMP3(renderedBuffer);
+            ffmpegArgs.push('-codec:a', 'libmp3lame', '-b:a', '192k');
+        } else if (format === 'flac') {
+            ffmpegArgs.push('-codec:a', 'flac');
+        } else if (format === 'm4a' || format === 'm4r') {
+            ffmpegArgs.push('-codec:a', 'aac', '-b:a', '192k');
         } else {
-            blob = encodeWAV(renderedBuffer);
+            ffmpegArgs.push('-codec:a', 'pcm_s16le');
         }
+        ffmpegArgs.push(outputFileName);
 
-        const url = URL.createObjectURL(blob);
+        await ffmpeg.exec(ffmpegArgs);
+
+        const data = await ffmpeg.readFile(outputFileName);
+        
+        let mimeType = 'audio/wav';
+        if (format === 'mp3') mimeType = 'audio/mpeg';
+        else if (format === 'flac') mimeType = 'audio/flac';
+        else if (format === 'm4a' || format === 'm4r') mimeType = 'audio/mp4';
+
+        const outputBlob = new Blob([data.buffer], { type: mimeType });
+        const url = URL.createObjectURL(outputBlob);
+        
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
@@ -377,7 +423,7 @@ exportBtn.addEventListener('click', async () => {
     } catch (err) {
         console.error(err);
         trackInfo.textContent = "Export failed.";
-        alert("Error during audio export: " + err.message);
+        alert("Error during FFmpeg export: " + err.message);
     } finally {
         exportBtn.disabled = false;
     }
@@ -433,41 +479,6 @@ function interleave(inputL, inputR) {
         result[index++] = inputR[i];
     }
     return result;
-}
-
-function encodeMP3(buffer) {
-    const channels = buffer.numberOfChannels;
-    const sampleRate = buffer.sampleRate;
-    
-    const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
-    const sampleBlockSize = 1152;
-    const mp3Data = [];
-
-    const left = buffer.getChannelData(0);
-    const right = channels > 1 ? buffer.getChannelData(1) : left;
-
-    const left16 = new Int16Array(left.length);
-    const right16 = new Int16Array(right.length);
-    for (let i = 0; i < left.length; i++) {
-        left16[i] = left[i] < 0 ? left[i] * 0x8000 : left[i] * 0x7FFF;
-        right16[i] = right[i] < 0 ? right[i] * 0x8000 : right[i] * 0x7FFF;
-    }
-
-    for (let i = 0; i < left16.length; i += sampleBlockSize) {
-        const chunkL = left16.subarray(i, i + sampleBlockSize);
-        const chunkR = right16.subarray(i, i + sampleBlockSize);
-        const mp3buf = channels === 2 ? mp3encoder.encodeBuffer(chunkL, chunkR) : mp3encoder.encodeBuffer(chunkL, chunkL);
-        if (mp3buf.length > 0) {
-            mp3Data.push(mp3buf);
-        }
-    }
-
-    const end = mp3encoder.flush();
-    if (end.length > 0) {
-        mp3Data.push(end);
-    }
-
-    return new Blob(mp3Data, { type: 'audio/mp3' });
 }
 
 function formatTime(seconds) {
