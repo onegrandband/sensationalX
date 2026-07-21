@@ -10,7 +10,7 @@
     <div class="app-container">
         <header>
             <h1>WaveForm</h1>
-            <p>Upload an audio file to see the waves</p>
+            <p>Upload an audio file to view, edit, and visualize waves</p>
         </header>
 
         <main>
@@ -19,14 +19,16 @@
             </div>
 
             <div class="controls">
-            <input type="file" id="audio-upload" accept="audio/*, .mp3, .wav, .m4a, .ogg, .aac, .flac">
+                <input type="file" id="audio-upload" accept="audio/*, .mp3, .wav, .m4a, .ogg, .aac, .flac">
                 <button id="play-btn" disabled>Play</button>
                 <button id="pause-btn" disabled>Pause</button>
+                <button id="stop-btn" disabled style="background-color: #ff0055; color: white;">Stop</button>
+                <button id="style-toggle-btn" style="background-color: #7928ca; color: white;">Style: Original</button>
             </div>
         </main>
     </div>
 
-    <!-- Our 5 Scripts in order -->
+    <!-- Our 5 Scripts -->
     <script src="script1.js"></script>
     <script src="script2.js"></script>
     <script src="script3.js"></script>
