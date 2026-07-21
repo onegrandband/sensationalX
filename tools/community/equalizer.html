@@ -225,7 +225,7 @@
         <div class="controls-bar">
             <label class="file-upload-label">
                 Upload Audio File
-                <input type="file" id="audioFile" accept=".mp3,.wav,.flac,.m4a">
+                <input type="file" id="audioFile" accept=".mp3,.wav,.flac,.m4a,.m4r">
             </label>
             <div class="playback-buttons">
                 <button id="playBtn" class="action-btn" disabled>Play</button>
@@ -324,7 +324,9 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            loadedFileName = file.name.substring(0, file.name.lastIndexOf('.')) || 'audio_processed';
+            const lastDot = file.name.lastIndexOf('.');
+            loadedFileName = lastDot !== -1 ? file.name.substring(0, lastDot) : file.name;
+            
             trackInfo.textContent = `Loading: ${file.name}...`;
             stopAudio();
 
@@ -536,7 +538,6 @@
             trackInfo.textContent = "Rendering EQ & processing export...";
 
             try {
-                // 1. Create Offline Audio Context to process the whole track with filters applied
                 const offlineCtx = new OfflineAudioContext(
                     audioBuffer.numberOfChannels,
                     audioBuffer.length,
@@ -546,7 +547,6 @@
                 const offlineSource = offlineCtx.createBufferSource();
                 offlineSource.buffer = audioBuffer;
 
-                // Replicate EQ filters on offline context
                 const offlineFilters = eqBands.map((band, index) => {
                     const filter = offlineCtx.createBiquadFilter();
                     filter.type = index === 0 ? 'lowshelf' : (index === eqBands.length - 1 ? 'highshelf' : 'peaking');
@@ -566,40 +566,26 @@
                 offlineSource.start(0);
 
                 const renderedBuffer = await offlineCtx.startRendering();
-                const format = exportFormatSelect.value;
+                const format = exportFormatSelect.value; // 'wav', 'mp3', 'flac', 'm4a', 'm4r'
 
-                let blob, extension;
+                let blob;
                 if (format === 'mp3') {
                     blob = encodeMP3(renderedBuffer);
-                    extension = 'mp3';
-                } else if (format === 'flac') {
-                    // FLAC fallback container wrapper / WAV wrapper representation if native encoder is unavailable
-                    blob = encodeWAV(renderedBuffer);
-                    extension = 'flac';
-                } else if (format === 'm4a') {
-                    blob = encodeWAV(renderedBuffer);
-                    extension = 'm4a';
-                } else if (format === 'm4r') {
-                    blob = encodeWAV(renderedBuffer);
-                    extension = 'm4r';
                 } else {
-                    // Default WAV
                     blob = encodeWAV(renderedBuffer);
-                    extension = 'wav';
                 }
 
-                // Trigger download
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = url;
-                a.download = `${loadedFileName}_eq.${extension}`;
+                a.download = `${loadedFileName}_eq.${format}`;
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
 
-                trackInfo.textContent = `Export complete! Downloaded as .${extension}`;
+                trackInfo.textContent = `Export complete! Downloaded as .${format}`;
             } catch (err) {
                 console.error(err);
                 trackInfo.textContent = "Export failed.";
@@ -609,11 +595,10 @@
             }
         });
 
-        // WAV Encoder Function
         function encodeWAV(buffer) {
             const numChannels = buffer.numberOfChannels;
             const sampleRate = buffer.sampleRate;
-            const format = 1; // PCM
+            const format = 1;
             const bitDepth = 16;
 
             const resultBuffer = numChannels === 2 ? interleave(buffer.getChannelData(0), buffer.getChannelData(1)) : buffer.getChannelData(0);
@@ -662,20 +647,17 @@
             return result;
         }
 
-        // MP3 Encoder using LameJS
         function encodeMP3(buffer) {
             const channels = buffer.numberOfChannels;
             const sampleRate = buffer.sampleRate;
-            const samples = buffer.getChannelData(0);
             
-            const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128); // 128kbps
+            const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
             const sampleBlockSize = 1152;
             const mp3Data = [];
 
             const left = buffer.getChannelData(0);
             const right = channels > 1 ? buffer.getChannelData(1) : left;
 
-            // Convert Float32Array to Int16Array
             const left16 = new Int16Array(left.length);
             const right16 = new Int16Array(right.length);
             for (let i = 0; i < left.length; i++) {
