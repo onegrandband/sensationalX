@@ -1,0 +1,40 @@
+<div class="p-5 text-center max-w-md mx-auto bg-white rounded-xl shadow-md">
+    <h2 class="font-bold text-xl mb-4 text-gray-800">Random Palette Generator</h2>
+    <div id="paletteBox" class="flex justify-center h-24 my-4 gap-2 rounded-lg overflow-hidden shadow-inner"></div>
+    <button onclick="generatePalette()" class="bg-[#ff3366] text-white font-semibold px-6 py-2 rounded-lg shadow hover:bg-[#e62e5c] transition-colors duration-200">
+        Generate Colors
+    </button>
+</div>
+
+<script>
+function generatePalette() {
+    const box = document.getElementById('paletteBox');
+    box.innerHTML = ''; 
+
+    for (let i = 0; i < 5; i++) {
+        // Generate random hex color safely using Web Crypto API
+        const array = new Uint8Array(3);
+        window.crypto.getRandomValues(array);
+        const color = '#' + Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+
+        // Create color element
+        const colorDiv = document.createElement('div');
+        colorDiv.className = 'w-16 h-full flex flex-col items-center justify-center text-xs text-white font-mono cursor-pointer transition-transform duration-150 hover:scale-105';
+        colorDiv.style.backgroundColor = color;
+        colorDiv.innerHTML = `<span class="bg-black/40 px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">Copy</span><span>${color}</span>`;
+
+        // Click to copy to clipboard functionality
+        colorDiv.addEventListener('click', () => {
+            navigator.clipboard.writeText(color);
+            const originalText = colorDiv.innerHTML;
+            colorDiv.innerHTML = `<span class="font-bold">Copied!</span>`;
+            setTimeout(() => {
+                colorDiv.innerHTML = originalText;
+            }, 1000);
+        });
+
+        box.appendChild(colorDiv);
+    }
+}
+generatePalette();
+</script>
