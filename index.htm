@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>SensationalX Records</title>
+    <meta name="description" content="SensationalX Records - Brought to you by the One Grand Band. Cutting-edge audio, independent talent, and modern sound.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <script src="https://js.hcaptcha.com/1/api.js?onload=hcaptchaLoaded&render=explicit" async defer></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300">
+
+    <div id="pushBanner" class="hidden bg-[#ff3366] text-white text-center py-3 cursor-pointer font-bold text-sm tracking-wider uppercase shadow-md transition-all hover:bg-opacity-90 z-[200] relative" onclick="requestNotificationPermission()">
+        Click "Allow" to enable push notifications 🔔
+    </div>
+
+    <div id="site-gate-overlay" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] transition-opacity duration-700">
+        <div class="text-center max-w-md p-8 bg-white dark:bg-[#1c1c1f] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#2a2a2e] transition-colors duration-300">
+            <div class="flex justify-center mb-6">
+                <div class="bg-gradient-to-br from-[#ff3366] to-[#251124] w-16 h-16 rounded-xl flex items-center justify-center shadow-lg">
+                  <i data-lucide="shield-check" class="text-white w-8 h-8"></i>
+                </div>
+            </div>
+            <h2 class="text-2xl font-black mb-2 tracking-tight text-gray-900 dark:text-white">Verify to Enter</h2>
+            <p class="text-gray-500 dark:text-gray-400 mb-8 text-sm">Please verify you are a human to access SensationalX Records. We only have to ask once.</p>
+            <div id="hcaptcha-box" class="flex justify-center min-h-[80px]"></div>
+        </div>
+    </div>
+
+    <audio id="audioEngine" preload="auto"></audio>
+
+    <header class="flex flex-wrap items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 gap-4 sticky top-0 z-50 transition-colors duration-300">
+        <div class="text-xl font-extrabold tracking-widest uppercase">SensationalX</div>
+        
+        <nav class="flex flex-wrap items-center gap-6 text-sm font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+            <a href="https://sensationalx.com/tools" class="text-[#ff3366] transition-colors">Studio Tools</a>
+            <a href="index.html" class="hover:text-[#ff3366] transition-colors">Home</a>
+            <a href="#catalog" class="hover:text-[#ff3366] transition-colors">Catalog</a>
+            <a href="#artists" class="hover:text-[#ff3366] transition-colors">Artists</a>
+            <a href="https://sensationalx.com/book.html" class="hover:text-[#ff3366] transition-colors">Book a Demo</a>
+            <button onclick="openAuthModal()" id="navAccountBtn" class="hover:text-[#ff3366] transition-colors flex items-center gap-1">
+                <i data-lucide="user" class="w-4 h-4"></i> Account
+            </button>
+  
+            <div class="flex items-center gap-4 ml-4 border-l border-gray-200 dark:border-[#2a2a2e] pl-4">
+                <button onclick="toggleTheme()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center" title="Toggle Theme">
+                    <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+
+                <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400" title="Adjust Text Size">
+                    <i data-lucide="a-large-small" class="w-5 h-5"></i>
+                    <input id="textSizeSlider" type="range" min="0.8" max="1.3" step="0.05" value="1" oninput="handleTextSizeChange(event)" class="h-1.5 w-16 sm:w-20 cursor-pointer appearance-none rounded-full bg-gray-300 dark:bg-[#2a2a2e] accent-[#ff3366]">
+                </div>
+    
+                <button onclick="toggleReaderMode()" class="hover:text-black dark:hover:text-white text-gray-500 dark:text-gray-400 transition-colors flex items-center justify-center" title="Reader Mode">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="min-h-screen px-[8%] py-16 pb-48">
+        <section id="hero" class="text-center max-w-3xl mx-auto mb-20">
+            <h1 class="text-4xl md:text-5xl font-black mb-6 tracking-tight">SensationalX Records</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                We are an independent label dedicated to cutting-edge audio, raw talent, and breaking the boundaries of modern sound.
+            </p>
+        </section>
+
+        <section id="catalog" class="mb-24 text-center">
+            <h2 class="mb-12 text-3xl font-bold md:text-4xl">
+                The Catalog
+                <span class="mx-auto mt-2.5 block h-1 w-12 rounded-sm bg-[#ff3366]"></span>
+            </h2> 
+            <div id="catalogGrid" class="mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
+        </section>
+
+        <section id="artists" class="border-t border-gray-200 dark:border-[#2a2a2e] pt-20 text-center mb-12 transition-colors duration-300">
+            <h2 class="mb-4 text-3xl font-bold md:text-4xl">Our Artists</h2>
+            <div class="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-12">
+                <a href="https://sensationalx.com/artist/onegrandband" class="group block bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] hover:border-[#ff3366] dark:hover:border-[#ff3366] p-6 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gradient-to-br from-[#ff3366] to-[#251124] w-12 h-12 rounded-lg flex items-center justify-center">
+                            <i data-lucide="music" class="text-white w-6 h-6"></i>
+                        </div>
+                        <i data-lucide="external-link" class="text-gray-400 dark:text-gray-500 w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight mb-1 text-gray-900 dark:text-white group-hover:text-[#ff3366] dark:group-hover:text-[#ff3366]">One Grand Band</h3>
+                </a>
+                
+                <a href="https://sensationalx.com/sonicphantom" class="group block bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] hover:border-[#ff3366] dark:hover:border-[#ff3366] p-6 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gray-100 dark:bg-[#2a2a2e] w-12 h-12 rounded-lg flex items-center justify-center">
+                            <i data-lucide="disc" class="text-gray-500 dark:text-gray-400 w-6 h-6"></i>
+                        </div>
+                        <i data-lucide="external-link" class="text-gray-400 dark:text-gray-500 w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight mb-1 text-gray-900 dark:text-white group-hover:text-[#ff3366] dark:group-hover:text-[#ff3366]">Sonic Phantom</h3>
+                </a>
+                
+                <a href="https://sensationalx.com/theredlines" class="group block bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] hover:border-[#ff3366] dark:hover:border-[#ff3366] p-6 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gray-100 dark:bg-[#2a2a2e] w-12 h-12 rounded-lg flex items-center justify-center">
+                            <i data-lucide="radio" class="text-gray-500 dark:text-gray-400 w-6 h-6"></i>
+                        </div>
+                        <i data-lucide="external-link" class="text-gray-400 dark:text-gray-500 w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight mb-1 text-gray-900 dark:text-white group-hover:text-[#ff3366] dark:group-hover:text-[#ff3366]">The Redlines</h3>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <div id="authModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
+        <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
+                <h3 id="authModalTitle" class="text-xl font-bold text-gray-900 dark:text-white">Sign In</h3>
+                <button onclick="closeAuthModal()" class="rounded-full p-2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="usernameField" class="hidden">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Username</label>
+                    <input type="text" id="authUsername" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                </div>
+                <div id="emailField">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Email</label>
+                    <input type="email" id="authEmail" required class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                </div>
+                <div id="passwordField">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Password</label>
+                    <input type="password" id="authPassword" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                </div>
+
+                <div id="resetFieldsBlock" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Old Password</label>
+                        <input type="password" id="authOldPassword1" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Confirm Old Password</label>
+                        <input type="password" id="authOldPassword2" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                    <div class="border-t border-gray-200 dark:border-[#2a2a2e] pt-3">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">New Password</label>
+                        <input type="password" id="authNewPassword1" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Confirm New Password</label>
+                        <input type="password" id="authNewPassword2" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                    </div>
+                </div>
+
+                <div id="optionalAuthLayers" class="pt-2 border-t border-gray-100 dark:border-[#2a2a2e] space-y-3">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Fields</p>
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">Passkey (Optional)</label>
+                        <input type="text" id="authPasskey" placeholder="Credential identifier context" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">Authenticator (Optional)</label>
+                        <input type="text" id="auth2FA" placeholder="6-digit verification sequence" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1">Backup Passcode (Optional)</label>
+                        <input type="password" id="authPasscode" placeholder="Numeric unlock map context" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-1.5 text-xs focus:outline-none text-gray-900 dark:text-white">
+                    </div>
+                </div>
+
+                <button type="submit" id="authSubmitBtn" class="w-full bg-[#ff3366] text-white font-bold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity mt-2">Sign In</button>
+                
+                <div id="socialAuthBlock" class="mt-4 pt-4 border-t border-gray-100 dark:border-[#2a2a2e]">
+                    <p class="text-[10px] font-bold text-center text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Or continue with</p>
+                    <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                        <button type="button" onclick="handleSocialAuth('google')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="chrome" class="w-3.5 h-3.5"></i> Google
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('apple')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="apple" class="w-3.5 h-3.5"></i> Apple
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('facebook')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="facebook" class="w-3.5 h-3.5"></i> Facebook
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('microsoft')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Microsoft
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('yahoo')" class="flex items-center justify-center gap-2 border border-gray-200 dark:border-[#3a3a3e] rounded-lg py-1.5 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-[#2a2a2e] text-gray-700 dark:text-gray-300 transition-colors">
+                            <i data-lucide="mail" class="w-3.5 h-3.5"></i> Yahoo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center gap-2 pt-2 mt-2 text-center">
+                    <button type="button" id="authToggleBtn" onclick="toggleAuthMode()" class="text-xs text-[#ff3366] hover:underline font-semibold">Don't have an account? Sign Up</button>
+                    <button type="button" id="authResetBtn" onclick="changeToResetMode()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Forgot Password?</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="fixed inset-0 z-[80] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
+        <div class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl p-6 transition-colors duration-300">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] pb-4 mb-4">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Account Settings</h3>
+                <button onclick="closeSettingsModal()" class="rounded-full p-2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="settingsForm" onsubmit="handleSettingsUpdate(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Update Username</label>
+                    <input type="text" id="settingsUsername" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Update Email Address</label>
+                    <input type="email" id="settingsEmail" class="w-full bg-gray-50 dark:bg-[#2a2a2e] border border-gray-200 dark:border-[#3a3a3e] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff3366] text-gray-900 dark:text-white">
+                </div>
+                <button type="submit" class="w-full bg-[#ff3366] text-white font-bold py-2.5 rounded-lg text-sm hover:opacity-90 transition-opacity">Save Profile Updates</button>
+                
+                <button type="button" onclick="openResetFromSettings()" class="w-full border border-[#ff3366] text-[#ff3366] font-bold py-2 rounded-lg text-sm hover:bg-[#ff3366] hover:text-white transition-colors">Change / Reset Password</button>
+                
+                <button type="button" onclick="triggerSignOut()" class="w-full border border-gray-300 dark:border-[#3a3a3e] text-gray-600 dark:text-gray-300 font-bold py-2 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-colors mt-2">Sign Out</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="albumModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-sm">
+        <div class="relative w-full max-w-2xl overflow-hidden rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-2xl transition-colors duration-300">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-[#251124]/5 dark:bg-[#251124]/30 px-6 py-4">
+                <div class="text-left">
+                    <h3 id="modalTitle" class="text-xl font-bold text-gray-900 dark:text-white">Album Title</h3>
+                    <p id="modalLabel" class="text-sm text-[#ff3366]">0 Tracks</p>
+                </div>
+                <button onclick="closeModal()" class="rounded-full p-2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="modalTracklist" class="max-h-[60vh] overflow-y-auto px-2 py-2"></div>
+        </div>
+    </div>
+
+    <div id="bottomPlayer" class="fixed bottom-0 left-0 right-0 z-[70] border-t border-gray-200 dark:border-[#2a2a2e] bg-white/95 dark:bg-[#0b0b0c]/95 px-4 py-4 backdrop-blur-xl transition-transform duration-500 translate-y-full shadow-[0_-10px_30px_rgba(0,0,0,0.05)] dark:shadow-none">
+        <div class="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6">
+            <div class="flex w-full items-center gap-4 md:w-1/4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#ff3366] to-[#251124]">
+                    <i data-lucide="music" class="text-white/80 w-5 h-5"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 id="playerTrackTitle" class="truncate text-sm font-bold text-gray-900 dark:text-white">Track Title</h4>
+                    <p id="playerTrackMeta" class="truncate text-xs text-[#ff3366]">Genre • BPM</p>
+                </div>
+                <div id="visualizerContainer" class="hidden h-4 items-end gap-0.5 opacity-70">
+                    <span class="w-1 h-full bg-[#ff3366] rounded-t-sm animate-visualizer-bar" style="animation-delay: 0.0s;"></span>
+                    <span class="w-1 h-full bg-[#ff3366] rounded-t-sm animate-visualizer-bar" style="animation-delay: 0.2s;"></span>
+                    <span class="w-1 h-full bg-[#ff3366] rounded-t-sm animate-visualizer-bar" style="animation-delay: 0.4s;"></span>
+                </div>
+            </div>
+
+            <div class="flex w-full flex-1 flex-col items-center gap-2">
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <button id="btnPrev" onclick="skipTrack(-1)" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white disabled:opacity-30"><i data-lucide="skip-back" class="w-5 h-5"></i></button>
+                    <button onclick="skipTime(-10)" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white"><i data-lucide="rewind" class="w-5 h-5"></i></button>
+                    <button id="playerPlayBtn" onclick="togglePlayback()" class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-white dark:bg-white dark:text-black hover:bg-[#ff3366] dark:hover:bg-[#ff3366] hover:text-white dark:hover:text-white transition-transform hover:scale-105">
+                        <i data-lucide="play" class="w-5 h-5 ml-0.5" id="playerPlayIcon"></i>
+                    </button>
+                    <button onclick="skipTime(10)" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white"><i data-lucide="fast-forward" class="w-5 h-5"></i></button>
+                    <button id="btnNext" onclick="skipTrack(1)" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white disabled:opacity-30"><i data-lucide="skip-forward" class="w-5 h-5"></i></button>
+                </div>
+                <div class="flex w-full max-w-xl items-center gap-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <span id="currentTimeDisplay" class="w-8 text-right">0:00</span>
+                    <input id="progressSlider" type="range" min="0" max="100" value="0" oninput="handleSeek(event)" class="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-300 dark:bg-[#2a2a2e] accent-[#ff3366]">
+                    <span id="durationDisplay" class="w-8">0:00</span>
+                </div>
+            </div>
+
+            <div class="hidden w-1/4 justify-end md:flex">
+                <div class="flex w-24 items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <i data-lucide="volume-2" class="w-[18px] h-[18px]"></i>
+                    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="1" oninput="handleVolume(event)" class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gray-300 dark:bg-[#2a2a2e] accent-[#ff3366]">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            updateProfile, 
+            updateEmail, 
+            updatePassword,
+            onAuthStateChanged,
+            signOut,
+            setPersistence,
+            browserLocalPersistence,
+            signInWithRedirect,
+            getRedirectResult,
+            GoogleAuthProvider,
+            FacebookAuthProvider,
+            OAuthProvider
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8fedCmpIZtKWVvIVcBUlHof4zw78j5Tk",
+            authDomain: "the-grand-band.firebaseapp.com",
+            projectId: "the-grand-band",
+            storageBucket: "the-grand-band.firebasestorage.app",
+            messagingSenderId: "800164147306",
+            appId: "1:800164147306:web:110cb30d1615cd910eda13",
+            measurementId: "G-BQED0D01JZ"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        setPersistence(auth, browserLocalPersistence).catch(err => console.error("Persistence Engine Fault:", err));
+        
+        window.currentUserContext = null;
+        
+        onAuthStateChanged(auth, (user) => {
+            const navBtn = document.getElementById('navAccountBtn');
+            if (user) {
+                window.currentUserContext = user;
+                navBtn.innerHTML = `<i data-lucide="settings" class="w-4 h-4"></i> ${user.displayName || 'Settings'}`;
+                document.getElementById('settingsUsername').value = user.displayName || '';
+                document.getElementById('settingsEmail').value = user.email || '';
+            } else {
+                window.currentUserContext = null;
+                navBtn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> Account`;
+            }
+            if (window.lucide) lucide.createIcons();
+        });
+
+        getRedirectResult(auth).then((result) => {
+            if (result && result.user) {
+                alert(`Successfully signed in! Welcome, ${result.user.displayName || result.user.email}`);
+                closeAuthModal();
+            }
+        }).catch((error) => {
+            console.error("Redirect Auth Error:", error);
+            alert(`Social Auth Error: ${error.message}`);
+        });
+
+        window.handleSocialAuth = async (providerName) => {
+            let provider = null;
+            if (providerName === 'google') provider = new GoogleAuthProvider();
+            else if (providerName === 'facebook') provider = new FacebookAuthProvider();
+            else if (providerName === 'apple') provider = new OAuthProvider('apple.com');
+            else if (providerName === 'microsoft') provider = new OAuthProvider('microsoft.com');
+            else if (providerName === 'yahoo') provider = new OAuthProvider('yahoo.com');
+
+            if (!provider) return;
+            try {
+                await signInWithRedirect(auth, provider);
+            } catch (error) {
+                console.error(`Firebase Auth Error for ${providerName}:`, error);
+                alert(`Social Auth Error: ${error.message}`);
+            }
+        };
+        
+        window.firebaseAuthAction = async (mode, email, password, username, optionalPayload) => {
+            try {
+                if (mode === 'signup') {
+                    try {
+                        const credentials = await createUserWithEmailAndPassword(auth, email, password);
+                        if (username) {
+                            await updateProfile(credentials.user, { displayName: username });
+                        }
+
+                        if (optionalPayload.passkey || optionalPayload.authenticator || optionalPayload.passcode) {
+                            localStorage.setItem('sec_keys_' + email.toLowerCase(), JSON.stringify(optionalPayload));
+                        }
+
+                        await signOut(auth);
+                        alert("Account created successfully! For security, you must now type your details inside Sign In to log in permanently.");
+                        toggleAuthMode();
+                    } catch (signUpErr) {
+                        if (signUpErr.code === 'auth/email-already-in-use') {
+                            alert("Security Halt: User already created an account with this identity block context.");
+                        } else {
+                            throw signUpErr;
+                        }
+                    }
+                } else if (mode === 'signin') {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    alert("Authenticated successfully. Persistent operational state active.");
+                    closeAuthModal();
+                } else if (mode === 'reset') {
+                    const op1 = document.getElementById('authOldPassword1').value;
+                    const op2 = document.getElementById('authOldPassword2').value;
+                    const np1 = document.getElementById('authNewPassword1').value;
+                    const np2 = document.getElementById('authNewPassword2').value;
+                    
+                    if (op1 !== op2) {
+                        alert("Security Error: The old password double-check mapping does not match.");
+                        return;
+                    }
+                    if (np1 !== np2) {
+                        alert("Security Error: The new password double-check mapping does not match.");
+                        return;
+                    }
+
+                    const savedKeysRaw = localStorage.getItem('sec_keys_' + email.toLowerCase());
+                    if (savedKeysRaw) {
+                        const savedKeys = JSON.parse(savedKeysRaw);
+                        if (savedKeys.passkey || savedKeys.authenticator || savedKeys.passcode) {
+                            const securityInput = prompt("Advanced Security Detected 🔒\n\nPlease enter your Passkey, Authenticator code, or Backup Passcode to authorize this password reset.\n\nIf you don't remember it, please reach out to us at contact@onegrandband.com to help recover your account.");
+                            if (securityInput !== savedKeys.passkey && 
+                                securityInput !== savedKeys.authenticator && 
+                                securityInput !== savedKeys.passcode) {
+                                alert("Security Verification Failed.\n\nSince the backup keys didn't match, the reset was blocked. Please contact contact@onegrandband.com for recovery assistance.");
+                                return;
+                            }
+                        }
+                    }
+
+                    const userCredential = await signInWithEmailAndPassword(auth, email, op1);
+                    await updatePassword(userCredential.user, np1);
+                    alert("Password rewritten successfully forever! Session logged out. Please sign in with your brand new credentials.");
+                    await signOut(auth);
+                    
+                    document.getElementById('resetFieldsBlock').classList.add('hidden');
+                    document.getElementById('socialAuthBlock').classList.remove('hidden');
+                    
+                    const emailInput = document.getElementById('authEmail');
+                    emailInput.disabled = false;
+                    emailInput.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                    window.internalAuthMode = 'signin';
+                    toggleAuthMode();
+                }
+            } catch (error) {
+                alert(`Security Routing Error: ${error.message}`);
+            }
+        };
+
+        window.firebaseUpdateAccount = async (newUsername, newEmail) => {
+            if (!window.currentUserContext) return;
+            try {
+                if (newUsername && newUsername !== window.currentUserContext.displayName) {
+                    await updateProfile(window.currentUserContext, { displayName: newUsername });
+                }
+                if (newEmail && newEmail !== window.currentUserContext.email) {
+                    await updateEmail(window.currentUserContext, newEmail);
+                }
+                alert("Profile credentials securely updated within network schema database records.");
+                closeSettingsModal();
+            } catch (err) {
+                alert(`Profile Revision Fault: ${err.message}`);
+            }
+        };
+
+        window.triggerSignOut = async () => {
+            await signOut(auth);
+            alert("Disconnected session state.");
+            closeSettingsModal();
+        };
+    </script>
+
+    <script src="script.js"></script>
+    <script src="/sc/notifications.js"></script>
+</body>
+</html>
