@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Audio Spectrogram</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #0f111a;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            font-size: 1.6rem;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            color: #8b9bb4;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        #controls {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .canvas-container {
+            background-color: #000000;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Live Audio Spectrogram</h1>
+    <p>Speak, play music, or make sound near your microphone to visualize frequencies over time.</p>
+    
+    <div id="controls">
+        <button id="startBtn">Start Microphone</button>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="spectrogram" width="800" height="400"></canvas>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const canvas = document.getElementById('spectrogram');
+        const ctx = canvas.getContext('2d');
+
+        let audioCtx, analyser, microphone, dataArray;
+        let isRunning = false;
+
+        startBtn.addEventListener('click', async () => {
+            if (isRunning) return;
+
+            try {
+                // Request microphone access
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                
+                // Initialize Web Audio API
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 1024; // Frequency resolution
+                analyser.smoothingTimeConstant = 0.1; // Fast response time
+
+                microphone = audioCtx.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+
+                // Hide button and start loop
+                startBtn.style.display = 'none';
+                isRunning = true;
+                visualize();
+            } catch (err) {
+                alert('Microphone access was denied or is not supported by your browser: ' + err.message);
+            }
+        });
+
+        function visualize() {
+            requestAnimationFrame(visualize);
+
+            // Pull frequency data into array
+            analyser.getByteFrequencyData(dataArray);
+
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // 1. Shift existing canvas contents 1 pixel to the left (waterfall effect)
+            ctx.drawImage(canvas, 1, 0, width - 1, height, 0, 0, width - 1, height);
+
+            // 2. Clear the new 1-pixel column on the right edge
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(width - 1, 0, 1, height);
+
+            // 3. Draw the new frequency slice
+            const binCount = dataArray.length;
+            const sliceHeight = height / binCount;
+
+            for (let i = 0; i < binCount; i++) {
+                const value = dataArray[i]; // Value from 0 to 255
+                
+                if (value === 0) continue; // Skip rendering pitch-black pixels for performance
+
+                const color = getHeatmapColor(value);
+                ctx.fillStyle = color;
+
+                // Map low frequencies to the bottom, high frequencies to the top
+                const y = height - (i + 1) * sliceHeight;
+                ctx.fillRect(width - 1, y, 1, Math.ceil(sliceHeight) + 1);
+            }
+        }
+
+        // Custom colormap function (Black -> Blue -> Cyan -> Yellow -> Red -> White)
+        function getHeatmapColor(value) {
+            const p = value / 255;
+            let r = 0, g = 0, b = 0;
+
+            if (p < 0.25) {
+                b = Math.round((p / 0.25) * 255);
+            } else if (p < 0.5) {
+                b = 255;
+                g = Math.round(((p - 0.25) / 0.25) * 255);
+            } else if (p < 0.75) {
+                b = Math.round((1 - (p - 0.5) / 0.25) * 255);
+                g = 255;
+                r = Math.round(((p - 0.5) / 0.25) * 255);
+            } else {
+                r = 255;
+                g = 255;
+                b = Math.round(((p - 0.75) / 0.25) * 255);
+            }
+
+            return `rgb(${r},${g},${b})`;
+        }
+    </script>
+</body>
+</html>
