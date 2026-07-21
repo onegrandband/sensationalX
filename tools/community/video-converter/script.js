@@ -73,6 +73,7 @@
     progressBar.style.width = '0%';
   }
 
+  // Handle Conversion Process
   convertBtn.addEventListener('click', async () => {
     if (!selectedFile) return;
 
@@ -98,11 +99,13 @@
       const outputFormat = formatSelect.value;
       const outputFilename = `output.${outputFormat}`;
 
+      // 2. Fetch File as ArrayBuffer and write to FFmpeg virtual memory
       const fileData = await selectedFile.arrayBuffer();
       ffmpegInstance.FS('writeFile', inputFilename, new Uint8Array(fileData));
 
       updateProgress(50, 'Converting video frames... (This may take a moment)');
 
+      // Configure conversion parameters depending on selected output
       let ffmpegArgs = [];
       if (outputFormat === 'mp4') {
         ffmpegArgs = ['-i', inputFilename, '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', outputFilename];
@@ -112,15 +115,18 @@
         ffmpegArgs = ['-i', inputFilename, '-vf', 'fps=10,scale=320:-1:flags=lanczos', '-gifflags', '+transdiff', outputFilename];
       }
 
+      // Track log progress if supported
       ffmpegInstance.setProgress(({ ratio }) => {
         const percent = Math.min(50 + Math.floor(ratio * 40), 90);
         updateProgress(percent, `Processing: ${Math.floor(ratio * 100)}% complete...`);
       });
 
+      // 3. Execute transcode command
       await ffmpegInstance.run(...ffmpegArgs);
       
       updateProgress(95, 'Finalizing download stream...');
 
+      // 4. Retrieve processed file from virtual memory and trigger client-side download
       const processedData = ffmpegInstance.FS('readFile', outputFilename);
       const outputBlob = new Blob([processedData.buffer], { type: `video/${outputFormat}` });
       const downloadUrl = URL.createObjectURL(outputBlob);
@@ -134,6 +140,7 @@
       downloadAnchor.click();
       document.body.removeChild(downloadAnchor);
 
+      // Clean up sandboxed filesystem
       ffmpegInstance.FS('unlink', inputFilename);
       ffmpegInstance.FS('unlink', outputFilename);
 
