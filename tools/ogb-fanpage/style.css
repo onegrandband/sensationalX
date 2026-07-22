@@ -1,0 +1,41 @@
+/* Custom CSS to complement Tailwind */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar for a sleek look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4b5563; /* gray-600 */
+    border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #2a2a2e;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff3366; 
+}
+
+/* Heart animation for voting */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.3); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.liked-animation {
+    animation: heartBeat 0.5s ease-in-out;
+    color: #ff3366 !important;
+    fill: #ff3366 !important;
+}
