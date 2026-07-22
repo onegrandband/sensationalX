@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Grand Band - Fan Hub</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Header (Based on your provided code) -->
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff3366]">ONE GRAND</span> BAND
+            <i data-lucide="music" class="w-5 h-5 text-[#ff3366]"></i>
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="#" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Music</a>
+            <a href="#comments-section" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Community</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow px-[8%] py-10 max-w-5xl mx-auto w-full">
+        
+        <!-- Welcome Section -->
+        <div class="mb-12 text-center">
+            <h1 class="text-4xl font-black mb-4">Fan Voting Hub</h1>
+            <p class="text-gray-500 dark:text-gray-400">Stream our latest tracks below, leave a like on your favorites, and tell us what you think in the global comments!</p>
+        </div>
+
+        <!-- Song List Section -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 border-b border-gray-200 dark:border-[#2a2a2e] pb-2">
+                <i data-lucide="headphones" class="w-6 h-6 text-[#ff3366]"></i>
+                Vote for the Best Track
+            </h2>
+            
+            <div id="songs-container" class="space-y-4">
+                <!-- Songs will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Comments Section -->
+        <section id="comments-section" class="mb-10">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 border-b border-gray-200 dark:border-[#2a2a2e] pb-2">
+                <i data-lucide="message-square" class="w-6 h-6 text-[#ff3366]"></i>
+                Global Fan Wall
+            </h2>
+
+            <!-- Comment Form -->
+            <form id="comment-form" class="mb-8 bg-white dark:bg-[#1c1c1f] p-6 rounded-xl border border-gray-200 dark:border-[#2a2a2e] shadow-sm">
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-bold mb-2">Fan Name</label>
+                    <input type="text" id="username" required placeholder="Enter your name..." class="w-full bg-gray-50 dark:bg-[#0b0b0c] border border-gray-200 dark:border-[#2a2a2e] rounded-lg px-4 py-2 focus:outline-none focus:border-[#ff3366] transition-colors">
+                </div>
+                <div class="mb-4">
+                    <label for="comment-text" class="block text-sm font-bold mb-2">Your Thoughts</label>
+                    <textarea id="comment-text" required rows="3" placeholder="What's your favorite song?..." class="w-full bg-gray-50 dark:bg-[#0b0b0c] border border-gray-200 dark:border-[#2a2a2e] rounded-lg px-4 py-2 focus:outline-none focus:border-[#ff3366] transition-colors"></textarea>
+                </div>
+                <button type="submit" class="bg-[#ff3366] hover:bg-[#e62e5c] text-white font-bold py-2 px-6 rounded-lg transition-colors flex items-center gap-2">
+                    Post Comment <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </form>
+
+            <!-- Comments Display -->
+            <div id="comments-container" class="space-y-4">
+                <!-- Comments will be injected here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
