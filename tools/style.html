@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX Video Recorder</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
+
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff3366]">SX</span> VIDEOS
+            <i data-lucide="sparkles" class="w-5 h-5 text-[#ff3366]"></i>
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
+            <a href="../tools" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Tools</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        });
+    </script>
+
+</body>
+</html>
