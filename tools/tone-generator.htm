@@ -1,34 +1,134 @@
-<div class="p-5 text-center">
-    <h2 class="font-bold text-xl">Tone Generator</h2>
-    <input type="range" id="freqSlider" min="20" max="20000" value="440" class="w-full my-4" oninput="updateFreq()" />
-    <p>Frequency: <span id="freqDisplay">440</span> Hz</p>
-    <button onclick="toggleTone()" id="toneBtn" class="bg-[#ff3366] text-white px-4 py-2 mt-2">Play Tone</button>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX Tone Generator</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<script>
-    let toneCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let oscillator;
-    let isPlayingTone = false;
-
-    function updateFreq() {
-        let freq = document.getElementById('freqSlider').value;
-        document.getElementById('freqDisplay').innerText = freq;
-        if (oscillator) oscillator.frequency.value = freq;
-    }
-
-    function toggleTone() {
-        isPlayingTone = !isPlayingTone;
-        const btn = document.getElementById('toneBtn');
-        if (isPlayingTone) {
-            oscillator = toneCtx.createOscillator();
-            oscillator.type = 'sine';
-            oscillator.frequency.value = document.getElementById('freqSlider').value;
-            oscillator.connect(toneCtx.destination);
-            oscillator.start();
-            btn.innerText = "Stop Tone";
-        } else {
-            oscillator.stop();
-            btn.innerText = "Play Tone";
+    <script>
+        tailwind.config = { darkMode: 'class' }
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
         }
-    }
-</script>
+    </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between border-b border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] px-[8%] py-4 sticky top-0 z-40 transition-colors">
+        <div class="text-xl font-extrabold tracking-widest uppercase flex items-center gap-2">
+            <span class="text-[#ff3366]">SX</span> TONE
+            <i data-lucide="sparkles" class="w-5 h-5 text-[#ff3366]"></i>
+        </div>
+        <nav class="flex items-center gap-6">
+            <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
+            <a href="../tools" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Tools</a>
+            <button onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center p-5">
+        <div class="w-full max-w-lg bg-white dark:bg-[#1c1c1f] p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] shadow-xl text-center">
+            
+            <h2 class="font-bold text-2xl mb-2 text-gray-900 dark:text-white">Tone Generator</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Adjust the slider to play custom frequency audio waves.</p>
+
+            <div class="space-y-6">
+                <!-- Frequency Display & Control Box -->
+                <div class="bg-gray-50 dark:bg-[#0b0b0c] p-6 rounded-xl border border-gray-200 dark:border-[#2a2a2e]">
+                    <div class="text-3xl font-extrabold text-[#ff3366] mb-2">
+                        <span id="freqDisplay">440</span> <span class="text-base font-normal text-gray-500 dark:text-gray-400">Hz</span>
+                    </div>
+                    
+                    <input type="range" id="freqSlider" min="20" max="20000" value="440" class="w-full accent-[#ff3366] cursor-pointer my-2" oninput="updateFreq()" />
+                    
+                    <div class="flex justify-between text-xs text-gray-400 font-mono mt-1">
+                        <span>20 Hz</span>
+                        <span>10 kHz</span>
+                        <span>20 kHz</span>
+                    </div>
+                </div>
+
+                <!-- Toggle Button -->
+                <button onclick="toggleTone()" id="toneBtn" class="w-full bg-[#ff3366] hover:bg-[#e62e5c] transition-colors duration-200 text-white font-semibold py-3 px-6 rounded-xl shadow-md cursor-pointer">
+                    Play Tone
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle Logic
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            lucide.createIcons();
+        });
+
+        // Tone Generator Logic
+        let toneCtx;
+        let oscillator;
+        let isPlayingTone = false;
+
+        function updateFreq() {
+            const freq = document.getElementById('freqSlider').value;
+            document.getElementById('freqDisplay').innerText = Number(freq).toLocaleString();
+            
+            if (oscillator && isPlayingTone) {
+                oscillator.frequency.setValueAtTime(freq, toneCtx.currentTime);
+            }
+        }
+
+        function toggleTone() {
+            // Lazy initialize AudioContext on user interaction
+            if (!toneCtx) {
+                toneCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (toneCtx.state === 'suspended') {
+                toneCtx.resume();
+            }
+
+            isPlayingTone = !isPlayingTone;
+            const btn = document.getElementById('toneBtn');
+
+            if (isPlayingTone) {
+                oscillator = toneCtx.createOscillator();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(document.getElementById('freqSlider').value, toneCtx.currentTime);
+                oscillator.connect(toneCtx.destination);
+                oscillator.start();
+                
+                btn.innerText = "Stop Tone";
+                btn.classList.replace('bg-[#ff3366]', 'bg-gray-800');
+                btn.classList.replace('hover:bg-[#e62e5c]', 'hover:bg-gray-900');
+            } else {
+                if (oscillator) {
+                    oscillator.stop();
+                    oscillator.disconnect();
+                }
+                
+                btn.innerText = "Play Tone";
+                btn.classList.replace('bg-gray-800', 'bg-[#ff3366]');
+                btn.classList.replace('hover:bg-gray-900', 'hover:bg-[#e62e5c]');
+            }
+        }
+    </script>
+</body>
+</html>
