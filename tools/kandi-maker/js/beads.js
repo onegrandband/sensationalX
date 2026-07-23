@@ -115,6 +115,8 @@ export class LetterBead extends Bead {
 
     generateHTML(bgColor, letter = 'A') {
         const borderRadius = this.shape === BEAD_SHAPES.COIN ? '50%' : '4px';
+        const displayLetter = letter && letter.trim() !== '' ? letter : 'A';
+        
         return `
             <div class="bead letter-bead" style="
                 width: ${this.baseWidth}px; 
@@ -131,7 +133,7 @@ export class LetterBead extends Bead {
                 border: 1px solid rgba(0,0,0,0.2);
                 box-shadow: inset -1px -1px 3px rgba(0,0,0,0.3), inset 1px 1px 3px rgba(255,255,255,0.8);
             ">
-                ${letter.toUpperCase()}
+                ${displayLetter.toUpperCase()}
             </div>
         `;
     }
@@ -151,8 +153,6 @@ export class ShapeBead extends Bead {
                 clipPath = 'clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);';
                 break;
             case BEAD_SHAPES.HEART:
-                // Hearts are complex in clip-path, usually easier with standard border-radius tricks, 
-                // but we'll use a simplified polygon for the pure CSS bead
                 clipPath = 'clip-path: polygon(50% 15%, 61% 0, 83% 0, 100% 22%, 100% 45%, 50% 100%, 0 45%, 0 22%, 17% 0, 39% 0);';
                 break;
             case BEAD_SHAPES.BUTTERFLY:
