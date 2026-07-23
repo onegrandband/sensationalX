@@ -1,153 +1,260 @@
 :root {
-    --bg-color: #121212;
-    --panel-bg: #1e1e1e;
-    --text-color: #ffffff;
-    --string-color: rgba(255, 255, 255, 0.3);
+  --bg-color: #121212;
+  --panel-bg: #1e1e1e;
+  --text-color: #ffffff;
+  --string-color: rgba(255, 255, 255, 0.3);
+  --accent-color: #ff007f;
 }
 
 body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .app-container {
-    background-color: var(--panel-bg);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 800px;
+  background-color: var(--panel-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 800px;
 }
 
 header h1 {
-    text-align: center;
-    margin-top: 0;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+  text-align: center;
+  margin-top: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .bracelet-container {
-    position: relative;
-    height: 120px;
-    background: #000;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    overflow-x: auto;
-    padding: 0 20px;
+  position: relative;
+  height: 120px;
+  background: #000;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: 0 20px;
 }
 
 .string {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background-color: var(--string-color);
-    transform: translateY(-50%);
-    z-index: 1;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--string-color);
+  transform: translateY(-50%);
+  z-index: 1;
 }
 
 .bracelet-display {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    gap: 2px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 /* The physical bead styling */
 .bead {
-    width: 25px;
-    height: 40px;
-    border-radius: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: inset -2px -2px 6px rgba(0,0,0,0.5), inset 2px 2px 6px rgba(255,255,255,0.4);
-    transition: transform 0.2s;
+  width: 25px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset -2px -2px 6px rgba(0, 0, 0, 0.5), inset 2px 2px 6px rgba(255, 255, 255, 0.4);
+  transition: transform 0.2s;
 }
 
 .palette {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .color-swatch {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 0.1s, border 0.1s;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border 0.1s;
 }
 
-.color-swatch:hover, .color-swatch.selected {
-    transform: scale(1.1);
-    border: 2px solid white;
+.color-swatch:hover,
+.color-swatch.selected {
+  transform: scale(1.1);
+  border: 2px solid #fff;
 }
 
 .actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 button {
-    background: #333;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 button:hover {
-    background: #444;
+  background: #444;
 }
 
 /* =========================================
-   NEW CRAFT STORE MODAL CSS
+   CRAFT STORE MODAL 
    ========================================= */
 
 .store-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    
-    /* Keeps it from getting too wide */
-    width: 90%;
-    max-width: 600px;
-    
-    /* THE FIX: Stops the box from growing taller than 75% of your screen */
-    max-height: 75vh; 
-    
-    /* THE FIX: Adds a vertical scrollbar inside the box */
-    overflow-y: auto; 
-    
-    background-color: #111;
-    border: 2px solid #ff007f;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 600px;
+  max-height: 75vh;
+  overflow-y: auto;
+  background-color: #111;
+  border: 2px solid var(--accent-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
 }
 
-/* Hides the bulky default scrollbar for a much cleaner look */
+/* Custom Modal Scrollbar */
 .store-modal::-webkit-scrollbar {
-    display: none;
+  width: 6px;
 }
-.store-modal {
-    -ms-overflow-style: none;  
-    scrollbar-width: none;  
+.store-modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+.store-modal::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+/* =========================================
+   CUSTOM BEAD DROPDOWN MENU
+   ========================================= */
+
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.custom-select-trigger {
+  background: #161616;
+  color: #fff;
+  padding: 12px 16px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-select-trigger:hover {
+  border-color: #555;
+}
+
+.custom-select-trigger::after {
+  content: '▼';
+  font-size: 0.7rem;
+  color: #888;
+  transition: transform 0.3s ease;
+}
+
+.custom-select-wrapper.open .custom-select-trigger {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+}
+
+.custom-select-wrapper.open .custom-select-trigger::after {
+  transform: rotate(-180deg);
+  color: var(--accent-color);
+}
+
+.custom-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+.custom-select-wrapper.open .custom-options {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-option {
+  padding: 12px 16px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.15s ease, color 0.15s ease;
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-option:last-child {
+  border-bottom: none;
+}
+
+.custom-option:hover {
+  background: #252525;
+  color: #fff;
+}
+
+.custom-option.selected {
+  background: rgba(255, 0, 127, 0.1);
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.custom-options::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-options::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+.custom-options::-webkit-scrollbar-thumb:hover {
+  background: #666;
 }
