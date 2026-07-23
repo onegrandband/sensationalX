@@ -26,23 +26,33 @@ function buildUI() {
         const buttonContainer = addBtn ? addBtn.parentElement : null;
         const mainCard = buttonContainer ? buttonContainer.parentElement : document.body;
 
+        // Remove any old injected control panels to prevent duplicates
+        const oldPanel = document.getElementById('injected-control-panel');
+        if (oldPanel) oldPanel.remove();
+
         const controlPanel = document.createElement('div');
+        controlPanel.id = 'injected-control-panel';
         controlPanel.style.cssText = 'background: rgba(255, 255, 255, 0.05); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.1);';
         
         controlPanel.innerHTML = `
             <div style="margin-bottom: 18px; text-align: left;">
                 <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 0; margin-bottom: 10px; color: #aaa;">Bead Settings</h3>
+                
+                <!-- 100% Custom Dropdown (No native select elements used anywhere) -->
                 <div class="custom-select-wrapper" id="bead-custom-select">
                     <div class="custom-select-trigger" id="bead-select-trigger">
                         <span id="bead-select-label">Select Bead...</span>
                     </div>
                     <div class="custom-options" id="bead-options-list"></div>
                 </div>
+
                 <div id="text-input-container" style="display: none; margin-top: 12px;">
                     <input type="text" id="bead-text-input" maxlength="1" value="${braceletData.selectedText}" placeholder="Type 1 Letter" style="width: 100%; padding: 12px; background: #161616; color: white; border: 1px solid #333; border-radius: 8px; text-align: center; font-weight: bold; font-size: 1.1rem; box-sizing: border-box; outline: none;">
                 </div>
             </div>
+            
             <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0;"></div>
+            
             <div style="text-align: left;">
                 <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 0; margin-bottom: 12px; color: #aaa;">Color Picker</h3>
                 <div id="color-palette" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;"></div>
@@ -58,7 +68,7 @@ function buildUI() {
         
         if (buttonContainer) mainCard.insertBefore(controlPanel, buttonContainer);
 
-        // --- Custom Dropdown Logic ---
+        // --- Custom Dropdown Event Listeners ---
         const selectWrapper = document.getElementById('bead-custom-select');
         const selectTrigger = document.getElementById('bead-select-trigger');
         
@@ -66,12 +76,16 @@ function buildUI() {
             e.stopPropagation();
             selectWrapper.classList.toggle('open');
         });
+
         document.addEventListener('click', (e) => {
-            if (!selectWrapper.contains(e.target)) selectWrapper.classList.remove('open');
+            if (!selectWrapper.contains(e.target)) {
+                selectWrapper.classList.remove('open');
+            }
         });
+
         document.getElementById('bead-text-input').addEventListener('input', (e) => setSelectedText(e.target.value.toUpperCase()));
 
-        // --- Color Picker Logic ---
+        // --- Color Picker Event Listeners ---
         const paletteEl = document.getElementById('color-palette');
         const nativePicker = document.getElementById('native-color-picker');
         const hexInput = document.getElementById('custom-hex-input');
@@ -105,18 +119,16 @@ function buildUI() {
         });
 
         setupStoreButtons();
-        updateFullUI(); // Initial setup
+        updateFullUI();
 
     } catch (err) {
         console.error("UI Initialization failed:", err);
     }
 }
 
-// 🌟 NEW: Refreshes the dropdown text, numbers, and colors
 function updateFullUI() {
     renderBracelet();
     
-    // Update color borders
     const paletteEl = document.getElementById('color-palette');
     paletteEl.querySelectorAll('div').forEach((swatch, idx) => {
         const isSelected = braceletData.selectedColor === defaultColors[idx];
@@ -124,27 +136,24 @@ function updateFullUI() {
         swatch.style.transform = isSelected ? 'scale(1.1)' : 'scale(1)';
     });
 
-    // Rebuild Dropdown to show updated Inventory numbers
     const optionsList = document.getElementById('bead-options-list');
     optionsList.innerHTML = beadCatalog.map(b => {
         const count = getInventoryCount(b.id);
         const isSelected = b.id === braceletData.selectedBeadId;
         const color = count === 0 ? '#ff4444' : (isSelected ? '#ff007f' : '#ccc');
         return `
-            <div class="custom-option ${isSelected ? 'selected' : ''}" data-value="${b.id}">
-                <span style="color: ${color}">${b.name} <strong style="font-size: 0.8em;">(x${count})</strong></span>
+            <div class="custom-option ${isSelected ? 'selected' : ''}" data-value="${b.id}" style="padding: 12px 16px; color: ${color}; cursor: pointer; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03);">
+                <span>${b.name} <strong style="font-size: 0.8em;">(x${count})</strong></span>
                 <span style="opacity: 0.4; font-size: 0.85em;">(${b.shape})</span>
             </div>
         `;
     }).join('');
 
-    // Update Dropdown Label
     const selectLabel = document.getElementById('bead-select-label');
     const selectedBead = getBeadById(braceletData.selectedBeadId) || beadCatalog[0];
     const count = getInventoryCount(selectedBead.id);
     selectLabel.innerHTML = `<span>${selectedBead.name} <strong>(x${count})</strong></span>`;
 
-    // Reattach Click Events to newly built dropdown items
     optionsList.querySelectorAll('.custom-option').forEach(option => {
         option.addEventListener('click', () => {
             const selectedId = option.getAttribute('data-value');
@@ -159,29 +168,19 @@ function updateFullUI() {
     });
 }
 
-// 🌟 NEW: Wires up the "Buy Box" buttons in your modal
 function setupStoreButtons() {
     const storeButtons = document.querySelectorAll('.store-modal button');
-    
     storeButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            // Find the title above the button to know what they are buying
             const packContainer = e.target.parentElement;
             const packTitle = packContainer.innerText || "";
             
-            // Example Logic: If they buy the Trans Pride Pack
             if (packTitle.includes('Trans Pride Pack') || packTitle.includes('Trans')) {
-                inventory['trans-heart'] += 20; // Gives 20 hearts
-                inventory['trans-star'] += 20;  // Gives 20 stars
-                
+                inventory['trans-heart'] += 20;
+                inventory['trans-star'] += 20;
                 alert('Success! You got 20 Trans Hearts and 20 Trans Stars!');
-                
-                // If you have a money system, deduct cash here!
-                // money -= 100;
-            } 
-            // Add more else ifs for your other packs here!
-            
-            updateFullUI(); // Refresh the numbers in the dropdown
+            }
+            updateFullUI();
         });
     });
 }
