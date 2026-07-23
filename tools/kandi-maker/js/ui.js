@@ -18,7 +18,7 @@ export function initializeUI() {
 
 function buildUI() {
     try {
-        // 1. Find your existing buttons from the HTML to attach events
+        // 1. Hook into existing HTML buttons
         const buttons = Array.from(document.querySelectorAll('button'));
         const addBtn = buttons.find(b => b.textContent.includes('Add Bead'));
         const removeBtn = buttons.find(b => b.textContent.includes('Remove Last'));
@@ -28,45 +28,51 @@ function buildUI() {
         if (removeBtn) removeBtn.addEventListener('click', () => { removeLastBead(); renderBracelet(); });
         if (clearBtn) clearBtn.addEventListener('click', () => { clearBracelet(); renderBracelet(); });
 
-        // 2. Find the container holding your buttons so we can inject the new UI above it
         const buttonContainer = addBtn ? addBtn.parentElement : null;
         const mainCard = buttonContainer ? buttonContainer.parentElement : document.body;
 
-        // 3. Inject Bead Catalog Picker
-        const catalogWrapper = document.createElement('div');
-        catalogWrapper.style.cssText = 'margin-bottom: 1.5rem; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left;';
-        catalogWrapper.innerHTML = `
-            <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0; margin-bottom: 10px; color: #ccc;">Select Bead Type</h3>
-            <select id="bead-template-select" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; font-size: 0.95rem; margin-bottom: 8px;">
-                ${beadCatalog.map(b => `<option value="${b.id}" ${b.id === braceletData.selectedBeadId ? 'selected' : ''}>${b.name} (${b.shape})</option>`).join('')}
-            </select>
-            <div id="text-input-container" style="display: none; margin-top: 10px;">
-                <label style="font-size: 0.8rem; color: #aaa; display: block; margin-bottom: 6px;">Letter (1 Char):</label>
-                <input type="text" id="bead-text-input" maxlength="1" value="${braceletData.selectedText}" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.1rem;">
+        // 2. Create a single, clean Unified Control Panel
+        const controlPanel = document.createElement('div');
+        controlPanel.style.cssText = 'background: rgba(255, 255, 255, 0.05); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.1);';
+        
+        controlPanel.innerHTML = `
+            <!-- Bead Catalog -->
+            <div style="margin-bottom: 18px; text-align: left;">
+                <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 0; margin-bottom: 10px; color: #aaa;">Bead Settings</h3>
+                <select id="bead-template-select" style="width: 100%; padding: 12px; background: #161616; color: white; border: 1px solid #333; border-radius: 8px; font-size: 0.95rem; cursor: pointer; outline: none;">
+                    ${beadCatalog.map(b => `<option value="${b.id}" ${b.id === braceletData.selectedBeadId ? 'selected' : ''}>${b.name} (${b.shape})</option>`).join('')}
+                </select>
+                <div id="text-input-container" style="display: none; margin-top: 10px;">
+                    <input type="text" id="bead-text-input" maxlength="1" value="${braceletData.selectedText}" placeholder="Type 1 Letter" style="width: 100%; padding: 12px; background: #161616; color: white; border: 1px solid #333; border-radius: 8px; text-align: center; font-weight: bold; font-size: 1.1rem; box-sizing: border-box; outline: none;">
+                </div>
+            </div>
+
+            <!-- Custom Divider -->
+            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0;"></div>
+
+            <!-- Color Palette & Hex -->
+            <div style="text-align: left;">
+                <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 0; margin-bottom: 12px; color: #aaa;">Color Picker</h3>
+                
+                <!-- Fixed Grid Layout to stop stretching -->
+                <div id="color-palette" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;"></div>
+                
+                <div style="display: flex; gap: 8px; align-items: stretch;">
+                    <div style="background: #161616; border: 1px solid #333; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 42px; overflow: hidden;">
+                        <input type="color" id="native-color-picker" value="${braceletData.selectedColor}" style="width: 50px; height: 50px; border: none; background: none; cursor: pointer; padding: 0;">
+                    </div>
+                    <input type="text" id="custom-hex-input" value="${braceletData.selectedColor}" placeholder="#ff007f" maxlength="7" style="
+                        flex: 1; padding: 0 12px; background: #161616; color: white; border: 1px solid #333; border-radius: 8px; font-family: monospace; font-size: 0.95rem; outline: none; box-sizing: border-box;
+                    ">
+                    <button id="apply-hex-btn" style="background: #fff; color: #000; border: none; padding: 0 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: opacity 0.2s;">Set</button>
+                </div>
             </div>
         `;
         
-        if (buttonContainer) mainCard.insertBefore(catalogWrapper, buttonContainer);
+        // Inject above the action buttons
+        if (buttonContainer) mainCard.insertBefore(controlPanel, buttonContainer);
 
-        // 4. Inject Hex Color Picker
-        const colorWrapper = document.createElement('div');
-        colorWrapper.style.cssText = 'margin-bottom: 1.5rem; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left;';
-        colorWrapper.innerHTML = `
-            <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0; margin-bottom: 10px; color: #ccc;">Bead Color & Custom Hex</h3>
-            <div id="color-palette" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 15px;"></div>
-            
-            <div style="display: flex; gap: 8px; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
-                <input type="color" id="native-color-picker" value="${braceletData.selectedColor}" style="width: 38px; height: 34px; border: none; background: none; cursor: pointer; padding: 0;">
-                <input type="text" id="custom-hex-input" value="${braceletData.selectedColor}" placeholder="#ff007f" maxlength="7" style="
-                    flex: 1; padding: 8px 12px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; font-family: monospace; font-size: 0.95rem;
-                ">
-                <button id="apply-hex-btn" style="background: #333; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s;">Set</button>
-            </div>
-        `;
-        
-        if (buttonContainer) mainCard.insertBefore(colorWrapper, buttonContainer);
-
-        // Logic for Bead Selection
+        // 3. Logic for Bead Selection
         const selectEl = document.getElementById('bead-template-select');
         const textContainer = document.getElementById('text-input-container');
         const textInput = document.getElementById('bead-text-input');
@@ -83,7 +89,7 @@ function buildUI() {
         });
         textInput.addEventListener('input', (e) => setSelectedText(e.target.value.toUpperCase()));
 
-        // Logic for Color Selection
+        // 4. Logic for Colors
         const paletteEl = document.getElementById('color-palette');
         const nativePicker = document.getElementById('native-color-picker');
         const hexInput = document.getElementById('custom-hex-input');
@@ -91,13 +97,16 @@ function buildUI() {
 
         function updateSwatchBorders() {
             paletteEl.querySelectorAll('div').forEach((swatch, idx) => {
-                swatch.style.border = braceletData.selectedColor === defaultColors[idx] ? '2px solid #fff' : '2px solid transparent';
+                const isSelected = braceletData.selectedColor === defaultColors[idx];
+                swatch.style.border = isSelected ? '2px solid #fff' : '2px solid transparent';
+                swatch.style.transform = isSelected ? 'scale(1.1)' : 'scale(1)';
             });
         }
 
         defaultColors.forEach(colorHex => {
             const swatch = document.createElement('div');
-            swatch.style.cssText = `width: 100%; height: 30px; background-color: ${colorHex}; border-radius: 4px; cursor: pointer; transition: transform 0.1s;`;
+            // Fixed dimensions applied here to prevent stretching
+            swatch.style.cssText = `width: 34px; height: 34px; background-color: ${colorHex}; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s ease-in-out; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);`;
             swatch.addEventListener('click', () => {
                 setSelectedColor(colorHex);
                 nativePicker.value = colorHex;
@@ -122,7 +131,7 @@ function buildUI() {
                 nativePicker.value = val;
                 updateSwatchBorders();
             } else {
-                alert('Invalid hex! Use a 6-digit code like #ff007f');
+                alert('Invalid hex code! Use a 6-digit format like #ff007f');
             }
         });
 
@@ -135,8 +144,6 @@ function buildUI() {
 }
 
 export function renderBracelet() {
-    // Assuming your black box has an id or class we can target. 
-    // If not, you might need to add id="bracelet-display" to the black div in your HTML!
     const display = document.getElementById('bracelet-display') || document.querySelector('.string-container');
     if (!display) return;
 
