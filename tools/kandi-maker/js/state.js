@@ -1,51 +1,59 @@
 // js/state.js
-import { STORAGE_KEYS } from './config.js';
 
-// Load saved bracelet or default to empty
-const savedBracelet = localStorage.getItem(STORAGE_KEYS.SAVED_BRACELET);
-
-export const braceletData = savedBracelet ? JSON.parse(savedBracelet) : {
+export const braceletData = {
     beads: [],
-    selectedBeadId: 'p_op_red',
+    selectedBeadId: 'classic-barrel',
     selectedColor: '#ff007f',
-    selectedText: 'K'
+    selectedText: 'A'
 };
 
-function saveState() {
-    localStorage.setItem(STORAGE_KEYS.SAVED_BRACELET, JSON.stringify(braceletData));
+// 🌟 NEW: The Inventory System
+export const inventory = {
+    'classic-barrel': 50,
+    'letter-cube': 50,
+    'trans-heart': 0, // Starts at 0, bought in store
+    'trans-star': 0   // Starts at 0, bought in store
+};
+
+export function getInventoryCount(beadId) {
+    return inventory[beadId] || 0;
 }
 
-export function addBead(beadId = braceletData.selectedBeadId, color = braceletData.selectedColor, text = braceletData.selectedText) {
-    braceletData.beads.push({ beadId, color, text });
-    saveState();
+export function addBead() {
+    const beadId = braceletData.selectedBeadId;
+    
+    // Check if we have enough in inventory
+    if (getInventoryCount(beadId) > 0) {
+        braceletData.beads.push({
+            beadId: beadId,
+            color: braceletData.selectedColor,
+            text: braceletData.selectedText
+        });
+        inventory[beadId] -= 1; // Deduct 1 from inventory
+        return true; // Success
+    } else {
+        alert("You are out of this bead! Buy more in the Craft Store.");
+        return false; // Failed
+    }
 }
 
 export function removeLastBead() {
-    braceletData.beads.pop();
-    saveState();
+    if (braceletData.beads.length > 0) {
+        const removedBead = braceletData.beads.pop();
+        inventory[removedBead.beadId] += 1; // Give it back to inventory
+        return true;
+    }
+    return false;
 }
 
 export function clearBracelet() {
+    // Refund all beads back to inventory before clearing
+    braceletData.beads.forEach(bead => {
+        inventory[bead.beadId] += 1;
+    });
     braceletData.beads = [];
-    saveState();
 }
 
-export function setPresetBeads(beadsArray) {
-    braceletData.beads = beadsArray;
-    saveState();
-}
-
-export function setSelectedBead(id) {
-    braceletData.selectedBeadId = id;
-    saveState();
-}
-
-export function setSelectedColor(color) {
-    braceletData.selectedColor = color;
-    saveState();
-}
-
-export function setSelectedText(text) {
-    braceletData.selectedText = text;
-    saveState();
-}
+export function setSelectedBead(id) { braceletData.selectedBeadId = id; }
+export function setSelectedColor(color) { braceletData.selectedColor = color; }
+export function setSelectedText(text) { braceletData.selectedText = text; }
