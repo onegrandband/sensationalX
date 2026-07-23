@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Notebook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #2c2927;
+            background-image: radial-gradient(#4a4440 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            justify-content: center;
+            font-family: 'Kalam', cursive;
+            min-height: 100vh;
+        }
+
+        .paper-wrapper {
+            filter: drop-shadow(0 12px 15px rgba(0, 0, 0, 0.5));
+            width: 100%;
+            max-width: 450px;
+            transform: rotate(-1.5deg); 
+            height: max-content;
+        }
+
+        .paper {
+            background-color: #fdfae9;
+            position: relative;
+            padding: 50px 20px 40px 60px;
+            min-height: 300px;
+            
+            background-image: repeating-linear-gradient(
+                transparent, 
+                transparent 31px, 
+                #a6c0e5 31px, 
+                #a6c0e5 32px
+            );
+            background-position: top;
+        }
+        .paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 45px;
+            width: 2px;
+            background-color: #ff9e9e;
+            z-index: 1;
+        }
+
+        .paper::after {
+            content: '';
+            position: absolute;
+            bottom: -15px; 
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: 
+                linear-gradient(-45deg, transparent 10.5px, #fdfae9 0),
+                linear-gradient(45deg, transparent 10.5px, #fdfae9 0);
+            background-repeat: repeat-x;
+            background-size: 22px 20px;
+            background-position: left bottom;
+        }
+
+        /* View Management */
+        .view {
+            display: none; /* Hide all views by default */
+            position: relative;
+            z-index: 2;
+        }
+        .view.active {
+            display: block; /* Only show the active view */
+        }
+
+        h1 {
+            margin: 0;
+            margin-top: -15px;
+            padding-bottom: 12px;
+            font-size: 2rem;
+            color: #333;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            color: #222;
+        }
+
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #555;
+            border-radius: 3px;
+            margin-right: 15px;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            background: transparent;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✔';
+            position: absolute;
+            top: -10px;
+            left: -2px;
+            font-size: 22px;
+            color: #d12e2e;
+            font-family: 'Kalam', cursive;
+        }
+
+        input[type="checkbox"]:checked + span {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #d12e2e;
+            font-family: 'Kalam', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: 0.2s;
+            padding: 0 5px;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .add-item-container {
+            display: flex;
+            margin-top: 10px;
+            height: 32px;
+        }
+
+        input[type="text"] {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: 'Kalam', cursive;
+            font-size: 1.3rem;
+            flex-grow: 1;
+            color: #222;
+            padding: 0;
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa;
+            opacity: 0.7;
+        }
+
+        .add-btn {
+            background: transparent;
+            border: 2px dashed #a6c0e5;
+            color: #555;
+            font-family: 'Kalam', cursive;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+            padding: 0 10px;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #a6c0e5;
+            color: #fff;
+            border-style: solid;
+        }
+
+        /* Navigation Buttons Styling */
+        .menu-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: none;
+            font-family: 'Kalam', cursive;
+            font-size: 1.6rem;
+            color: #222;
+            cursor: pointer;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            transition: 0.2s;
+            height: 32px;
+            line-height: 32px;
+        }
+
+        .menu-btn:hover {
+            color: #d12e2e;
+            padding-left: 10px; /* Slight indent when hovered */
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #555;
+            font-family: 'Kalam', cursive;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0;
+            margin-top: -30px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            color: #d12e2e;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="paper-wrapper">
+        <div class="paper">
+            
+            <!-- VIEW 1: MAIN MENU -->
+            <div id="view-menu" class="view active">
+                <h1>Lists</h1>
+                <button class="menu-btn" onclick="goToView('view-shopping')">➔ Shopping List</button>
+                <button class="menu-btn" onclick="goToView('view-todo')">➔ To-Do List</button>
+            </div>
+
+            <!-- VIEW 2: SHOPPING LIST -->
+            <div id="view-shopping" class="view">
+                <button class="back-btn" onclick="goToView('view-menu')">← Back to Lists</button>
+                <h1>Shopping</h1>
+                
+                <ul id="list-shopping"></ul>
+
+                <div class="add-item-container">
+                    <input type="text" id="input-shopping" placeholder="Need to buy..." autocomplete="off">
+                    <button id="btn-shopping" class="add-btn">Add</button>
+                </div>
+            </div>
+
+            <!-- VIEW 3: TO-DO LIST -->
+            <div id="view-todo" class="view">
+                <button class="back-btn" onclick="goToView('view-menu')">← Back to Lists</button>
+                <h1>To-Do</h1>
+                
+                <ul id="list-todo"></ul>
+
+                <div class="add-item-container">
+                    <input type="text" id="input-todo" placeholder="Need to do..." autocomplete="off">
+                    <button id="btn-todo" class="add-btn">Add</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- NAVIGATION LOGIC ---
+        function goToView(viewId) {
+            // Hide all views by removing the 'active' class
+            const views = document.querySelectorAll('.view');
+            views.forEach(view => view.classList.remove('active'));
+            
+            // Show the requested view
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        // --- REUSABLE LIST LOGIC ---
+        // This function sets up all the behavior for ANY list, so we don't repeat code.
+        function setupList(listId, inputId, buttonId, storageKey) {
+            const listElement = document.getElementById(listId);
+            const inputElement = document.getElementById(inputId);
+            const buttonElement = document.getElementById(buttonId);
+
+            // Save to local storage
+            function save() {
+                const items = [];
+                const listItems = listElement.querySelectorAll('li');
+                
+                listItems.forEach(li => {
+                    const checkbox = li.querySelector('input[type="checkbox"]');
+                    const span = li.querySelector('span');
+                    items.push({
+                        text: span.textContent,
+                        checked: checkbox.checked
+                    });
+                });
+                
+                localStorage.setItem(storageKey, JSON.stringify(items));
+            }
+
+            // Create HTML for a new item
+            function createItemDOM(text, isChecked = false) {
+                const li = document.createElement('li');
+                
+                const label = document.createElement('label');
+                label.style.display = 'flex';
+                label.style.alignItems = 'center';
+                label.style.cursor = 'pointer';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = isChecked;
+
+                const span = document.createElement('span');
+                span.textContent = text;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '✖';
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.title = 'Delete item';
+
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                li.appendChild(label);
+                li.appendChild(deleteBtn);
+                listElement.appendChild(li);
+            }
+
+            // Load from local storage
+            function load() {
+                const savedData = localStorage.getItem(storageKey);
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    parsedData.forEach(item => {
+                        createItemDOM(item.text, item.checked);
+                    });
+                }
+            }
+
+            // Handle Add event
+            function handleAdd() {
+                const itemText = inputElement.value.trim();
+                if (itemText === '') return;
+
+                createItemDOM(itemText);
+                save(); 
+
+                inputElement.value = '';
+            }
+
+            // Listeners for this specific list
+            buttonElement.addEventListener('click', handleAdd);
+
+            inputElement.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleAdd();
+            });
+
+            listElement.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox') save(); 
+            });
+
+            listElement.addEventListener('click', function(e) {
+                if (e.target.classList.contains('delete-btn')) {
+                    e.target.parentElement.remove();
+                    save(); 
+                }
+            });
+
+            // Load data when initialized
+            load();
+        }
+
+        // --- INITIALIZE LISTS ---
+        // We initialize both lists using the reusable function above.
+        // The first one uses 'groceryList' so it grabs the items you previously saved!
+        setupList('list-shopping', 'input-shopping', 'btn-shopping', 'groceryList');
+        setupList('list-todo', 'input-todo', 'btn-todo', 'todoList');
+    </script>
+</body>
+</html>
