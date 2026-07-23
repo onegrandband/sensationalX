@@ -114,3 +114,40 @@ button {
 button:hover {
     background: #444;
 }
+
+/* =========================================
+   NEW CRAFT STORE MODAL CSS
+   ========================================= */
+
+.store-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    
+    /* Keeps it from getting too wide */
+    width: 90%;
+    max-width: 600px;
+    
+    /* THE FIX: Stops the box from growing taller than 75% of your screen */
+    max-height: 75vh; 
+    
+    /* THE FIX: Adds a vertical scrollbar inside the box */
+    overflow-y: auto; 
+    
+    background-color: #111;
+    border: 2px solid #ff007f;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* Hides the bulky default scrollbar for a much cleaner look */
+.store-modal::-webkit-scrollbar {
+    display: none;
+}
+.store-modal {
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
