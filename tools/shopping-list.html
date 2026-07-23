@@ -19,12 +19,10 @@
             min-height: 100vh;
         }
 
-
         .paper-wrapper {
             filter: drop-shadow(0 12px 15px rgba(0, 0, 0, 0.5));
             width: 100%;
             max-width: 450px;
-
             transform: rotate(-1.5deg); 
             height: max-content;
         }
@@ -240,12 +238,8 @@
                 parsedList.forEach(item => {
                     createItemDOM(item.text, item.checked);
                 });
-            } else {
-                // Default items if visiting for the very first time
-                createItemDOM('Apples', false);
-                createItemDOM('Milk', false);
-                saveList(); // Save defaults
             }
+            // Removed the "else" block that added default items
         }
 
         // 4. Handle Adding a New Item
@@ -272,7 +266,6 @@
         });
 
         // Listen for ANY checkbox being clicked in the list
-        // (This is called Event Delegation, allowing us to listen to dynamic items)
         list.addEventListener('change', function(e) {
             if (e.target.type === 'checkbox') {
                 saveList(); // Resave the list with the new checked status
