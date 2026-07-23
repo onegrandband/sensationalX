@@ -191,3 +191,5 @@ export function renderBracelet() {
     if (braceletData.beads.length === 0) { display.innerHTML = ''; return; }
     display.innerHTML = braceletData.beads.map(b => renderBeadHTML(b.beadId, b.color, b.text)).join('');
 }
+// Add this line at the absolute bottom of js/ui.js
+initializeUI();
