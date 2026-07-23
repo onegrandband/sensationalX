@@ -1,7 +1,6 @@
 // js/ui.js
 import { braceletData, addBead, removeLastBead, clearBracelet, setSelectedBead, setSelectedColor, setSelectedText } from './state.js';
 import { beadCatalog, renderBeadHTML, LetterBead, getBeadById } from './beads.js';
-import { earnMoney } from './economy.js';
 
 const defaultColors = [
     '#ff007f', '#00ffff', '#39ff14', '#ffff00', 
@@ -9,303 +8,140 @@ const defaultColors = [
     '#33ff57', '#3357ff', '#ff33f3', '#ff8633'
 ];
 
-let lastClickTime = 0;
-let isCoolingDown = false;
-let cooldownTimeLeft = 0;
-let spamLockout = false;
-
-/**
- * Entry point for initializing the user interface components safely on DOM load
- */
 export function initializeUI() {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initAllUI);
+        document.addEventListener('DOMContentLoaded', buildUI);
     } else {
-        initAllUI();
+        buildUI();
     }
 }
 
-function initAllUI() {
-    ensureControlsContainer();
-    setupCatalogPicker();
-    setupColorPicker();
-    setupControls();
-    renderBracelet();
-}
+function buildUI() {
+    try {
+        // 1. Find your existing buttons from the HTML to attach events
+        const buttons = Array.from(document.querySelectorAll('button'));
+        const addBtn = buttons.find(b => b.textContent.includes('Add Bead'));
+        const removeBtn = buttons.find(b => b.textContent.includes('Remove Last'));
+        const clearBtn = buttons.find(b => b.textContent.includes('Clear String'));
 
-/**
- * Ensures a .controls container exists on the page so UI elements never fail to inject
- */
-function ensureControlsContainer() {
-    let controlsPanel = document.querySelector('.controls');
-    if (!controlsPanel) {
-        const appContainer = document.querySelector('.app-container') || document.body;
-        controlsPanel = document.createElement('div');
-        controlsPanel.className = 'controls';
-        controlsPanel.style.cssText = 'max-width: 600px; margin: 0 auto; padding: 20px;';
-        appContainer.appendChild(controlsPanel);
-    }
-    return controlsPanel;
-}
+        if (addBtn) addBtn.addEventListener('click', () => { addBead(); renderBracelet(); });
+        if (removeBtn) removeBtn.addEventListener('click', () => { removeLastBead(); renderBracelet(); });
+        if (clearBtn) clearBtn.addEventListener('click', () => { clearBracelet(); renderBracelet(); });
 
-/**
- * Sets up the bead catalog picker UI
- */
-function setupCatalogPicker() {
-    const controlsPanel = ensureControlsContainer();
+        // 2. Find the container holding your buttons so we can inject the new UI above it
+        const buttonContainer = addBtn ? addBtn.parentElement : null;
+        const mainCard = buttonContainer ? buttonContainer.parentElement : document.body;
 
-    const catalogWrapper = document.createElement('div');
-    catalogWrapper.className = 'catalog-wrapper';
-    catalogWrapper.style.marginBottom = '1.5rem';
-    catalogWrapper.style.padding = '10px';
-    catalogWrapper.style.background = 'rgba(0,0,0,0.3)';
-    catalogWrapper.style.borderRadius = '8px';
-    catalogWrapper.style.border = '1px solid rgba(255,255,255,0.1)';
-
-    catalogWrapper.innerHTML = `
-        <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; color: #ccc;">Select Bead Template</h3>
-        <select id="bead-template-select" style="width: 100%; padding: 8px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; font-size: 0.9rem; margin-bottom: 8px;">
-            ${beadCatalog.map(b => `<option value="${b.id}" ${b.id === braceletData.selectedBeadId ? 'selected' : ''}>${b.name} (${b.shape})</option>`).join('')}
-        </select>
-        <div id="text-input-container" style="display: none; margin-top: 8px;">
-            <label style="font-size: 0.8rem; color: #aaa; display: block; margin-bottom: 4px;">Letter Bead Text (1 char):</label>
-            <input type="text" id="bead-text-input" maxlength="1" value="${braceletData.selectedText}" style="width: 100%; padding: 6px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.1rem;">
-        </div>
-    `;
-
-    controlsPanel.insertBefore(catalogWrapper, controlsPanel.firstChild);
-
-    const selectEl = document.getElementById('bead-template-select');
-    const textContainer = document.getElementById('text-input-container');
-    const textInput = document.getElementById('bead-text-input');
-
-    function checkLetterBeadVisibility(beadId) {
-        const bead = getBeadById(beadId);
-        if (bead instanceof LetterBead) {
-            textContainer.style.display = 'block';
-        } else {
-            textContainer.style.display = 'none';
-        }
-    }
-
-    checkLetterBeadVisibility(braceletData.selectedBeadId);
-
-    selectEl.addEventListener('change', (e) => {
-        const id = e.target.value;
-        setSelectedBead(id);
-        checkLetterBeadVisibility(id);
-    });
-
-    textInput.addEventListener('input', (e) => {
-        setSelectedText(e.target.value.toUpperCase());
-    });
-}
-
-/**
- * Sets up color palettes and the Custom Hex Color Adder
- */
-function setupColorPicker() {
-    const controlsPanel = ensureControlsContainer();
-
-    const colorWrapper = document.createElement('div');
-    colorWrapper.className = 'color-picker-wrapper';
-    colorWrapper.style.marginBottom = '1.5rem';
-    colorWrapper.style.padding = '10px';
-    colorWrapper.style.background = 'rgba(0,0,0,0.3)';
-    colorWrapper.style.borderRadius = '8px';
-    colorWrapper.style.border = '1px solid rgba(255,255,255,0.1)';
-
-    colorWrapper.innerHTML = `
-        <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; color: #ccc;">Bead Color & Custom Hex</h3>
-        <div id="color-palette" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 10px;"></div>
-        
-        <!-- Custom Hex Input Adder -->
-        <div style="display: flex; gap: 8px; align-items: center; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-            <label style="font-size: 0.8rem; color: #aaa;">Custom Hex:</label>
-            <input type="color" id="native-color-picker" value="${braceletData.selectedColor}" style="width: 35px; height: 30px; border: none; background: none; cursor: pointer; border-radius: 4px;">
-            <input type="text" id="custom-hex-input" value="${braceletData.selectedColor}" placeholder="#ff007f" maxlength="7" style="
-                flex: 1; padding: 6px 10px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; font-family: monospace; font-size: 0.9rem;
-            ">
-            <button id="apply-hex-btn" style="background: #333; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem;">Set</button>
-        </div>
-    `;
-
-    controlsPanel.appendChild(colorWrapper);
-
-    const paletteEl = document.getElementById('color-palette');
-    defaultColors.forEach(colorHex => {
-        const swatch = document.createElement('div');
-        swatch.style.cssText = `
-            width: 100%; height: 25px; background-color: ${colorHex}; border-radius: 4px;
-            cursor: pointer; border: 2px solid ${braceletData.selectedColor === colorHex ? '#fff' : 'transparent'};
-            transition: transform 0.1s;
+        // 3. Inject Bead Catalog Picker
+        const catalogWrapper = document.createElement('div');
+        catalogWrapper.style.cssText = 'margin-bottom: 1.5rem; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left;';
+        catalogWrapper.innerHTML = `
+            <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0; margin-bottom: 10px; color: #ccc;">Select Bead Type</h3>
+            <select id="bead-template-select" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; font-size: 0.95rem; margin-bottom: 8px;">
+                ${beadCatalog.map(b => `<option value="${b.id}" ${b.id === braceletData.selectedBeadId ? 'selected' : ''}>${b.name} (${b.shape})</option>`).join('')}
+            </select>
+            <div id="text-input-container" style="display: none; margin-top: 10px;">
+                <label style="font-size: 0.8rem; color: #aaa; display: block; margin-bottom: 6px;">Letter (1 Char):</label>
+                <input type="text" id="bead-text-input" maxlength="1" value="${braceletData.selectedText}" style="width: 100%; padding: 10px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.1rem;">
+            </div>
         `;
-        swatch.addEventListener('click', () => {
-            setSelectedColor(colorHex);
-            nativePicker.value = colorHex;
-            hexInput.value = colorHex;
-            updateSwatchBorders();
+        
+        if (buttonContainer) mainCard.insertBefore(catalogWrapper, buttonContainer);
+
+        // 4. Inject Hex Color Picker
+        const colorWrapper = document.createElement('div');
+        colorWrapper.style.cssText = 'margin-bottom: 1.5rem; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left;';
+        colorWrapper.innerHTML = `
+            <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0; margin-bottom: 10px; color: #ccc;">Bead Color & Custom Hex</h3>
+            <div id="color-palette" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 15px;"></div>
+            
+            <div style="display: flex; gap: 8px; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+                <input type="color" id="native-color-picker" value="${braceletData.selectedColor}" style="width: 38px; height: 34px; border: none; background: none; cursor: pointer; padding: 0;">
+                <input type="text" id="custom-hex-input" value="${braceletData.selectedColor}" placeholder="#ff007f" maxlength="7" style="
+                    flex: 1; padding: 8px 12px; background: #111; color: white; border: 1px solid #444; border-radius: 6px; font-family: monospace; font-size: 0.95rem;
+                ">
+                <button id="apply-hex-btn" style="background: #333; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s;">Set</button>
+            </div>
+        `;
+        
+        if (buttonContainer) mainCard.insertBefore(colorWrapper, buttonContainer);
+
+        // Logic for Bead Selection
+        const selectEl = document.getElementById('bead-template-select');
+        const textContainer = document.getElementById('text-input-container');
+        const textInput = document.getElementById('bead-text-input');
+
+        function checkLetterBeadVisibility(beadId) {
+            const bead = getBeadById(beadId);
+            textContainer.style.display = (bead instanceof LetterBead) ? 'block' : 'none';
+        }
+        checkLetterBeadVisibility(braceletData.selectedBeadId);
+
+        selectEl.addEventListener('change', (e) => {
+            setSelectedBead(e.target.value);
+            checkLetterBeadVisibility(e.target.value);
         });
-        paletteEl.appendChild(swatch);
-    });
+        textInput.addEventListener('input', (e) => setSelectedText(e.target.value.toUpperCase()));
 
-    const nativePicker = document.getElementById('native-color-picker');
-    const hexInput = document.getElementById('custom-hex-input');
-    const applyBtn = document.getElementById('apply-hex-btn');
+        // Logic for Color Selection
+        const paletteEl = document.getElementById('color-palette');
+        const nativePicker = document.getElementById('native-color-picker');
+        const hexInput = document.getElementById('custom-hex-input');
+        const applyBtn = document.getElementById('apply-hex-btn');
 
-    nativePicker.addEventListener('input', (e) => {
-        const val = e.target.value;
-        hexInput.value = val;
-        setSelectedColor(val);
+        function updateSwatchBorders() {
+            paletteEl.querySelectorAll('div').forEach((swatch, idx) => {
+                swatch.style.border = braceletData.selectedColor === defaultColors[idx] ? '2px solid #fff' : '2px solid transparent';
+            });
+        }
+
+        defaultColors.forEach(colorHex => {
+            const swatch = document.createElement('div');
+            swatch.style.cssText = `width: 100%; height: 30px; background-color: ${colorHex}; border-radius: 4px; cursor: pointer; transition: transform 0.1s;`;
+            swatch.addEventListener('click', () => {
+                setSelectedColor(colorHex);
+                nativePicker.value = colorHex;
+                hexInput.value = colorHex;
+                updateSwatchBorders();
+            });
+            paletteEl.appendChild(swatch);
+        });
         updateSwatchBorders();
-    });
 
-    applyBtn.addEventListener('click', () => {
-        let val = hexInput.value.trim();
-        if (!val.startsWith('#')) val = '#' + val;
-        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-            setSelectedColor(val);
-            nativePicker.value = val;
+        nativePicker.addEventListener('input', (e) => {
+            hexInput.value = e.target.value;
+            setSelectedColor(e.target.value);
             updateSwatchBorders();
-        } else {
-            alert('Please enter a valid 6-digit hex code (e.g. #ff007f)!');
-        }
-    });
-
-    hexInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            applyBtn.click();
-        }
-    });
-
-    function updateSwatchBorders() {
-        paletteEl.querySelectorAll('div').forEach((swatch, idx) => {
-            const col = defaultColors[idx];
-            swatch.style.border = braceletData.selectedColor === col ? '2px solid #fff' : '2px solid transparent';
         });
+
+        applyBtn.addEventListener('click', () => {
+            let val = hexInput.value.trim();
+            if (!val.startsWith('#')) val = '#' + val;
+            if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                setSelectedColor(val);
+                nativePicker.value = val;
+                updateSwatchBorders();
+            } else {
+                alert('Invalid hex! Use a 6-digit code like #ff007f');
+            }
+        });
+
+        // Initialize the first render
+        renderBracelet();
+
+    } catch (err) {
+        console.error("UI Initialization failed:", err);
     }
 }
 
-/**
- * Attaches action buttons and the Create Button with cooldown & 18-bead validation
- */
-function setupControls() {
-    const controlsPanel = ensureControlsContainer();
-
-    const actionWrapper = document.createElement('div');
-    actionWrapper.style.display = 'flex';
-    actionWrapper.style.gap = '8px';
-    actionWrapper.style.marginBottom = '1.5rem';
-
-    actionWrapper.innerHTML = `
-        <button id="add-bead-btn" style="flex: 2; background: linear-gradient(135deg, #ff007f, #9d00ff); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">Add Bead</button>
-        <button id="remove-bead-btn" style="flex: 1; background: #333; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">Remove</button>
-        <button id="clear-btn" style="flex: 1; background: #422; color: #ff8888; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">Clear</button>
-    `;
-    controlsPanel.appendChild(actionWrapper);
-
-    document.getElementById('add-bead-btn').addEventListener('click', () => {
-        addBead();
-        renderBracelet();
-    });
-
-    document.getElementById('remove-bead-btn').addEventListener('click', () => {
-        removeLastBead();
-        renderBracelet();
-    });
-
-    document.getElementById('clear-btn').addEventListener('click', () => {
-        clearBracelet();
-        renderBracelet();
-    });
-
-    // Create Button & Cooldown Section
-    const createWrapper = document.createElement('div');
-    createWrapper.style.marginTop = '1.5rem';
-    createWrapper.innerHTML = `
-        <button id="create-bracelet-btn" style="
-            width: 100%;
-            background: linear-gradient(135deg, #39ff14, #00ffff);
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(57,255,20,0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        ">✨ Finish & Create Bracelet</button>
-        <div id="create-status-msg" style="font-size: 0.8rem; text-align: center; margin-top: 6px; color: #ff007f; min-height: 18px;"></div>
-    `;
-    controlsPanel.appendChild(createWrapper);
-
-    const createBtn = document.getElementById('create-bracelet-btn');
-    const statusMsg = document.getElementById('create-status-msg');
-
-    createBtn.addEventListener('click', () => {
-        const now = Date.now();
-
-        if (now - lastClickTime < 300 || spamLockout) {
-            statusMsg.textContent = "You're clicking too fast! Please wait 2.5 seconds.";
-            spamLockout = true;
-            setTimeout(() => {
-                spamLockout = false;
-                if (!isCoolingDown) statusMsg.textContent = "";
-            }, 2500);
-            return;
-        }
-        lastClickTime = now;
-
-        if (isCoolingDown) {
-            statusMsg.textContent = `Cooldown active! Wait ${Math.ceil(cooldownTimeLeft)}s before creating another.`;
-            return;
-        }
-
-        if (braceletData.beads.length < 18) {
-            statusMsg.textContent = `You need at least 18 beads! (Current: ${braceletData.beads.length})`;
-            return;
-        }
-
-        const earnings = braceletData.beads.length * 5;
-        earnMoney(earnings);
-        statusMsg.style.color = '#39ff14';
-        statusMsg.textContent = `Success! Bracelet created and sold for $${earnings}! 🎉`;
-
-        isCoolingDown = true;
-        cooldownTimeLeft = 35;
-        createBtn.style.opacity = '0.5';
-        createBtn.style.cursor = 'not-allowed';
-
-        const timer = setInterval(() => {
-            cooldownTimeLeft -= 1;
-            if (cooldownTimeLeft > 0) {
-                if (!spamLockout) {
-                    statusMsg.style.color = '#ff007f';
-                    statusMsg.textContent = `Cooldown: ${cooldownTimeLeft}s remaining...`;
-                }
-            } else {
-                clearInterval(timer);
-                isCoolingDown = false;
-                createBtn.style.opacity = '1';
-                createBtn.style.cursor = 'pointer';
-                statusMsg.style.color = '#ff007f';
-                statusMsg.textContent = "";
-            }
-        }, 1000);
-    });
-}
-
-/**
- * Renders the bracelet string onto the display container
- */
 export function renderBracelet() {
-    const display = document.getElementById('bracelet-display');
+    // Assuming your black box has an id or class we can target. 
+    // If not, you might need to add id="bracelet-display" to the black div in your HTML!
+    const display = document.getElementById('bracelet-display') || document.querySelector('.string-container');
     if (!display) return;
 
     if (braceletData.beads.length === 0) {
-        display.innerHTML = `<span style="color: #666; font-size: 0.9rem; font-style: italic;">Your bracelet string is empty. Add some beads!</span>`;
+        display.innerHTML = '';
         return;
     }
 
