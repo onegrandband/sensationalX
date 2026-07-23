@@ -2,31 +2,35 @@
 import { STORAGE_KEYS } from './config.js';
 
 export const economyState = {
-    money: 100 // Starting cash for your first bead box trip
+    money: parseInt(localStorage.getItem('kandi_maker_money')) || 100
 };
 
 export function loadEconomy() {
-    const saved = localStorage.getItem(STORAGE_KEYS.USER_PREFERENCES + '_money');
+    const saved = localStorage.getItem('kandi_maker_money');
     if (saved !== null) {
-        economyState.money = parseFloat(saved);
+        economyState.money = parseInt(saved, 10);
     }
+    dispatchUpdate();
 }
 
-export function saveEconomy() {
-    localStorage.setItem(STORAGE_KEYS.USER_PREFERENCES + '_money', economyState.money.toString());
+function saveEconomy() {
+    localStorage.setItem('kandi_maker_money', economyState.money);
+    dispatchUpdate();
 }
 
-export function addMoney(amount) {
+function dispatchUpdate() {
+    window.dispatchEvent(new CustomEvent('economy-updated', { detail: { money: economyState.money } }));
+}
+
+export function earnMoney(amount) {
     economyState.money += amount;
     saveEconomy();
-    window.dispatchEvent(new CustomEvent('economy-updated', { detail: { money: economyState.money } }));
 }
 
 export function spendMoney(amount) {
     if (economyState.money >= amount) {
         economyState.money -= amount;
         saveEconomy();
-        window.dispatchEvent(new CustomEvent('economy-updated', { detail: { money: economyState.money } }));
         return true;
     }
     return false;
