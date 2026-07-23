@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kandi Bracelet Maker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Kandi Bracelet Maker</h1>
+        </header>
+        
+        <main>
+            <!-- The string where the beads sit -->
+            <div class="bracelet-container">
+                <div class="string"></div>
+                <div id="bracelet-display" class="bracelet-display">
+                    <!-- Beads will be rendered here by JS -->
+                </div>
+            </div>
+
+            <!-- Controls and Palette -->
+            <div class="controls">
+                <div id="color-palette" class="palette"></div>
+                
+                <div class="actions">
+                    <button id="add-bead-btn">Add Bead</button>
+                    <button id="remove-bead-btn">Remove Last</button>
+                    <button id="clear-btn">Clear String</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Entry point for the modular JS -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
