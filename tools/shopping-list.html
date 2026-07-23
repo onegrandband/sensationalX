@@ -91,6 +91,7 @@
             height: 32px;
             display: flex;
             align-items: center;
+            justify-content: space-between; /* Keeps text left, delete button right */
             font-size: 1.3rem;
             color: #222;
         }
@@ -124,6 +125,24 @@
             color: #888;
         }
 
+        /* Delete Button Styling */
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #d12e2e;
+            font-family: 'Kalam', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: 0.2s;
+            padding: 0 5px;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
         /* Add Item Section */
         .add-item-container {
             display: flex;
@@ -149,7 +168,7 @@
             opacity: 0.7;
         }
 
-        button {
+        .add-btn {
             background: transparent;
             border: 2px dashed #a6c0e5;
             color: #555;
@@ -162,7 +181,7 @@
             transition: 0.2s;
         }
 
-        button:hover {
+        .add-btn:hover {
             background: #a6c0e5;
             color: #fff;
             border-style: solid;
@@ -179,7 +198,7 @@
 
             <div class="add-item-container">
                 <input type="text" id="new-item" placeholder="Write a new item here..." autocomplete="off">
-                <button id="add-btn">Add</button>
+                <button id="add-btn" class="add-btn">Add</button>
             </div>
         </div>
     </div>
@@ -210,6 +229,7 @@
         function createItemDOM(text, isChecked = false) {
             const li = document.createElement('li');
             
+            // Label holds the checkbox and the text
             const label = document.createElement('label');
             label.style.display = 'flex';
             label.style.alignItems = 'center';
@@ -222,9 +242,17 @@
             const span = document.createElement('span');
             span.textContent = text;
 
+            // Delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '✖';
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.title = 'Delete item';
+
+            // Put it all together
             label.appendChild(checkbox);
             label.appendChild(span);
             li.appendChild(label);
+            li.appendChild(deleteBtn);
             list.appendChild(li);
         }
 
@@ -233,13 +261,11 @@
             const savedList = localStorage.getItem('groceryList');
             
             if (savedList) {
-                // Parse the saved JSON string back into an array
                 const parsedList = JSON.parse(savedList);
                 parsedList.forEach(item => {
                     createItemDOM(item.text, item.checked);
                 });
             }
-            // Removed the "else" block that added default items
         }
 
         // 4. Handle Adding a New Item
@@ -248,7 +274,7 @@
             if (itemText === '') return;
 
             createItemDOM(itemText);
-            saveList(); // Save the new data
+            saveList(); 
 
             inputField.value = '';
         }
@@ -268,7 +294,18 @@
         // Listen for ANY checkbox being clicked in the list
         list.addEventListener('change', function(e) {
             if (e.target.type === 'checkbox') {
-                saveList(); // Resave the list with the new checked status
+                saveList(); 
+            }
+        });
+
+        // Listen for the Delete button being clicked
+        list.addEventListener('click', function(e) {
+            // Check if the thing we clicked has the 'delete-btn' class
+            if (e.target.classList.contains('delete-btn')) {
+                // Remove the parent <li> element from the page
+                e.target.parentElement.remove();
+                // Resave the list so it stays deleted
+                saveList(); 
             }
         });
 
