@@ -20,8 +20,21 @@ export function applyStringStyles(stringElement) {
 
 export function setStringColor(newColor) {
     stringSettings.color = newColor;
+    updateAllStrings();
 }
 
 export function setStringThickness(newThickness) {
     stringSettings.thickness = newThickness;
+    updateAllStrings();
+}
+
+// 🌟 Added missing style modifier function
+export function setStringStyle(newStyle) {
+    stringSettings.style = newStyle;
+    updateAllStrings();
+}
+
+function updateAllStrings() {
+    const strings = document.querySelectorAll('.string');
+    strings.forEach(el => applyStringStyles(el));
 }
