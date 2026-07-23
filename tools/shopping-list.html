@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping List</title>
-    <!-- Import a handwritten Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Base styles and dark wooden background */
         body {
             margin: 0;
             padding: 40px 20px;
@@ -21,24 +19,22 @@
             min-height: 100vh;
         }
 
-        /* The wrapper handles the drop shadow so the torn edge casts a shadow too */
+
         .paper-wrapper {
             filter: drop-shadow(0 12px 15px rgba(0, 0, 0, 0.5));
             width: 100%;
             max-width: 450px;
-            /* Slight rotation for realism */
+
             transform: rotate(-1.5deg); 
             height: max-content;
         }
 
-        /* The actual paper element */
         .paper {
-            background-color: #fdfae9; /* Light yellow notepad color */
+            background-color: #fdfae9;
             position: relative;
             padding: 50px 20px 40px 60px;
             min-height: 300px;
             
-            /* Blue notebook lines */
             background-image: repeating-linear-gradient(
                 transparent, 
                 transparent 31px, 
@@ -47,8 +43,6 @@
             );
             background-position: top;
         }
-
-        /* The red vertical margin line */
         .paper::before {
             content: '';
             position: absolute;
@@ -60,11 +54,10 @@
             z-index: 1;
         }
 
-        /* The torn, ripped bottom edge using a zig-zag CSS gradient */
         .paper::after {
             content: '';
             position: absolute;
-            bottom: -15px; /* Pull it down outside the main div */
+            bottom: -15px; 
             left: 0;
             width: 100%;
             height: 15px;
@@ -76,7 +69,6 @@
             background-position: left bottom;
         }
 
-        /* Typography & Layout */
         h1 {
             margin: 0;
             margin-top: -15px;
@@ -98,14 +90,13 @@
         }
 
         li {
-            height: 32px; /* Matches the blue line spacing perfectly */
+            height: 32px;
             display: flex;
             align-items: center;
             font-size: 1.3rem;
             color: #222;
         }
 
-        /* Custom Checkbox Styling */
         input[type="checkbox"] {
             appearance: none;
             -webkit-appearance: none;
@@ -126,13 +117,13 @@
             top: -10px;
             left: -2px;
             font-size: 22px;
-            color: #d12e2e; /* Red checkmark */
+            color: #d12e2e;
             font-family: 'Kalam', cursive;
         }
 
         input[type="checkbox"]:checked + span {
             text-decoration: line-through;
-            color: #888; /* Fade text when checked */
+            color: #888;
         }
 
         /* Add Item Section */
@@ -186,8 +177,8 @@
         <div class="paper">
             <h1>Shopping List</h1>
             
-            <ul id="list">
-                
+            <ul id="list"></ul>
+
             <div class="add-item-container">
                 <input type="text" id="new-item" placeholder="Write a new item here..." autocomplete="off">
                 <button id="add-btn">Add</button>
@@ -200,47 +191,96 @@
         const addButton = document.getElementById('add-btn');
         const list = document.getElementById('list');
 
-        // Function to create and append a new list item
-        function addItem() {
-            const itemText = inputField.value.trim();
-            if (itemText === '') return;
+        // 1. Function to save the current list to LocalStorage
+        function saveList() {
+            const items = [];
+            const listElements = list.querySelectorAll('li');
+            
+            listElements.forEach(li => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const span = li.querySelector('span');
+                items.push({
+                    text: span.textContent,
+                    checked: checkbox.checked
+                });
+            });
+            
+            localStorage.setItem('groceryList', JSON.stringify(items));
+        }
 
-            // Create list element
+        // 2. Function to build the HTML for a single item
+        function createItemDOM(text, isChecked = false) {
             const li = document.createElement('li');
             
-            // Create label wrapper
             const label = document.createElement('label');
             label.style.display = 'flex';
             label.style.alignItems = 'center';
             label.style.cursor = 'pointer';
 
-            // Create checkbox
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
+            checkbox.checked = isChecked;
 
-            // Create text span
             const span = document.createElement('span');
-            span.textContent = itemText;
+            span.textContent = text;
 
-            // Assemble the elements
             label.appendChild(checkbox);
             label.appendChild(span);
             li.appendChild(label);
             list.appendChild(li);
+        }
 
-            // Clear input field
+        // 3. Function to load data from LocalStorage on page load
+        function loadList() {
+            const savedList = localStorage.getItem('groceryList');
+            
+            if (savedList) {
+                // Parse the saved JSON string back into an array
+                const parsedList = JSON.parse(savedList);
+                parsedList.forEach(item => {
+                    createItemDOM(item.text, item.checked);
+                });
+            } else {
+                // Default items if visiting for the very first time
+                createItemDOM('Apples', false);
+                createItemDOM('Milk', false);
+                saveList(); // Save defaults
+            }
+        }
+
+        // 4. Handle Adding a New Item
+        function handleAddItem() {
+            const itemText = inputField.value.trim();
+            if (itemText === '') return;
+
+            createItemDOM(itemText);
+            saveList(); // Save the new data
+
             inputField.value = '';
         }
 
-        // Add item when button is clicked
-        addButton.addEventListener('click', addItem);
+        // --- EVENT LISTENERS ---
 
-        // Add item when the "Enter" key is pressed
+        // Listen for Add Button click
+        addButton.addEventListener('click', handleAddItem);
+
+        // Listen for "Enter" key press
         inputField.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                addItem();
+                handleAddItem();
             }
         });
+
+        // Listen for ANY checkbox being clicked in the list
+        // (This is called Event Delegation, allowing us to listen to dynamic items)
+        list.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                saveList(); // Resave the list with the new checked status
+            }
+        });
+
+        // Initialize the app when the page loads
+        loadList();
     </script>
 </body>
 </html>
