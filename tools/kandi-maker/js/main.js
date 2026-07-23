@@ -3,6 +3,10 @@ import { initializeUI, renderBracelet } from './ui.js';
 import { initializeEconomyAndShopUI } from './shopUI.js';
 import { initializePresetsUI } from './presetsUI.js';
 import { initializeZoomAndScroll } from './zoomPan.js';
+import { checkFirstTimeUser } from './onboarding.js';
+
+// Call this on app load
+checkFirstTimeUser();
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Kandi Maker Fully Initializing...");
