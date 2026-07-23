@@ -3,8 +3,6 @@ import { braceletData, addBead, removeLastBead, clearBracelet, setSelectedBead, 
 import { beadCatalog, renderBeadHTML, LetterBead, getBeadById } from './beads.js';
 import { earnMoney } from './economy.js';
 
-const display = document.getElementById('bracelet-display');
-
 const defaultColors = [
     '#ff007f', '#00ffff', '#39ff14', '#ffff00', 
     '#9d00ff', '#ffffff', '#000000', '#ff5733', 
@@ -17,9 +15,18 @@ let cooldownTimeLeft = 0;
 let spamLockout = false;
 
 /**
- * Entry point for initializing the user interface components
+ * Entry point for initializing the user interface components safely on DOM load
  */
 export function initializeUI() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAllUI);
+    } else {
+        initAllUI();
+    }
+}
+
+function initAllUI() {
+    ensureControlsContainer();
     setupCatalogPicker();
     setupColorPicker();
     setupControls();
@@ -27,11 +34,25 @@ export function initializeUI() {
 }
 
 /**
+ * Ensures a .controls container exists on the page so UI elements never fail to inject
+ */
+function ensureControlsContainer() {
+    let controlsPanel = document.querySelector('.controls');
+    if (!controlsPanel) {
+        const appContainer = document.querySelector('.app-container') || document.body;
+        controlsPanel = document.createElement('div');
+        controlsPanel.className = 'controls';
+        controlsPanel.style.cssText = 'max-width: 600px; margin: 0 auto; padding: 20px;';
+        appContainer.appendChild(controlsPanel);
+    }
+    return controlsPanel;
+}
+
+/**
  * Sets up the bead catalog picker UI
  */
 function setupCatalogPicker() {
-    const controlsPanel = document.querySelector('.controls');
-    if (!controlsPanel) return;
+    const controlsPanel = ensureControlsContainer();
 
     const catalogWrapper = document.createElement('div');
     catalogWrapper.className = 'catalog-wrapper';
@@ -84,8 +105,7 @@ function setupCatalogPicker() {
  * Sets up color palettes and the Custom Hex Color Adder
  */
 function setupColorPicker() {
-    const controlsPanel = document.querySelector('.controls');
-    if (!controlsPanel) return;
+    const controlsPanel = ensureControlsContainer();
 
     const colorWrapper = document.createElement('div');
     colorWrapper.className = 'color-picker-wrapper';
@@ -170,8 +190,7 @@ function setupColorPicker() {
  * Attaches action buttons and the Create Button with cooldown & 18-bead validation
  */
 function setupControls() {
-    const controlsPanel = document.querySelector('.controls');
-    if (!controlsPanel) return;
+    const controlsPanel = ensureControlsContainer();
 
     const actionWrapper = document.createElement('div');
     actionWrapper.style.display = 'flex';
@@ -282,6 +301,7 @@ function setupControls() {
  * Renders the bracelet string onto the display container
  */
 export function renderBracelet() {
+    const display = document.getElementById('bracelet-display');
     if (!display) return;
 
     if (braceletData.beads.length === 0) {
