@@ -1,0 +1,116 @@
+:root {
+    --bg-color: #121212;
+    --panel-bg: #1e1e1e;
+    --text-color: #ffffff;
+    --string-color: rgba(255, 255, 255, 0.3);
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.app-container {
+    background-color: var(--panel-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 800px;
+}
+
+header h1 {
+    text-align: center;
+    margin-top: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.bracelet-container {
+    position: relative;
+    height: 120px;
+    background: #000;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    padding: 0 20px;
+}
+
+.string {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: var(--string-color);
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.bracelet-display {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* The physical bead styling */
+.bead {
+    width: 25px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset -2px -2px 6px rgba(0,0,0,0.5), inset 2px 2px 6px rgba(255,255,255,0.4);
+    transition: transform 0.2s;
+}
+
+.palette {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.1s, border 0.1s;
+}
+
+.color-swatch:hover, .color-swatch.selected {
+    transform: scale(1.1);
+    border: 2px solid white;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #444;
+}
