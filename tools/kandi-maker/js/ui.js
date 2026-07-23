@@ -206,7 +206,7 @@ function setupControls() {
 /**
  * Renders all beads currently sitting on the string canvas
  */
-function renderBracelet() {
+export function renderBracelet() {
     display.innerHTML = '';
     
     if (braceletData.beads.length === 0) {
