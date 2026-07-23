@@ -13,13 +13,17 @@ export function initializeEconomyAndShopUI() {
     // Listen for updates to refresh numbers live
     window.addEventListener('economy-updated', (e) => {
         const moneyEl = document.getElementById('hud-money');
-        if (moneyEl) moneyEl.textContent = `$${e.detail.money}`;
+        if (moneyEl && e.detail) moneyEl.textContent = `$${e.detail.money}`;
     });
 }
 
 function createHeaderHUD() {
     const appContainer = document.querySelector('.app-container');
     if (!appContainer) return;
+
+    // Prevent duplicate HUD bars if initialized twice
+    const existingHud = document.querySelector('.hud-bar');
+    if (existingHud) existingHud.remove();
 
     const hudBar = document.createElement('div');
     hudBar.className = 'hud-bar';
@@ -48,6 +52,10 @@ function createHeaderHUD() {
 }
 
 function createShopModal() {
+    // Prevent duplicate modals
+    const existingModal = document.getElementById('craft-store-modal');
+    if (existingModal) existingModal.remove();
+
     const modal = document.createElement('div');
     modal.id = 'craft-store-modal';
     modal.style.cssText = `
@@ -84,11 +92,26 @@ function createShopModal() {
         modal.style.display = 'none';
     });
 
+    // Close when clicking outside the modal window content
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
     modal.querySelectorAll('.buy-box-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const boxId = e.target.getAttribute('data-box-id');
             const result = buyBeadBox(boxId);
-            alert(result.message);
+            
+            if (result && result.message) {
+                alert(result.message);
+            } else if (typeof result === 'string') {
+                alert(result);
+            }
+
+            // Broadcast event so UI dropdown numbers update instantly
+            window.dispatchEvent(new CustomEvent('inventory-updated'));
         });
     });
 }
