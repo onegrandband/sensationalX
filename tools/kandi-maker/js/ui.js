@@ -26,7 +26,7 @@ function buildUI() {
         const buttonContainer = addBtn ? addBtn.parentElement : null;
         const mainCard = buttonContainer ? buttonContainer.parentElement : document.body;
 
-        // Remove any old injected control panels to prevent duplicates
+        // Remove any old injected panels to keep it clean
         const oldPanel = document.getElementById('injected-control-panel');
         if (oldPanel) oldPanel.remove();
 
@@ -38,7 +38,7 @@ function buildUI() {
             <div style="margin-bottom: 18px; text-align: left;">
                 <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 0; margin-bottom: 10px; color: #aaa;">Bead Settings</h3>
                 
-                <!-- 100% Custom Dropdown (No native select elements used anywhere) -->
+                <!-- 100% Custom Dropdown -->
                 <div class="custom-select-wrapper" id="bead-custom-select">
                     <div class="custom-select-trigger" id="bead-select-trigger">
                         <span id="bead-select-label">Select Bead...</span>
@@ -118,7 +118,7 @@ function buildUI() {
             }
         });
 
-        setupStoreButtons();
+        setupExistingStoreButton();
         updateFullUI();
 
     } catch (err) {
@@ -168,19 +168,41 @@ function updateFullUI() {
     });
 }
 
-function setupStoreButtons() {
-    const storeButtons = document.querySelectorAll('.store-modal button');
-    storeButtons.forEach(btn => {
+// 🌟 Hooks into your EXISTING craft store button and modal
+function setupExistingStoreButton() {
+    // Finds any button on your page containing "Craft Store" or "Store"
+    const allButtons = Array.from(document.querySelectorAll('button'));
+    const storeOpenBtn = allButtons.find(b => b.textContent.includes('Craft Store') || b.textContent.includes('Store'));
+    
+    // Finds your store modal element in your HTML
+    const storeModal = document.querySelector('.store-modal') || document.getElementById('store-modal');
+
+    if (storeOpenBtn && storeModal) {
+        // Ensure it starts hidden if needed, or toggle on click
+        storeOpenBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Toggle display state between 'none' and 'block' (or whatever display type it uses)
+            if (storeModal.style.display === 'block') {
+                storeModal.style.display = 'none';
+            } else {
+                storeModal.style.display = 'block';
+            }
+        });
+    }
+
+    // Handles purchasing items inside the store modal when "Buy Box" is clicked
+    const storeBuyButtons = document.querySelectorAll('.store-modal button, #store-modal button');
+    storeBuyButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const packContainer = e.target.parentElement;
-            const packTitle = packContainer.innerText || "";
+            const packTitle = packContainer ? (packContainer.innerText || "") : "";
             
             if (packTitle.includes('Trans Pride Pack') || packTitle.includes('Trans')) {
                 inventory['trans-heart'] += 20;
                 inventory['trans-star'] += 20;
                 alert('Success! You got 20 Trans Hearts and 20 Trans Stars!');
+                updateFullUI();
             }
-            updateFullUI();
         });
     });
 }
@@ -191,5 +213,3 @@ export function renderBracelet() {
     if (braceletData.beads.length === 0) { display.innerHTML = ''; return; }
     display.innerHTML = braceletData.beads.map(b => renderBeadHTML(b.beadId, b.color, b.text)).join('');
 }
-// Add this line at the absolute bottom of js/ui.js
-initializeUI();
