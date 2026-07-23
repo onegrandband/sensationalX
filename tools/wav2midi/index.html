@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAV to MIDI Converter</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>WAV to MIDI Converter</h1>
+            <p>Transform your audio files into editable MIDI tracks instantly in your browser.</p>
+        </header>
+
+        <main>
+            <!-- Dropzone Component -->
+            <div class="upload-card" id="dropZone">
+                <input type="file" id="audioFile" accept=".wav,audio/wav" hidden>
+                <div class="upload-content">
+                    <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p id="fileLabel">Drag & drop your WAV file here, or <span class="browse-btn">browse</span></p>
+                    <span class="file-format">Supports uncompressed PCM .wav files</span>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <div class="setting-group">
+                    <label for="sensitivity">Detection Sensitivity:</label>
+                    <input type="range" id="sensitivity" min="1" max="10" value="5">
+                    <span id="sensitivityValue">5</span>
+                </div>
+                <button id="convertBtn" class="primary-btn" disabled>Convert to MIDI</button>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="statusText">Analyzing audio waveform...</p>
+            </div>
+
+            <!-- Result Card -->
+            <div class="result-card" id="resultCard" style="display: none;">
+                <h3>Conversion Complete!</h3>
+                <p id="conversionStats">Detected notes: 0 | Duration: 0s</p>
+                <button id="downloadBtn" class="success-btn">Download MIDI File (.mid)</button>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
