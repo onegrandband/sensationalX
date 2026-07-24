@@ -27,7 +27,6 @@ sensitivityInput.addEventListener('input', (e) => {
     sensitivityValue.textContent = e.target.value;
 });
 
-dropZone.addEventListener('click', () => audioFileInput.click());
 dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
 dropZone.addEventListener('drop', (e) => {
@@ -62,12 +61,12 @@ convertBtn.addEventListener('click', async () => {
     progressContainer.style.display = 'block';
     editorSection.style.display = 'none';
     progressFill.style.width = '20%';
-    statusText.textContent = 'Decoding audio stream...';
+    statusText.textContent = 'Decoding audio stream via Web Audio API...';
 
     try {
         const sensitivity = parseInt(sensitivityInput.value);
         progressFill.style.width = '50%';
-        statusText.textContent = 'Analyzing waveform & mapping notes...';
+        statusText.textContent = 'Running pitch detection on waveform...';
 
         const result = await decodeAndAnalyzeAudio(selectedFile, sensitivity);
         currentNotes = result.notes;
