@@ -41,10 +41,14 @@ audioFileInput.addEventListener('change', (e) => {
 });
 
 function handleFileSelection(file) {
-    if (!file.name.endsWith('.wav') && !file.type.includes('audio')) {
+    const fileName = file.name.toLowerCase();
+    const isValidWav = fileName.endsWith('.wav') || file.type.includes('audio');
+    
+    if (!isValidWav) {
         alert('Please choose a valid WAV file.');
         return;
     }
+    
     selectedFile = file;
     fileLabel.innerHTML = `Selected: <strong>${file.name}</strong>`;
     convertBtn.disabled = false;
