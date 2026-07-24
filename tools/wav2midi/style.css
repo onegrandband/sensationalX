@@ -69,6 +69,15 @@ header p {
     margin-bottom: 20px;
 }
 
+.file-input {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
 .upload-card:hover, .upload-card.dragover {
     border-color: var(--accent-color);
     background: rgba(99, 102, 241, 0.05);
