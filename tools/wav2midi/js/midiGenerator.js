@@ -9,7 +9,7 @@ export function createMidiBlob(notes) {
         track.addEvent(new MidiWriter.NoteEvent({
             pitch: [n.midi],
             duration: '4',
-            velocity: 80
+            velocity: 85
         }));
     });
 
