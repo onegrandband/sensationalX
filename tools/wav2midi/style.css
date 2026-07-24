@@ -7,6 +7,8 @@
     --accent-hover: #4f46e5;
     --success-color: #10b981;
     --success-hover: #059669;
+    --secondary-color: #3b82f6;
+    --secondary-hover: #2563eb;
     --border-color: #334155;
 }
 
@@ -33,19 +35,19 @@ body {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    padding: 32px;
+    padding: 28px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 header {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
 }
 
 header h1 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     background: linear-gradient(135deg, #818cf8, #c084fc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -53,18 +55,18 @@ header h1 {
 
 header p {
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .upload-card {
     border: 2px dashed var(--border-color);
     border-radius: 12px;
-    padding: 36px 20px;
+    padding: 28px 16px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
     background: rgba(15, 23, 42, 0.4);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .upload-card:hover, .upload-card.dragover {
@@ -73,16 +75,16 @@ header p {
 }
 
 .upload-icon {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     color: var(--accent-color);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .upload-content p {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-color);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .browse-btn {
@@ -99,8 +101,8 @@ header p {
 .controls-section {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 14px;
+    margin-bottom: 16px;
 }
 
 .setting-group {
@@ -126,7 +128,7 @@ header p {
 
 button {
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -144,14 +146,14 @@ button {
     background-color: var(--accent-hover);
 }
 
-.primary-btn:disabled {
+.primary-btn:disabled, .secondary-btn:disabled {
     background-color: var(--border-color);
     color: var(--text-muted);
     cursor: not-allowed;
 }
 
 .progress-container {
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .progress-bar {
@@ -160,7 +162,7 @@ button {
     background: var(--border-color);
     border-radius: 3px;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .progress-fill {
@@ -176,25 +178,56 @@ button {
     text-align: center;
 }
 
-.result-card {
-    background: rgba(16, 185, 129, 0.05);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+.editor-section {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    margin-top: 20px;
+    padding: 18px;
+    margin-top: 16px;
 }
 
-.result-card h3 {
+.editor-section h3 {
     color: var(--success-color);
     font-size: 15px;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
-.result-card p {
+.editor-section p {
     font-size: 12px;
     color: var(--text-muted);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+}
+
+.canvas-container {
+    background: #0b0f19;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 140px;
+}
+
+.playback-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.secondary-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    flex: 1;
+}
+
+.secondary-btn:hover:not(:disabled) {
+    background-color: var(--secondary-hover);
 }
 
 .success-btn {
