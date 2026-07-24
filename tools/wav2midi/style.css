@@ -59,6 +59,7 @@ header p {
 }
 
 .upload-card {
+    position: relative; /* Keeps the hidden input anchored inside the card */
     border: 2px dashed var(--border-color);
     border-radius: 12px;
     padding: 28px 16px;
@@ -67,15 +68,18 @@ header p {
     transition: all 0.3s ease;
     background: rgba(15, 23, 42, 0.4);
     margin-bottom: 20px;
+    overflow: hidden;
 }
 
 .file-input {
     position: absolute;
-    width: 0.1px;
-    height: 0.1px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     opacity: 0;
-    overflow: hidden;
-    z-index: -1;
+    cursor: pointer;
+    z-index: 10;
 }
 
 .upload-card:hover, .upload-card.dragover {
