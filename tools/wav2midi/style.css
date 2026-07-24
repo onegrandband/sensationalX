@@ -59,7 +59,7 @@ header p {
 }
 
 .upload-card {
-    position: relative; /* Keeps the hidden input anchored inside the card */
+    position: relative;
     border: 2px dashed var(--border-color);
     border-radius: 12px;
     padding: 28px 16px;
@@ -71,6 +71,11 @@ header p {
     overflow: hidden;
 }
 
+.upload-card:hover, .upload-card.dragover {
+    border-color: var(--accent-color);
+    background: rgba(99, 102, 241, 0.05);
+}
+
 .file-input {
     position: absolute;
     top: 0;
@@ -80,11 +85,6 @@ header p {
     opacity: 0;
     cursor: pointer;
     z-index: 10;
-}
-
-.upload-card:hover, .upload-card.dragover {
-    border-color: var(--accent-color);
-    background: rgba(99, 102, 241, 0.05);
 }
 
 .upload-icon {
