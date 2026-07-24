@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAV to MIDI Converter</title>
+    <title>WAV to MIDI Converter & Editor</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js Library for Grand Piano Playback -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1>WAV to MIDI Converter</h1>
-            <p>Transform your audio files into editable MIDI tracks instantly in your browser.</p>
+            <h1>WAV to MIDI Converter & Editor</h1>
+            <p>Convert audio files, review notes on the piano roll, preview with grand piano sound, and download.</p>
         </header>
 
         <main>
@@ -19,7 +21,7 @@
             <div class="upload-card" id="dropZone">
                 <input type="file" id="audioFile" accept=".wav,audio/wav" hidden>
                 <div class="upload-content">
-                    <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
                     <p id="fileLabel">Drag & drop your WAV file here, or <span class="browse-btn">browse</span></p>
@@ -34,7 +36,7 @@
                     <input type="range" id="sensitivity" min="1" max="10" value="5">
                     <span id="sensitivityValue">5</span>
                 </div>
-                <button id="convertBtn" class="primary-btn" disabled>Convert to MIDI</button>
+                <button id="convertBtn" class="primary-btn" disabled>Convert & Open Editor</button>
             </div>
 
             <!-- Progress Indicator -->
@@ -45,15 +47,28 @@
                 <p id="statusText">Analyzing audio waveform...</p>
             </div>
 
-            <!-- Result Card -->
-            <div class="result-card" id="resultCard" style="display: none;">
-                <h3>Conversion Complete!</h3>
-                <p id="conversionStats">Detected notes: 0 | Duration: 0s</p>
+            <!-- MIDI Editor & Preview Section -->
+            <div class="editor-section" id="editorSection" style="display: none;">
+                <h3>Grand Piano Editor & Preview</h3>
+                <p id="editorStats">Notes: 0</p>
+                
+                <!-- Piano Roll Canvas Visualizer -->
+                <div class="canvas-container">
+                    <canvas id="pianoRollCanvas" width="460" height="150"></canvas>
+                </div>
+
+                <!-- Playback Controls -->
+                <div class="playback-controls">
+                    <button id="playBtn" class="secondary-btn">▶ Play Preview</button>
+                    <button id="stopBtn" class="secondary-btn" disabled>⏹ Stop</button>
+                </div>
+
+                <!-- Download Section -->
                 <button id="downloadBtn" class="success-btn">Download MIDI File (.mid)</button>
             </div>
         </main>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
