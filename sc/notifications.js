@@ -71,7 +71,7 @@ const notificationData = {
     "welcome": {
         title: "Notifications Enabled!",
         body: "You'll now receive updates from SensationalX.",
-        url: "https://sensationalx.com/"
+        url: "https://sensationalx.com/notification-success"
     },
     "event_1": {
         title: "One Grand Band Songstats!",
