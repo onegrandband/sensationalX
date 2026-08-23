@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Sleep Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🌙 Sleep Timer</h1>
+        <div id="sessionNameDisplay" class="session-name">Ready to sleep?</div>
+        
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+
+        <div class="controls">
+            <button id="startBtn" onclick="startTimer()">Start</button>
+            <button id="pauseBtn" onclick="pauseTimer()" disabled>Pause</button>
+            <button id="stopBtn" onclick="stopTimer()" disabled>Wake Up</button>
+        </div>
+
+        <h2>Sleep History</h2>
+        <ul id="historyList" class="history-list">
+            <!-- Populated via JS -->
+        </ul>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
