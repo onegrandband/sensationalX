@@ -1,10 +1,11 @@
 // ==========================================
-// SensationalX Video Recorder Logic
+// SensationalX Video Recorder Logic (MP4 Enabled)
 // ==========================================
 
 let mediaRecorder;
 let recordedChunks = [];
 let stream = null;
+let activeMimeType = 'video/webm'; // fallback default
 
 // Target DOM Elements
 const videoPreview = document.getElementById('videoPreview');     
@@ -36,6 +37,26 @@ async function setupCamera() {
 }
 
 /**
+ * Determine and return the best supported MP4 or video recording mimeType
+ */
+function getSupportedMimeType() {
+    const types = [
+        'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+        'video/mp4',
+        'video/webm;codecs=h264,opus',
+        'video/webm;codecs=vp9,opus',
+        'video/webm'
+    ];
+
+    for (const type of types) {
+        if (MediaRecorder.isTypeSupported(type)) {
+            return type;
+        }
+    }
+    return '';
+}
+
+/**
  * Start the recording process
  */
 function startRecording() {
@@ -46,13 +67,15 @@ function startRecording() {
     
     recordedChunks = []; 
     
-    const options = { mimeType: 'video/webm; codecs=vp9' };
+    activeMimeType = getSupportedMimeType();
+    const options = activeMimeType ? { mimeType: activeMimeType } : {};
     
     try {
         mediaRecorder = new MediaRecorder(stream, options);
     } catch (e) {
-        console.warn("VP9 format not supported, falling back to browser default.", e);
+        console.warn("Selected MIME type not supported, falling back to browser default.", e);
         mediaRecorder = new MediaRecorder(stream);
+        activeMimeType = 'video/webm';
     }
 
     mediaRecorder.ondataavailable = handleDataAvailable;
@@ -64,7 +87,7 @@ function startRecording() {
     if (stopBtn) stopBtn.disabled = false;
     if (downloadBtn) downloadBtn.disabled = true;
     
-    console.log("Recording started...");
+    console.log("Recording started with type:", mediaRecorder.mimeType);
 }
 
 /**
@@ -95,7 +118,8 @@ function stopRecording() {
  * Process the data once the recording has fully stopped
  */
 function handleStop() {
-    const superBuffer = new Blob(recordedChunks, { type: 'video/webm' });
+    const exportType = activeMimeType.includes('mp4') ? 'video/mp4' : 'video/webm';
+    const superBuffer = new Blob(recordedChunks, { type: exportType });
     const videoURL = window.URL.createObjectURL(superBuffer);
     
     if (recordedPlayback) {
@@ -105,7 +129,7 @@ function handleStop() {
 }
 
 /**
- * Generate a downloadable file for the user
+ * Generate a downloadable file for the user (.mp4 if supported)
  */
 function downloadRecording() {
     if (recordedChunks.length === 0) {
@@ -113,14 +137,18 @@ function downloadRecording() {
         return;
     }
     
-    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+    const isMp4 = activeMimeType.includes('mp4');
+    const exportType = isMp4 ? 'video/mp4' : 'video/webm';
+    const fileExtension = isMp4 ? 'mp4' : 'webm';
+
+    const blob = new Blob(recordedChunks, { type: exportType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     
     document.body.appendChild(a);
     a.style.display = 'none';
     a.href = url;
-    a.download = `SX_Recording_${new Date().getTime()}.webm`; 
+    a.download = `SX_Recording_${new Date().getTime()}.${fileExtension}`; 
     a.click();
     
     window.URL.revokeObjectURL(url);
