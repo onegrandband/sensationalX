@@ -32,6 +32,42 @@
         </nav>
     </header>
 
+    <!-- MAIN RECORDER INTERFACE -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-8 flex flex-col gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Live Camera Feed -->
+            <div class="bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] rounded-2xl p-4 flex flex-col gap-4 shadow-sm">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-gray-400">Live Preview</h2>
+                <div class="relative aspect-video bg-black rounded-xl overflow-hidden flex items-center justify-center">
+                    <video id="videoPreview" autoplay playsinline class="w-full h-full object-cover"></video>
+                </div>
+            </div>
+
+            <!-- Recorded Video Playback -->
+            <div class="bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] rounded-2xl p-4 flex flex-col gap-4 shadow-sm">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-gray-400">Playback</h2>
+                <div class="relative aspect-video bg-black rounded-xl overflow-hidden flex items-center justify-center">
+                    <video id="recordedPlayback" class="w-full h-full object-cover"></video>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Control Action Bar -->
+        <div class="flex flex-wrap items-center justify-center gap-4 bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-[#2a2a2e] rounded-2xl p-6 shadow-sm">
+            <button id="startRecordBtn" class="flex items-center gap-2 px-6 py-3 bg-[#ff3366] hover:bg-[#e02b5a] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#ff3366]/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i data-lucide="play" class="w-4 h-4"></i> Start Recording
+            </button>
+            <button id="stopRecordBtn" disabled class="flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                <i data-lucide="square" class="w-4 h-4"></i> Stop
+            </button>
+            <button id="downloadBtn" disabled class="flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-emerald-600 hover:text-white text-gray-700 dark:text-gray-300 font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                <i data-lucide="download" class="w-4 h-4"></i> Download Video
+            </button>
+        </div>
+    </main>
+
     <script>
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
