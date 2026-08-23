@@ -6,19 +6,18 @@ let mediaRecorder;
 let recordedChunks = [];
 let stream = null;
 
-// Target DOM Elements (Ensure these IDs exist in your HTML)
-const videoPreview = document.getElementById('videoPreview');     // <video> for live webcam feed
-const recordedPlayback = document.getElementById('recordedPlayback'); // <video> for playback
-const startBtn = document.getElementById('startRecordBtn');       // <button> to start
-const stopBtn = document.getElementById('stopRecordBtn');         // <button> to stop
-const downloadBtn = document.getElementById('downloadBtn');       // <button> to download
+// Target DOM Elements
+const videoPreview = document.getElementById('videoPreview');     
+const recordedPlayback = document.getElementById('recordedPlayback'); 
+const startBtn = document.getElementById('startRecordBtn');       
+const stopBtn = document.getElementById('stopRecordBtn');         
+const downloadBtn = document.getElementById('downloadBtn');       
 
 /**
  * Request access to the user's webcam and microphone
  */
 async function setupCamera() {
     try {
-        // Request high definition video and audio
         stream = await navigator.mediaDevices.getUserMedia({ 
             video: { width: 1280, height: 720 }, 
             audio: true 
@@ -26,7 +25,7 @@ async function setupCamera() {
         
         if (videoPreview) {
             videoPreview.srcObject = stream;
-            videoPreview.muted = true; // Mute the live preview to prevent audio feedback loops
+            videoPreview.muted = true; // Mute live preview to prevent audio feedback loops
         }
         
         console.log("Camera and microphone successfully initialized.");
@@ -45,9 +44,8 @@ function startRecording() {
         return;
     }
     
-    recordedChunks = []; // Clear any previous recordings
+    recordedChunks = []; 
     
-    // Prefer WebM format with VP9 codec for high quality/compression
     const options = { mimeType: 'video/webm; codecs=vp9' };
     
     try {
@@ -62,7 +60,6 @@ function startRecording() {
     
     mediaRecorder.start();
     
-    // Toggle UI States
     if (startBtn) startBtn.disabled = true;
     if (stopBtn) stopBtn.disabled = false;
     if (downloadBtn) downloadBtn.disabled = true;
@@ -86,7 +83,6 @@ function stopRecording() {
     if (mediaRecorder && mediaRecorder.state !== "inactive") {
         mediaRecorder.stop();
         
-        // Toggle UI States
         if (startBtn) startBtn.disabled = false;
         if (stopBtn) stopBtn.disabled = true;
         if (downloadBtn) downloadBtn.disabled = false;
@@ -102,7 +98,6 @@ function handleStop() {
     const superBuffer = new Blob(recordedChunks, { type: 'video/webm' });
     const videoURL = window.URL.createObjectURL(superBuffer);
     
-    // If you have a second video element for playback, set its source
     if (recordedPlayback) {
         recordedPlayback.src = videoURL;
         recordedPlayback.controls = true; 
@@ -122,14 +117,12 @@ function downloadRecording() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     
-    // Create a temporary anchor link to trigger the file download
     document.body.appendChild(a);
     a.style.display = 'none';
     a.href = url;
-    a.download = `SX_Recording_${new Date().getTime()}.webm`; // Dynamic filename with timestamp
+    a.download = `SX_Recording_${new Date().getTime()}.webm`; 
     a.click();
     
-    // Clean up the temporary URL and anchor element
     window.URL.revokeObjectURL(url);
     a.remove();
 }
@@ -138,10 +131,8 @@ function downloadRecording() {
 // Initialization & Event Listeners
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Start the camera stream as soon as the page loads
     setupCamera(); 
     
-    // Attach click events to your buttons
     if (startBtn) startBtn.addEventListener('click', startRecording);
     if (stopBtn) stopBtn.addEventListener('click', stopRecording);
     if (downloadBtn) downloadBtn.addEventListener('click', downloadRecording);
