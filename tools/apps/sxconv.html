@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SX Converter (SXConv) - Fast & Lightweight</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #D3D6DB; /* Industrial grey background */
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            color: #222222;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            display: flex;
+            background-color: #FFFFFF;
+            border: 1px solid #999999;
+        }
+
+        .sidebar {
+            width: 150px;
+            background-color: #F4F5F7;
+            padding: 15px;
+            border-right: 1px dashed #AAAAAA;
+        }
+
+        .logo {
+            background-color: #336699;
+            color: #FFFFFF;
+            font-family: "Trebuchet MS", sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px 5px;
+            text-align: center;
+            border: 2px solid #113355;
+            margin-bottom: 25px;
+        }
+        
+        .logo .highlight {
+            color: #FFCC00;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #336699;
+            text-decoration: none;
+            margin-bottom: 8px;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+            color: #FF6600;
+        }
+
+        .sidebar h3 {
+            font-size: 11px;
+            color: #555555;
+            text-transform: uppercase;
+            border-bottom: 1px solid #CCCCCC;
+            padding-bottom: 2px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Main content area */
+        .content {
+            flex-grow: 1;
+            padding: 25px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #336699;
+            margin-top: 0;
+            border-bottom: 2px solid #336699;
+            padding-bottom: 5px;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: #FF6600;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        a {
+            color: #336699;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Floating News Box */
+        .news-box {
+            float: right;
+            width: 220px;
+            background-color: #FFFFEE;
+            border: 1px dotted #CCCC00;
+            padding: 10px;
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 11px;
+        }
+
+        .news-box h4 {
+            margin: 0 0 10px 0;
+            color: #666600;
+            text-align: center;
+        }
+
+        .news-date {
+            font-weight: bold;
+            color: #AA0000;
+        }
+
+        .news-item {
+            margin-bottom: 10px;
+        }
+
+        /* Clean Data Tables */
+        table.dl-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        table.dl-table th, table.dl-table td {
+            border: 1px solid #BBBBBB;
+            padding: 6px 10px;
+            text-align: left;
+        }
+
+        table.dl-table th {
+            background-color: #336699; 
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        table.dl-table tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        table.dl-table tr:hover {
+            background-color: #E8F0F8;
+        }
+
+        ul {
+            margin-top: 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            background-color: #EEEEEE;
+            border-top: 1px solid #CCCCCC;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <div class="logo">SX<span class="highlight">CONV</span></div>
+        
+        <h3>Navigation</h3>
+        <a href="#">Main Page</a>
+        <a href="#">Features</a>
+        <a href="#">Screenshots</a>
+        <a href="#">Download</a>
+        
+        <h3>Documentation</h3>
+        <a href="#">User Manual</a>
+        <a href="#">Command Line</a>
+        <a href="#">FAQ</a>
+        
+        <h3>Community</h3>
+        <a href="#">Message Board</a>
+        <a href="#">Bug Tracker</a>
+        <a href="#">Submit a Patch</a>
+        
+        <br><br>
+        <div style="text-align: center;">
+            <div style="border: 1px solid #336699; background: #EEE; font-size: 9px; padding: 2px; width: 84px; margin: 0 auto;">
+                NO SPYWARE<br>NO ADWARE
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        
+        <div class="news-box">
+            <h4>Latest Project News</h4>
+            <div class="news-item">
+                <span class="news-date">Sep 04, 2026:</span><br>
+                SXConv 1.0 is officially out of beta! The GUI has been stabilized.
+            </div>
+            <div class="news-item">
+                <span class="news-date">Aug 12, 2026:</span><br>
+                Added support for batch directory processing via the command line interface.
+            </div>
+            <div class="news-item">
+                <a href="#">[ Read older news ]</a>
+            </div>
+        </div>
+
+        <h1>Welcome to SX Converter</h1>
+
+        <p><strong>SXConv</strong> is a lightweight, no-nonsense utility for converting media, archives, and documents. Built from the ground up in C++, it prioritizes speed, low memory usage, and maximum compatibility over flashy interfaces.</p>
+        
+        <p>Whether you are running a brand new workstation or a dusty Pentium III in your basement, SXConv gets the job done without freezing your system.</p>
+
+        <h2>Download the Latest Version (1.0)</h2>
+        
+        <table class="dl-table">
+            <tr>
+                <th>Platform</th>
+                <th>Architecture</th>
+                <th>Package Type</th>
+                <th>Size</th>
+                <th>Download Link</th>
+            </tr>
+            <tr>
+                <td>Windows (95 to 11)</td>
+                <td>32-bit / 64-bit</td>
+                <td>Setup Installer (.exe)</td>
+                <td>1.2 MB</td>
+                <td><a href="#"><strong>Download</strong></a></td>
+            </tr>
+            <tr>
+                <td>Windows (Portable)</td>
+                <td>32-bit / 64-bit</td>
+                <td>ZIP Archive (.zip)</td>
+                <td>0.8 MB</td>
+                <td><a href="#"><strong>Download</strong></a></td>
+            </tr>
+            <tr>
+                <td>Linux</td>
+                <td>x86_64</td>
+                <td>Tarball (.tar.gz)</td>
+                <td>0.9 MB</td>
+                <td><a href="#"><strong>Download</strong></a></td>
+            </tr>
+        </table>
+
+        <h2>Why use SXConv?</h2>
+        <ul>
+            <li><strong>Incredibly Small Footprint:</strong> The entire program is under 2 megabytes.</li>
+            <li><strong>Batch Processing:</strong> Convert thousands of files overnight with a single click.</li>
+            <li><strong>Command-Line Ready:</strong> Full CLI support for advanced users and batch scripters.</li>
+            <li><strong>Portable:</strong> Run it directly from a USB flash drive. No registry keys required!</li>
+            <li><strong>Totally Free:</strong> SXConv is open-source (GPLv2). No trials, no watermarks, no bundled toolbars.</li>
+        </ul>
+
+        <h2>System Requirements</h2>
+        <p>
+            SXConv is highly optimized. It requires a minimum of a 486 processor, 16MB of RAM, and 5MB of free hard disk space. 
+            For processing large video files, a Pentium III or newer is highly recommended.
+        </p>
+
+    </div>
+</div>
+
+<div class="container" style="border-top: none;">
+    <div class="footer">
+        Copyright &copy; 2024-2026 The SX Project Contributors.<br>
+        Site best viewed at 800x600 resolution or higher.
+    </div>
+</div>
+
+</body>
+</html>
+
+// since ur still here, this is spsd to be like an old website lol :3 it's basically just based off of 7zip xD
