@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentality</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Download Mentality</h2>
+    <p>Download the latest model of Mentality!</p>
+    
+    <button id="downloadWin">
+        <img src="/img/windows.png">Windows
+    </button>
+    <button id="downloadMac">
+        <img src="/img/mac.png">MacOS
+    </button>
+    <button id="downloadLinux">
+        <img src="/img/linux.png">Linux
+    </button>
+
+    <script>
+        document.getElementById('downloadWin').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = '/programs/Mentality.exe';
+            link.download = 'Mentality.exe';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log("Downloading latest version... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)")
+        });
+
+        document.getElementById('downloadMac').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = '/programs/Mentality.dmg';
+            link.download = 'Mentality.dmg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log("Downloading latest version on Mac... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)")
+        });
+
+        document.getElementById('downloadLinux').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = '/programs/Mentality.tar.gz';
+            link.download = 'Mentality.tar.gz';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log("Hello there, fellow Linux user! Great choice. While you wait to download, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)")
+        });
+    </script>
+</body>
+</html>
