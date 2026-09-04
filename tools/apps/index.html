@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensationalX.com |App menu</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <h3>SensationalX App Menu</h3>
+  <p>Download any program by us for a sensational experience!</p>
+  <h5>App Menu</h5>
+  <button id="Mentality">Mentality</button>
+  <button id="AppHub">SensationalX App Hub</button>
+  <button id="VexCompiler">VEXCOMPILER</button>
+
+  <p>your support means the world to us ♥ created and designed by sensationalx. :)</p>
+
+<script>
+// button set up :)
+  const btnMentality = document.getElementById('Mentality');
+  const btnAppHub = document.getElementById('AppHub');
+  const btnVexCompiler = document.getElementById('VexCompiler');
+
+ // opens the pages when they click a button!
+  document.getElementById('Mentality').addEventListener('click', () => {
+  window.open("https://www.sensationalx.com/tools/apps/mentality.html");
+  console.log("Launching Mentality! :)")
+ });
+
+   document.getElementById('AppHub').addEventListener('click', () => {
+  window.open("https://www.sensationalx.com/tools/apps/sx-hub.html");
+ });
+
+   document.getElementById('VexCompiler').addEventListener('click', () => {
+  window.open("https://www.sensationalx.com/tools/apps/vexcompile.html");
+ });
+  
+</script>
+</body>
+</html>
