@@ -11,19 +11,19 @@
     <p>Download the latest model of Mentality!</p>
     
     <button id="downloadWin">
-        <img src="/img/windows.png">Windows
+        <img src="/tools/apps/img/windows.png">Windows
     </button>
     <button id="downloadMac">
-        <img src="/img/mac.png">MacOS
+        <img src="/tools/apps/img/mac.png">MacOS
     </button>
     <button id="downloadLinux">
-        <img src="/img/linux.png">Linux
+        <img src="/tools/apps/img/linux.png">Linux
     </button>
 
     <script>
         document.getElementById('downloadWin').addEventListener('click', () => {
             const link = document.createElement('a');
-            link.href = '/programs/Mentality.exe';
+            link.href = '/tools/apps/programs/Mentality.exe';
             link.download = 'Mentality.exe';
             document.body.appendChild(link);
             link.click();
@@ -33,7 +33,7 @@
 
         document.getElementById('downloadMac').addEventListener('click', () => {
             const link = document.createElement('a');
-            link.href = '/programs/Mentality.dmg';
+            link.href = '/tools/apps/programs/Mentality.dmg';
             link.download = 'Mentality.dmg';
             document.body.appendChild(link);
             link.click();
@@ -43,7 +43,7 @@
 
         document.getElementById('downloadLinux').addEventListener('click', () => {
             const link = document.createElement('a');
-            link.href = '/programs/Mentality.tar.gz';
+            link.href = '/tools/apps/programs/Mentality.tar.gz';
             link.download = 'Mentality.tar.gz';
             document.body.appendChild(link);
             link.click();
