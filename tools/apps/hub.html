@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SensationalX App Hub - Official Software Repository (/home page)</title>
+    <style>
+        /* Classic Utilitarian Web 1.0 Aesthetic */
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #D3D6DB; /* Industrial grey background */
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            color: #222222;
+            scroll-behavior: smooth; /* Modern touch to make anchor links scroll nicely */
+        }
+
+        /* Main container */
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            display: flex;
+            background-color: #FFFFFF;
+            border: 1px solid #999999;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 150px;
+            background-color: #F4F5F7;
+            padding: 15px;
+            border-right: 1px dashed #AAAAAA;
+        }
+
+        /* Unique Logo Block */
+        .logo {
+            background-color: #336699;
+            color: #FFFFFF;
+            font-family: "Trebuchet MS", sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px 5px;
+            text-align: center;
+            border: 2px solid #113355;
+            margin-bottom: 25px;
+        }
+        
+        .logo .highlight {
+            color: #FFCC00;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #336699;
+            text-decoration: none;
+            margin-bottom: 8px;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+            color: #FF6600;
+        }
+
+        .sidebar h3 {
+            font-size: 11px;
+            color: #555555;
+            text-transform: uppercase;
+            border-bottom: 1px solid #CCCCCC;
+            padding-bottom: 2px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Main content area */
+        .content {
+            flex-grow: 1;
+            padding: 25px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #336699;
+            margin-top: 0;
+            border-bottom: 2px solid #336699;
+            padding-bottom: 5px;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: #FF6600;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        a {
+            color: #336699;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Floating News Box */
+        .news-box {
+            float: right;
+            width: 220px;
+            background-color: #FFFFEE;
+            border: 1px dotted #CCCC00;
+            padding: 10px;
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 11px;
+        }
+
+        .news-box h4 {
+            margin: 0 0 10px 0;
+            color: #666600;
+            text-align: center;
+        }
+
+        .news-date {
+            font-weight: bold;
+            color: #AA0000;
+        }
+
+        .news-item {
+            margin-bottom: 10px;
+        }
+
+        /* Clean Data Tables */
+        table.dl-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        table.dl-table th, table.dl-table td {
+            border: 1px solid #BBBBBB;
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        table.dl-table th {
+            background-color: #336699; 
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        table.dl-table tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        table.dl-table tr:hover {
+            background-color: #E8F0F8;
+        }
+
+        ul {
+            margin-top: 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            background-color: #EEEEEE;
+            border-top: 1px solid #CCCCCC;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            color: #666666;
+        }
+
+        .tag {
+            background-color: #336699;
+            color: #FFFFFF;
+            font-size: 9px;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body id="top">
+
+<div class="container">
+    <div class="sidebar">
+        <div class="logo">SX<span class="highlight">HUB</span></div>
+        
+        <h3>Hub Directory</h3>
+        <a href="#top">Home</a>
+        <a href="#software">All Software</a>
+        <a href="#why-sx">Why SX?</a>
+        
+        <h3>Community</h3>
+        <a href="#message-board" onclick="alert('Message Board is under construction!')">Message Board</a>
+        <a href="#guestbook" onclick="alert('Thanks for trying to sign the guestbook!')">Sign Guestbook</a>
+        <a href="#bug-tracker" onclick="alert('Bug tracker offline.')">Report a Bug</a>
+        
+        <h3>About Us</h3>
+        <a href="#mission">The SX Mission</a>
+        <a href="mailto:webmaster@sensationalx.app">Contact Webmaster</a>
+        
+        <br><br>
+        <div style="text-align: center;">
+            <div style="border: 1px solid #336699; background: #EEE; font-size: 9px; padding: 2px; width: 84px; margin: 0 auto; line-height: 1.2;">
+                100% FREE<br>NO SPYWARE
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        
+        <div class="news-box">
+            <h4>Hub Updates</h4>
+            <div class="news-item">
+                <span class="news-date">Sep 04, 2026:</span><br>
+                VeeCompiler is now available in the directory! Compile your projects faster than ever.
+            </div>
+            <div class="news-item">
+                <span class="news-date">Aug 28, 2026:</span><br>
+                SX Hub desktop client updated with new system tools.
+            </div>
+            <div class="news-item">
+                <a href="#news-archive" onclick="alert('Archive loaded.')">[ Archive ]</a>
+            </div>
+        </div>
+
+        <h1>Welcome to SensationalX App Hub</h1>
+
+        <p id="mission">Your one-stop repository for all official <strong>SensationalX</strong> software. We believe in building fast, lightweight, and completely free programs for your personal computer. Browse our current software catalog below.</p>
+        
+        <h2 id="software">Software Directory</h2>
+        
+        <table class="dl-table">
+            <tr>
+                <th width="25%">Program Name</th>
+                <th width="50%">Description</th>
+                <th width="25%">Action</th>
+            </tr>
+            <tr>
+                <td>
+                    <strong>SX Hub (Desktop)</strong><br>
+                    <span style="font-size: 10px; color: #666;">Version: 0.8b (Beta)</span>
+                </td>
+                <td>
+                    The offline desktop client for SensationalX! A master application packed with random system tools, quick tweaks, and direct download links to all our other software.<br>
+                    <span class="tag">System</span> <span class="tag">Toolkit</span>
+                </td>
+                <td>
+                    <a href="/tools/apps/programs/sxhub.exe"><strong>Download .exe (950 KB)</strong></a><br>
+                    <a href="#details-sxhub" style="font-size: 10px;">View details</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>VeeCompiler</strong><br>
+                    <span style="font-size: 10px; color: #666;">Version: 1.2 (Stable)</span>
+                </td>
+                <td>
+                    An ultra-fast, lightweight compiler suite optimized for legacy and modern systems. Turns your code into executables without the bloat of modern IDEs.<br>
+                    <span class="tag">Development</span> <span class="tag">Compiler</span>
+                </td>
+                <td>
+                    <a href="/tools/apps/programs/veecompiler.exe"><strong>Download .exe (2.4 MB)</strong></a><br>
+                    <a href="#details-veecompiler" style="font-size: 10px;">View details</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>SX Converter</strong><br>
+                    <span style="font-size: 10px; color: #666;">Version: 1.0 (Stable)</span>
+                </td>
+                <td>
+                    A lightning fast utility for converting media, archives, and documents. Highly optimized for older and modern PCs alike.<br>
+                    <span class="tag">Media</span> <span class="tag">Utility</span>
+                </td>
+                <td>
+                    <a href="/tools/apps/programs/sxconverter.exe"><strong>Download .exe (1.2 MB)</strong></a><br>
+                    <a href="#details-sxconv" style="font-size: 10px;">View details</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Mentality</strong><br>
+                    <span style="font-size: 10px; color: #666;">Version: 1.0 (Out of Beta!)</span>
+                </td>
+                <td>
+                    The ultimate software for your personal computer. Y2K compliant, zero hidden viruses, and fits on a single floppy disk.<br>
+                    <span class="tag">System</span>
+                </td>
+                <td>
+                    <a href="/tools/apps/programs/mentality.exe"><strong>Download .exe (1.2 MB)</strong></a><br>
+                    <a href="#details-mentality" style="font-size: 10px;">View details</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>SX Player</strong><br>
+                    <span style="font-size: 10px; color: #666;">Version: 0.1a (Alpha)</span>
+                </td>
+                <td>
+                    A barebones media player capable of rendering highly compressed video formats without draining system memory.<br>
+                    <span class="tag">Media</span>
+                </td>
+                <td>
+                    <a href="/tools/apps/programs/sxplayer.exe"><strong>Download Beta .exe</strong></a>
+                </td>
+            </tr>
+        </table>
+
+        <h2 id="why-sx">Why use SensationalX Software?</h2>
+        <ul>
+            <li><strong>Tiny Footprints:</strong> Most of our software is well under 2 megabytes.</li>
+            <li><strong>No Bloatware:</strong> We strictly refuse to bundle third-party toolbars or adware in our installers.</li>
+            <li><strong>Maximum Compatibility:</strong> We test our applications on environments ranging from Windows 95 to Windows 11.</li>
+            <li><strong>100% Free:</strong> No trials, no watermarks, no registration keys.</li>
+        </ul>
+
+    </div>
+</div>
+
+<div class="container" style="border-top: none;">
+    <div class="footer">
+        Copyright &copy; 2026 SensationalX. All Rights Reserved.<br>
+        Hosted on a blazing fast 56k connection. Best viewed at 800x600 resolution.
+    </div>
+</div>
+
+</body>
+</html>
