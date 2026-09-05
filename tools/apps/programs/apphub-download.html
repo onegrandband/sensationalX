@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SensationalX App Hub Download - v1.0.0</title>
+    <title>SensationalX App Hub Download - v1.0.1</title>
     <style>
         /* Classic Utilitarian Web 1.0 Aesthetic */
         body {
@@ -190,6 +190,47 @@
         li {
             margin-bottom: 5px;
         }
+
+        .old-versions {
+            background-color: #F5F5F5;
+            border: 1px solid #CCCCCC;
+            padding: 15px;
+            margin-top: 30px;
+        }
+
+        .old-versions h3 {
+            margin-top: 0;
+            color: #336699;
+            font-size: 14px;
+        }
+
+        .version-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #DDDDDD;
+            font-size: 11px;
+        }
+
+        .version-row:last-child {
+            border-bottom: none;
+        }
+
+        .version-name {
+            font-weight: bold;
+            color: #336699;
+        }
+
+        .old-download-link {
+            color: #336699;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .old-download-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body id="top">
@@ -204,6 +245,7 @@
         <a href="#requirements">Requirements</a>
         <a href="#features">Features</a>
         <a href="#changelog">Changelog</a>
+        <a href="#old-versions">Old Versions</a>
         
         <h3>About</h3>
         <a href="mailto:webmaster@sensationalx.app">Contact Support</a>
@@ -218,10 +260,10 @@
 
     <div class="content">
         
-        <h1>SensationalX App Hub v1.0.0</h1>
+        <h1>SensationalX App Hub v1.0.1</h1>
 
         <div class="version-info">
-            <strong>Latest Release:</strong> Version 1.0.0 (Stable)<br>
+            <strong>Latest Release:</strong> Version 1.0.1 (Stable)<br>
             <strong>Release Date:</strong> September 5, 2026<br>
             <strong>File Size:</strong> 1.2 MB<br>
             <strong>Platform:</strong> Windows 95 and later
@@ -231,8 +273,8 @@
 
         <div class="download-box" id="download">
             <h2 style="margin-top: 0; color: #336699;">Download Now</h2>
-            <a href="/tools/apps/programs/AppHub.exe" class="download-button">
-                ↓ Download AppHub.exe (1.2 MB)
+            <a href="/tools/apps/programs/AppHub_1.0.1.exe" class="download-button">
+                ↓ Download AppHub_1.0.1.exe (1.2 MB)
             </a>
             <p style="font-size: 10px; margin-top: 10px; color: #666;">
                 Windows 95/98/ME/2000/XP/Vista/7/8/10/11
@@ -261,25 +303,36 @@
             </ul>
         </div>
 
-        <h2 id="changelog">What's New in v1.0.0</h2>
+        <h2 id="changelog">What's New in v1.0.1</h2>
         <ul>
-            <li>Initial stable release</li>
-            <li>Unified software library interface</li>
-            <li>Integrated system tools panel</li>
-            <li>Quick installer for bundled applications</li>
-            <li>One-click update checker</li>
-            <li>Enhanced compatibility with modern Windows versions</li>
-            <li>Optimized memory usage</li>
+            <li>Bug fixes and stability improvements</li>
+            <li>Enhanced download manager performance</li>
+            <li>Improved system tool responsiveness</li>
+            <li>Minor UI adjustments for better readability</li>
+            <li>Better error handling for network issues</li>
         </ul>
 
         <h2>How to Install</h2>
         <ol>
-            <li>Download <strong>AppHub.exe</strong> from the link above</li>
+            <li>Download <strong>AppHub_1.0.1.exe</strong> from the link above</li>
             <li>Run the installer and follow the setup wizard</li>
             <li>Choose your installation directory (default: C:\Program Files\SensationalX\)</li>
             <li>Launch SensationalX App Hub from your Start Menu</li>
             <li>Begin downloading and managing your software library!</li>
         </ol>
+
+        <div class="old-versions" id="old-versions">
+            <h3>Previous Versions</h3>
+            <div class="version-row">
+                <div>
+                    <span class="version-name">SensationalX App Hub v1.0.0</span><br>
+                    <span style="color: #666;">Initial stable release (September 5, 2026)</span>
+                </div>
+                <div>
+                    <a href="/tools/apps/programs/AppHub.exe" class="old-download-link">Download</a>
+                </div>
+            </div>
+        </div>
 
         <p style="margin-top: 30px; font-size: 11px; color: #666;">
             Having trouble? <a href="mailto:webmaster@sensationalx.app">Contact our support team</a> or visit the <a href="/tools/apps/hub.html">main hub</a>.
