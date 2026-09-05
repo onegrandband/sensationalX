@@ -67,6 +67,20 @@
             height: 16px;
             object-fit: contain;
         }
+
+        /* Disabled button styling for "Coming Soon" */
+        .disabled-btn {
+            background-color: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+            border-color: #e0e0e0;
+        }
+        .disabled-btn:hover {
+            background-color: #f0f0f0;
+        }
+        .disabled-btn img {
+            opacity: 0.5;
+        }
         
         code {
             background-color: #eee;
@@ -83,7 +97,8 @@
     <div class="sort-container">
         <label for="osSort"><strong>Sort by Platform: </strong></label>
         <select id="osSort" onchange="sortPlatform(this.value)">
-            <option value="Auto">Auto Detect (Default)</option>
+            <option value="auto-default">Auto-detect (Default)</option>
+            <option value="auto">Auto-detect</option>
             <option value="Windows">Windows</option>
             <option value="Mac">MacOS</option>
             <option value="Linux">Linux</option>
@@ -121,41 +136,56 @@
             </tr>
             <tr data-os="Mac">
                 <td>Mentality.dmg</td>
-                <td>50.1 MB</td>
+                <td>TBD</td>
                 <td>MacOS 12+</td>
-                <td>Stable</td>
-                <td>Latest release with UI improvements.</td>
-                <td><code>a1b2c3d</code></td>
+                <td>In Development</td>
+                <td>Mac release is currently being worked on.</td>
+                <td><code>TBD</code></td>
                 <td>
-                    <a href="/tools/apps/programs/1.1.1/Mentality.dmg" download class="download-btn" onclick="logDownload('1.1.1', 'Mac')">
-                        <img src="/tools/apps/img/mac.png" alt="MacOS logo"> MacOS
-                    </a>
+                    <span class="download-btn disabled-btn">
+                        <img src="/tools/apps/img/mac.png" alt="MacOS logo"> Coming Soon
+                    </span>
                 </td>
             </tr>
             <tr data-os="Linux">
                 <td>Mentality.tar.gz</td>
-                <td>42.8 MB</td>
+                <td>TBD</td>
                 <td>Ubuntu 20.04+</td>
-                <td>Stable</td>
-                <td>Latest release with UI improvements.</td>
-                <td><code>a1b2c3d</code></td>
+                <td>In Development</td>
+                <td>Linux release is currently being worked on.</td>
+                <td><code>TBD</code></td>
                 <td>
-                    <a href="/tools/apps/programs/1.1.1/Mentality.tar.gz" download class="download-btn" onclick="logDownload('1.1.1', 'Linux')">
-                        <img src="/tools/apps/img/linux.png" alt="Linux logo"> Linux
-                    </a>
+                    <span class="download-btn disabled-btn">
+                        <img src="/tools/apps/img/linux.png" alt="Linux logo"> Coming Soon
+                    </span>
                 </td>
             </tr>
 
+          <!-- Version 1.1.1 SX -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>27 KB</td>
+                <td>Windows 10 & 11</td>
+                <td>Legacy</td>
+                <td>Misc bug fixes, clear hotkey setting, hotkey selection saving, and win-key (MOD_WIN) support</td>
+                <td><code>c4b3a21</code></td>
+                <td>
+                    <a href="/tools/apps/programs/Mentality_SX_1.1.1.exe" download class="download-btn" onclick="logDownload('1.0.0', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+            
             <!-- Version 1.1.0 -->
             <tr data-os="Windows">
                 <td>Mentality.exe</td>
-                <td>44.9 MB</td>
+                <td>25.5 KB</td>
                 <td>Windows 10/11</td>
                 <td>Stable</td>
-                <td>Previous stable build.</td>
+                <td>Select multiple hotkeys (e.g Ctrl+Shift), hotkey bug fix, remove passphrase</td>
                 <td><code>f9e8d7c</code></td>
                 <td>
-                    <a href="/tools/apps/programs/1.1.0/Mentality.exe" download class="download-btn" onclick="logDownload('1.1.0', 'Windows')">
+                    <a href="/tools/apps/programs/1.1.0/Mentality_1.1.0.exe" download class="download-btn" onclick="logDownload('1.1.0', 'Windows')">
                         <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
                     </a>
                 </td>
@@ -164,10 +194,10 @@
             <!-- Version 1.0.0 -->
             <tr data-os="Windows">
                 <td>Mentality.exe</td>
-                <td>40.0 MB</td>
-                <td>Windows 10</td>
+                <td>17.5 KB</td>
+                <td>Windows 10 & 11</td>
                 <td>Legacy</td>
-                <td>Initial release.</td>
+                <td>Initial release. Auto-clicker with many bugs, but this was/is just the start!!!!!</td>
                 <td><code>c4b3a21</code></td>
                 <td>
                     <a href="/tools/apps/programs/1.0.0/Mentality.exe" download class="download-btn" onclick="logDownload('1.0.0', 'Windows')">
@@ -192,8 +222,8 @@
         function sortPlatform(platform) {
             let targetOS = platform;
             
-            // If Auto Detect is chosen, find the user's OS
-            if (platform === 'Auto') {
+            // Handle both Auto-detect options
+            if (platform === 'auto-default' || platform === 'auto') {
                 targetOS = detectOS();
             } 
 
@@ -220,9 +250,9 @@
 
         // Run auto-detect sorting as soon as the DOM loads
         window.addEventListener('DOMContentLoaded', () => {
-            // Ensure the dropdown is set to Auto on page load
-            document.getElementById('osSort').value = 'Auto';
-            sortPlatform('Auto');
+            // Ensure the dropdown is set to Auto-detect (Default) on page load
+            document.getElementById('osSort').value = 'auto-default';
+            sortPlatform('auto-default');
         });
     </script>
 </body>
