@@ -26,27 +26,21 @@
             background-color: #f9f9f9;
         }
         
-        /* Styles for the sorting buttons */
+        /* Styles for the sorting dropdown */
         .sort-container {
             margin-bottom: 20px;
             font-family: sans-serif;
         }
-        .sort-btn {
-            padding: 8px 16px;
-            margin-right: 5px;
+        select#osSort {
+            padding: 8px 12px;
             font-size: 14px;
-            cursor: pointer;
+            border-radius: 4px;
             border: 1px solid #ccc;
             background-color: #f4f4f4;
-            border-radius: 4px;
-            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+            outline: none;
         }
-        .sort-btn.active {
-            background-color: #333;
-            color: white;
-            border-color: #333;
-        }
-        .sort-btn:hover:not(.active) {
+        select#osSort:hover {
             background-color: #e0e0e0;
         }
 
@@ -85,15 +79,19 @@
     <h2>Download Mentality</h2>
     <p>Download the latest model of Mentality!</p>
 
+    <!-- Platform Sorting Dropdown -->
     <div class="sort-container">
-        <strong>Sort by Platform: </strong>
-        <button id="btnAuto" class="sort-btn active" onclick="sortPlatform('Auto')">Auto Detect (Default)</button>
-        <button id="btnWin" class="sort-btn" onclick="sortPlatform('Windows')">Windows</button>
-        <button id="btnMac" class="sort-btn" onclick="sortPlatform('Mac')">MacOS</button>
-        <button id="btnLinux" class="sort-btn" onclick="sortPlatform('Linux')">Linux</button>
-        <button id="btnAll" class="sort-btn" onclick="sortPlatform('All')">Show All</button>
+        <label for="osSort"><strong>Sort by Platform: </strong></label>
+        <select id="osSort" onchange="sortPlatform(this.value)">
+            <option value="Auto">Auto Detect (Default)</option>
+            <option value="Windows">Windows</option>
+            <option value="Mac">MacOS</option>
+            <option value="Linux">Linux</option>
+            <option value="All">Show All</option>
+        </select>
     </div>
 
+    <!-- Versions List Table -->
     <table class="version-table">
         <thead>
             <tr>
@@ -107,6 +105,7 @@
             </tr>
         </thead>
         <tbody id="versionsTableBody">
+            <!-- Version 1.1.1 (Latest) -->
             <tr data-os="Windows">
                 <td>Mentality.exe</td>
                 <td>45.2 MB</td>
@@ -147,6 +146,7 @@
                 </td>
             </tr>
 
+            <!-- Version 1.1.0 -->
             <tr data-os="Windows">
                 <td>Mentality.exe</td>
                 <td>44.9 MB</td>
@@ -161,6 +161,7 @@
                 </td>
             </tr>
             
+            <!-- Version 1.0.0 -->
             <tr data-os="Windows">
                 <td>Mentality.exe</td>
                 <td>40.0 MB</td>
@@ -189,22 +190,12 @@
 
         // Logic to filter/sort the table rows
         function sortPlatform(platform) {
-            // Remove active class from all buttons
-            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
-            
             let targetOS = platform;
             
-            // If Auto Detect is chosen, find the user's OS and activate the Auto button
+            // If Auto Detect is chosen, find the user's OS
             if (platform === 'Auto') {
-                document.getElementById('btnAuto').classList.add('active');
                 targetOS = detectOS();
-            } else {
-                // Otherwise, activate the specifically clicked button
-                if (platform === 'Windows') document.getElementById('btnWin').classList.add('active');
-                else if (platform === 'Mac') document.getElementById('btnMac').classList.add('active');
-                else if (platform === 'Linux') document.getElementById('btnLinux').classList.add('active');
-                else if (platform === 'All') document.getElementById('btnAll').classList.add('active');
-            }
+            } 
 
             // Loop through table rows and only display the matching platform
             const rows = document.querySelectorAll('#versionsTableBody tr');
@@ -229,6 +220,8 @@
 
         // Run auto-detect sorting as soon as the DOM loads
         window.addEventListener('DOMContentLoaded', () => {
+            // Ensure the dropdown is set to Auto on page load
+            document.getElementById('osSort').value = 'Auto';
             sortPlatform('Auto');
         });
     </script>
