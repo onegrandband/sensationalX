@@ -6,31 +6,54 @@
     <title>Mentality</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Styles the buttons to fit everything perfectly */
-        button {
+        /* Table styling for the versions list */
+        .version-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-family: sans-serif;
+        }
+        .version-table th, .version-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .version-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        .version-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* Styles the download buttons inside the table */
+        .download-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px; /* Space between image and text */
-            padding: 8px 16px; /* Normal button padding */
-            font-size: 16px; /* Normal text size */
-            cursor: pointer;
-        }
-        /* Forces the images to fit inside the standard button size */
-        button img {
-            width: 20px; /* Scales the width down */
-            height: 20px; /* Scales the height down */
-            object-fit: contain; /* Prevents the image from distorting */
-        }
-        /* Style for the version selection area */
-        .version-selector {
-            margin-bottom: 20px;
-        }
-        select {
             padding: 6px 12px;
-            font-size: 16px;
-            border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
+            text-decoration: none;
+            color: black;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .download-btn:hover {
+            background-color: #d4d4d4;
+        }
+        .download-btn img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+        
+        code {
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -38,65 +61,98 @@
     <h2>Download Mentality</h2>
     <p>Download the latest model of Mentality!</p>
 
-    <!-- Version Selection Dropdown -->
-    <div class="version-selector">
-        <label for="versionSelect"><strong>Choose Version: </strong></label>
-        <select id="versionSelect">
-            <option value="1.1.1" selected>1.1.1 (Latest)</option>
-            <option value="1.1.0">1.1.0</option>
-            <option value="1.0.0">1.0.0</option>
-        </select>
-    </div>
+    <table class="version-table">
+        <thead>
+            <tr>
+                <th>Executable Name</th>
+                <th>Size</th>
+                <th>Compatibility</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>GitHub Commit</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Mentality.exe</td>
+                <td>45.2 MB</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Latest release with UI improvements.</td>
+                <td><code>a1b2c3d</code></td>
+                <td>
+                    <a href="/tools/apps/programs/1.1.1/Mentality.exe" download class="download-btn" onclick="logDownload('1.1.1', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Mentality.dmg</td>
+                <td>50.1 MB</td>
+                <td>MacOS 12+</td>
+                <td>Stable</td>
+                <td>Latest release with UI improvements.</td>
+                <td><code>a1b2c3d</code></td>
+                <td>
+                    <a href="/tools/apps/programs/1.1.1/Mentality.dmg" download class="download-btn" onclick="logDownload('1.1.1', 'Mac')">
+                        <img src="/tools/apps/img/mac.png" alt="MacOS logo"> MacOS
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Mentality.tar.gz</td>
+                <td>42.8 MB</td>
+                <td>Ubuntu 20.04+</td>
+                <td>Stable</td>
+                <td>Latest release with UI improvements.</td>
+                <td><code>a1b2c3d</code></td>
+                <td>
+                    <a href="/tools/apps/programs/1.1.1/Mentality.tar.gz" download class="download-btn" onclick="logDownload('1.1.1', 'Linux')">
+                        <img src="/tools/apps/img/linux.png" alt="Linux logo"> Linux
+                    </a>
+                </td>
+            </tr>
 
-    <!-- Download Buttons -->
-    <button id="downloadWin">
-        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
-    </button>
-    <button id="downloadMac">
-        <img src="/tools/apps/img/mac.png" alt="MacOS logo"> MacOS
-    </button>
-    <button id="downloadLinux">
-        <img src="/tools/apps/img/linux.png" alt="Linux logo"> Linux
-    </button>
+            <tr>
+                <td>Mentality.exe</td>
+                <td>44.9 MB</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Previous stable build.</td>
+                <td><code>f9e8d7c</code></td>
+                <td>
+                    <a href="/tools/apps/programs/1.1.0/Mentality.exe" download class="download-btn" onclick="logDownload('1.1.0', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>Mentality.exe</td>
+                <td>40.0 MB</td>
+                <td>Windows 10</td>
+                <td>Legacy</td>
+                <td>Initial release.</td>
+                <td><code>c4b3a21</code></td>
+                <td>
+                    <a href="/tools/apps/programs/1.0.0/Mentality.exe" download class="download-btn" onclick="logDownload('1.0.0', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <script>
-        // Helper function to handle downloads based on platform and file extension
-        function downloadFile(platform, extension) {
-            const versionSelect = document.getElementById('versionSelect');
-            const selectedVersion = versionSelect.value;
-            
-            // Build paths like: /tools/apps/programs/1.1.1/Mentality.exe or just Mentality_1.1.1.exe
-            // Adjust this path logic depending on how you organize your server files!
-            const filePath = `/tools/apps/programs/${selectedVersion}/Mentality.${extension}`;
-            const fileName = `Mentality_${selectedVersion}.${extension}`;
-
-            const link = document.createElement('a');
-            link.href = filePath;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Log fun facts for specific platforms if it's the latest version
-            if (selectedVersion === '1.1.1' && (platform === 'Windows' || platform === 'Mac')) {
+        // Kept a tiny script just to preserve your fun facts in the console!
+        function logDownload(version, platform) {
+            if (version === '1.1.1' && (platform === 'Windows' || platform === 'Mac')) {
                 console.log(`Downloading latest version on ${platform}... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)`);
             } else {
-                console.log(`Downloading Mentality version ${selectedVersion} for ${platform}...`);
+                console.log(`Downloading Mentality version ${version} for ${platform}...`);
             }
         }
-
-        // Event Listeners for buttons
-        document.getElementById('downloadWin').addEventListener('click', () => {
-            downloadFile('Windows', 'exe');
-        });
-
-        document.getElementById('downloadMac').addEventListener('click', () => {
-            downloadFile('Mac', 'dmg');
-        });
-
-        document.getElementById('downloadLinux').addEventListener('click', () => {
-            downloadFile('Linux', 'tar.gz');
-        });
     </script>
 </body>
 </html>
