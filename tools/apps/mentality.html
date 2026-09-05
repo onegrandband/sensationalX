@@ -10,7 +10,7 @@
         .version-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
             font-family: sans-serif;
         }
         .version-table th, .version-table td {
@@ -26,6 +26,30 @@
             background-color: #f9f9f9;
         }
         
+        /* Styles for the sorting buttons */
+        .sort-container {
+            margin-bottom: 20px;
+            font-family: sans-serif;
+        }
+        .sort-btn {
+            padding: 8px 16px;
+            margin-right: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sort-btn.active {
+            background-color: #333;
+            color: white;
+            border-color: #333;
+        }
+        .sort-btn:hover:not(.active) {
+            background-color: #e0e0e0;
+        }
+
         /* Styles the download buttons inside the table */
         .download-btn {
             display: inline-flex;
@@ -61,6 +85,15 @@
     <h2>Download Mentality</h2>
     <p>Download the latest model of Mentality!</p>
 
+    <div class="sort-container">
+        <strong>Sort by Platform: </strong>
+        <button id="btnAuto" class="sort-btn active" onclick="sortPlatform('Auto')">Auto Detect (Default)</button>
+        <button id="btnWin" class="sort-btn" onclick="sortPlatform('Windows')">Windows</button>
+        <button id="btnMac" class="sort-btn" onclick="sortPlatform('Mac')">MacOS</button>
+        <button id="btnLinux" class="sort-btn" onclick="sortPlatform('Linux')">Linux</button>
+        <button id="btnAll" class="sort-btn" onclick="sortPlatform('All')">Show All</button>
+    </div>
+
     <table class="version-table">
         <thead>
             <tr>
@@ -73,8 +106,8 @@
                 <th>Download</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
+        <tbody id="versionsTableBody">
+            <tr data-os="Windows">
                 <td>Mentality.exe</td>
                 <td>45.2 MB</td>
                 <td>Windows 10/11</td>
@@ -87,7 +120,7 @@
                     </a>
                 </td>
             </tr>
-            <tr>
+            <tr data-os="Mac">
                 <td>Mentality.dmg</td>
                 <td>50.1 MB</td>
                 <td>MacOS 12+</td>
@@ -100,7 +133,7 @@
                     </a>
                 </td>
             </tr>
-            <tr>
+            <tr data-os="Linux">
                 <td>Mentality.tar.gz</td>
                 <td>42.8 MB</td>
                 <td>Ubuntu 20.04+</td>
@@ -114,7 +147,7 @@
                 </td>
             </tr>
 
-            <tr>
+            <tr data-os="Windows">
                 <td>Mentality.exe</td>
                 <td>44.9 MB</td>
                 <td>Windows 10/11</td>
@@ -128,7 +161,7 @@
                 </td>
             </tr>
             
-            <tr>
+            <tr data-os="Windows">
                 <td>Mentality.exe</td>
                 <td>40.0 MB</td>
                 <td>Windows 10</td>
@@ -145,7 +178,47 @@
     </table>
 
     <script>
-        // Kept a tiny script just to preserve your fun facts in the console!
+        // Simple OS detection based on user agent
+        function detectOS() {
+            const ua = window.navigator.userAgent.toLowerCase();
+            if (ua.includes('win')) return 'Windows';
+            if (ua.includes('mac')) return 'Mac';
+            if (ua.includes('linux')) return 'Linux';
+            return 'All'; // Fallback if OS cannot be determined
+        }
+
+        // Logic to filter/sort the table rows
+        function sortPlatform(platform) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            
+            let targetOS = platform;
+            
+            // If Auto Detect is chosen, find the user's OS and activate the Auto button
+            if (platform === 'Auto') {
+                document.getElementById('btnAuto').classList.add('active');
+                targetOS = detectOS();
+            } else {
+                // Otherwise, activate the specifically clicked button
+                if (platform === 'Windows') document.getElementById('btnWin').classList.add('active');
+                else if (platform === 'Mac') document.getElementById('btnMac').classList.add('active');
+                else if (platform === 'Linux') document.getElementById('btnLinux').classList.add('active');
+                else if (platform === 'All') document.getElementById('btnAll').classList.add('active');
+            }
+
+            // Loop through table rows and only display the matching platform
+            const rows = document.querySelectorAll('#versionsTableBody tr');
+            rows.forEach(row => {
+                // Check the data-os attribute added to every row
+                if (targetOS === 'All' || row.getAttribute('data-os') === targetOS) {
+                    row.style.display = ''; // Show row
+                } else {
+                    row.style.display = 'none'; // Hide row
+                }
+            });
+        }
+
+        // Keep your fun facts alive!
         function logDownload(version, platform) {
             if (version === '1.1.1' && (platform === 'Windows' || platform === 'Mac')) {
                 console.log(`Downloading latest version on ${platform}... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)`);
@@ -153,6 +226,11 @@
                 console.log(`Downloading Mentality version ${version} for ${platform}...`);
             }
         }
+
+        // Run auto-detect sorting as soon as the DOM loads
+        window.addEventListener('DOMContentLoaded', () => {
+            sortPlatform('Auto');
+        });
     </script>
 </body>
 </html>
