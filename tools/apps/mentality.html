@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mentality</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Styles the buttons to fit everything perfectly */
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;              /* Space between image and text */
+            padding: 8px 16px;     /* Normal button padding */
+            font-size: 16px;       /* Normal text size */
+            cursor: pointer;
+        }
+
+        /* Forces the images to fit inside the standard button size */
+        button img {
+            width: 20px;           /* Scales the width down */
+            height: 20px;          /* Scales the height down */
+            object-fit: contain;   /* Prevents the image from distorting */
+        }
+    </style>
 </head>
 <body>
     <h2>Download Mentality</h2>
@@ -43,22 +62,13 @@
 
         document.getElementById('downloadLinux').addEventListener('click', () => {
             const link = document.createElement('a');
+            // Note: Your original snippet cut off here, make sure your Linux click event closes properly!
             link.href = '/tools/apps/programs/Mentality.tar.gz';
             link.download = 'Mentality.tar.gz';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            console.log("Hello there, fellow Linux user! Great choice. While you wait to download, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)");
         });
     </script>
-
-    <p>In a hurry? Run and paste this command via PowerShell.</p>
-    <p><code>Invoke-WebRequest -Uri "https://sensationalx.com/tools/apps/programs/Mentality_v1.1.0.exe" -OutFile "$env:USERPROFILE\Downloads\mentality.exe"</code></p>
-    
-    <p>Mentality is completely safe and open-source! But unfortunately, many false positives occur :(</p>
-    
-    <a href="https://github.com/onegrandband/mentality">
-        <img src="/tools/apps/img/github.png" alt="GitHub logo"> Mentality Github
-    </a>
 </body>
 </html>
