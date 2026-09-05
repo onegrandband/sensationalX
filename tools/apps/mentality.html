@@ -11,13 +11,13 @@
     <p>Download the latest model of Mentality!</p>
     
     <button id="downloadWin">
-        <img src="/tools/apps/img/windows.png">Windows
+        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
     </button>
     <button id="downloadMac">
-        <img src="/tools/apps/img/mac.png">MacOS
+        <img src="/tools/apps/img/mac.png" alt="MacOS logo"> MacOS
     </button>
     <button id="downloadLinux">
-        <img src="/tools/apps/img/linux.png">Linux
+        <img src="/tools/apps/img/linux.png" alt="Linux logo"> Linux
     </button>
 
     <script>
@@ -28,7 +28,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            console.log("Downloading latest version... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)")
+            console.log("Downloading latest version... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)");
         });
 
         document.getElementById('downloadMac').addEventListener('click', () => {
@@ -38,7 +38,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            console.log("Downloading latest version on Mac... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)")
+            console.log("Downloading latest version on Mac... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)");
         });
 
         document.getElementById('downloadLinux').addEventListener('click', () => {
@@ -48,12 +48,17 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            console.log("Hello there, fellow Linux user! Great choice. While you wait to download, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)")
+            console.log("Hello there, fellow Linux user! Great choice. While you wait to download, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)");
         });
     </script>
 
     <p>In a hurry? Run and paste this command via PowerShell.</p>
-    <p>Invoke-WebRequest -Uri "https://sensationalx.com/tools/apps/programs/Mentality_v1.1.0.exe" -OutFile "$env:USERPROFILE\Downloads\mentality.exe"</p>
-    <p>Mentality is completely safe and open-source! But unfortunately, many false positives occur. :(</p>
+    <p><code>Invoke-WebRequest -Uri "https://sensationalx.com/tools/apps/programs/Mentality_v1.1.0.exe" -OutFile "$env:USERPROFILE\Downloads\mentality.exe"</code></p>
+    
+    <p>Mentality is completely safe and open-source! But unfortunately, many false positives occur :(</p>
+    
+    <a href="https://github.com/onegrandband/mentality">
+        <img src="/tools/apps/img/github.png" alt="GitHub logo"> Mentality Github
+    </a>
 </body>
 </html>
