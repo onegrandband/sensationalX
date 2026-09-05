@@ -11,63 +11,91 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;              /* Space between image and text */
-            padding: 8px 16px;     /* Normal button padding */
-            font-size: 16px;       /* Normal text size */
+            gap: 8px; /* Space between image and text */
+            padding: 8px 16px; /* Normal button padding */
+            font-size: 16px; /* Normal text size */
             cursor: pointer;
         }
-
         /* Forces the images to fit inside the standard button size */
         button img {
-            width: 20px;           /* Scales the width down */
-            height: 20px;          /* Scales the height down */
-            object-fit: contain;   /* Prevents the image from distorting */
+            width: 20px; /* Scales the width down */
+            height: 20px; /* Scales the height down */
+            object-fit: contain; /* Prevents the image from distorting */
+        }
+        /* Style for the version selection area */
+        .version-selector {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 6px 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <h2>Download Mentality</h2>
     <p>Download the latest model of Mentality!</p>
-    
+
+    <!-- Version Selection Dropdown -->
+    <div class="version-selector">
+        <label for="versionSelect"><strong>Choose Version: </strong></label>
+        <select id="versionSelect">
+            <option value="1.1.1" selected>1.1.1 (Latest)</option>
+            <option value="1.1.0">1.1.0</option>
+            <option value="1.0.0">1.0.0</option>
+        </select>
+    </div>
+
+    <!-- Download Buttons -->
     <button id="downloadWin">
         <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
     </button>
     <button id="downloadMac">
-        <img src="/tools/apps/img/macos.png" alt="MacOS logo"> MacOS
+        <img src="/tools/apps/img/mac.png" alt="MacOS logo"> MacOS
     </button>
     <button id="downloadLinux">
         <img src="/tools/apps/img/linux.png" alt="Linux logo"> Linux
     </button>
 
     <script>
-        document.getElementById('downloadWin').addEventListener('click', () => {
+        // Helper function to handle downloads based on platform and file extension
+        function downloadFile(platform, extension) {
+            const versionSelect = document.getElementById('versionSelect');
+            const selectedVersion = versionSelect.value;
+            
+            // Build paths like: /tools/apps/programs/1.1.1/Mentality.exe or just Mentality_1.1.1.exe
+            // Adjust this path logic depending on how you organize your server files!
+            const filePath = `/tools/apps/programs/${selectedVersion}/Mentality.${extension}`;
+            const fileName = `Mentality_${selectedVersion}.${extension}`;
+
             const link = document.createElement('a');
-            link.href = '/tools/apps/programs/Mentality.exe';
-            link.download = 'Mentality.exe';
+            link.href = filePath;
+            link.download = fileName;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            console.log("Downloading latest version... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)");
+
+            // Log fun facts for specific platforms if it's the latest version
+            if (selectedVersion === '1.1.1' && (platform === 'Windows' || platform === 'Mac')) {
+                console.log(`Downloading latest version on ${platform}... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)`);
+            } else {
+                console.log(`Downloading Mentality version ${selectedVersion} for ${platform}...`);
+            }
+        }
+
+        // Event Listeners for buttons
+        document.getElementById('downloadWin').addEventListener('click', () => {
+            downloadFile('Windows', 'exe');
         });
 
         document.getElementById('downloadMac').addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.href = '/tools/apps/programs/Mentality.dmg';
-            link.download = 'Mentality.dmg';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            console.log("Downloading latest version on Mac... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)");
+            downloadFile('Mac', 'dmg');
         });
 
         document.getElementById('downloadLinux').addEventListener('click', () => {
-            const link = document.createElement('a');
-            // Note: Your original snippet cut off here, make sure your Linux click event closes properly!
-            link.href = '/tools/apps/programs/Mentality.tar.gz';
-            link.download = 'Mentality.tar.gz';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            downloadFile('Linux', 'tar.gz');
         });
     </script>
 </body>
