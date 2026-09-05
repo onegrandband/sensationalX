@@ -41,13 +41,13 @@
         <div class="p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] shadow-xl shadow-[#ff3366]/5">
             
             <div class="flex gap-2 mb-6 bg-gray-100 dark:bg-[#0b0b0c] p-1 rounded-xl">
-                <button id="tab-text" onclick="switchMode('text')" class="flex-1 py-3 text-sm font-bold rounded-lg transition-all bg-white dark:bg-[#2a2a2e] shadow text-gray-900 dark:text-white">Text Mode</button>
-                <button id="tab-file" onclick="switchMode('file')" class="flex-1 py-3 text-sm font-bold rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">File Mode</button>
+                <button id="tab-text" onclick="switchMode('text')" class="flex-1 py-3 text-sm font-bold rounded-lg transition-all bg-white dark:bg-[#2a2a2e] shadow text-gray-900 dark:text-white">Text</button>
+                <button id="tab-file" onclick="switchMode('file')" class="flex-1 py-3 text-sm font-bold rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">File</button>
             </div>
 
             <div id="text-mode" class="space-y-4">
                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Input Text or Base64</label>
-                <textarea id="text-input" placeholder="Paste text to encode, or a Base64 string to decode..." class="w-full h-40 p-4 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none focus:border-[#ff3366] dark:focus:border-[#ff3366] transition-colors resize-none"></textarea>
+                <textarea id="text-input" placeholder="Paste text to encode, or a Base64 string to decode..." class="w-full h-40 p-4 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white"></textarea>
                 
                 <div class="flex gap-4">
                     <button onclick="processText('encode')" class="flex-1 py-3 bg-[#ff3366] hover:bg-[#e62e5c] text-white font-bold rounded-xl transition-colors flex justify-center items-center gap-2">
@@ -60,14 +60,24 @@
             </div>
 
             <div id="file-mode" class="space-y-4 hidden">
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Upload File to Encode</label>
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Upload File</label>
                 <div class="w-full relative">
-                    <input type="file" id="file-input" onchange="processFile()" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                     <div class="w-full h-40 border-2 border-dashed border-gray-300 dark:border-[#2a2a2e] rounded-xl flex flex-col items-center justify-center bg-gray-50 dark:bg-[#0b0b0c] group transition-colors">
                         <i data-lucide="upload-cloud" class="w-10 h-10 text-gray-400 group-hover:text-[#ff3366] transition-colors mb-2"></i>
                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Click or drag a file here</span>
                     </div>
                 </div>
+
+                <div class="flex gap-4">
+                    <button onclick="processFile('encode')" class="flex-1 py-3 bg-[#ff3366] hover:bg-[#e62e5c] text-white font-bold rounded-xl transition-colors flex justify-center items-center gap-2">
+                        <i data-lucide="lock" class="w-5 h-5"></i> Encode File to Base64
+                    </button>
+                    <button onclick="processFile('decode')" class="flex-1 py-3 border border-gray-200 dark:border-[#2a2a2e] hover:border-[#ff3366] dark:hover:border-[#ff3366] text-gray-900 dark:text-white font-bold rounded-xl transition-colors flex justify-center items-center gap-2">
+                        <i data-lucide="unlock" class="w-5 h-5"></i> Decode Base64 File
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Encode will output the raw Base64 string (no data: prefix). Decode expects the file to contain a Base64 string and will produce a downloadable file.</p>
             </div>
 
             <hr class="my-8 border-gray-200 dark:border-[#2a2a2e]">
@@ -75,11 +85,14 @@
             <div class="space-y-2">
                 <div class="flex justify-between items-center">
                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Output Result</label>
-                    <button onclick="copyOutput()" class="text-xs font-bold text-[#ff3366] hover:text-[#e62e5c] flex items-center gap-1 transition-colors">
-                        <i data-lucide="copy" class="w-3 h-3"></i> Copy
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="copyOutput()" class="text-xs font-bold text-[#ff3366] hover:text-[#e62e5c] flex items-center gap-1 transition-colors">
+                            <i data-lucide="copy" class="w-3 h-3"></i> Copy
+                        </button>
+                        <a id="download-link" class="hidden text-xs font-bold text-[#10b981] hover:text-[#059669] transition-colors" download>Download Decoded File</a>
+                    </div>
                 </div>
-                <textarea id="output" readonly placeholder="Result will appear here..." class="w-full h-48 p-4 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] focus:outline-none font-mono text-sm resize-none"></textarea>
+                <textarea id="output" readonly placeholder="Result will appear here..." class="w-full h-48 p-4 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-gray-50 dark:bg-[#0b0b0c] text-gray-900 dark:text-white"></textarea>
             </div>
         </div>
     </main>
@@ -128,6 +141,10 @@
                 tabText.classList.add('text-gray-500', 'dark:text-gray-400');
             }
             document.getElementById('output').value = '';
+            // hide download link when switching
+            const dl = document.getElementById('download-link');
+            dl.classList.add('hidden');
+            dl.removeAttribute('href');
         }
 
         // Processing Logic
@@ -147,29 +164,88 @@
             }
         }
 
-        function processFile() {
+        // file processing: encode -> output raw base64 (no data: prefix). decode -> expect base64 text file, produce downloadable blob
+        function processFile(action) {
             const fileInput = document.getElementById('file-input');
             const outputField = document.getElementById('output');
-            if (fileInput.files.length === 0) return;
-            
+            const downloadLink = document.getElementById('download-link');
+            downloadLink.classList.add('hidden');
+            downloadLink.removeAttribute('href');
+
+            if (fileInput.files.length === 0) {
+                alert('Please select a file first.');
+                return;
+            }
+
             const file = fileInput.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = function(event) {
-                outputField.value = event.target.result;
-            };
-            reader.onerror = function() {
-                outputField.value = "Error reading file.";
-            };
-            
-            reader.readAsDataURL(file);
+
+            if (action === 'encode') {
+                // use readAsDataURL then strip prefix to get raw base64
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const dataUrl = event.target.result || '';
+                    const commaIndex = dataUrl.indexOf(',');
+                    const base64 = commaIndex >= 0 ? dataUrl.slice(commaIndex + 1) : dataUrl;
+                    outputField.value = base64;
+                };
+                reader.onerror = function() {
+                    outputField.value = "Error reading file.";
+                };
+                reader.readAsDataURL(file);
+            } else if (action === 'decode') {
+                // read file as text, expect it to contain base64
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const text = (event.target.result || '').trim();
+                    if (!text) {
+                        outputField.value = 'Error: file is empty.';
+                        return;
+                    }
+                    // if the text contains a data: prefix, strip it
+                    const commaIndex = text.indexOf(',');
+                    const maybeData = (commaIndex >= 0 && text.startsWith('data:')) ? text.slice(commaIndex + 1) : text;
+
+                    try {
+                        const binaryString = atob(maybeData);
+                        // convert to Uint8Array
+                        const len = binaryString.length;
+                        const bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        // create blob and a download link
+                        const blob = new Blob([bytes]);
+                        const url = URL.createObjectURL(blob);
+                        downloadLink.href = url;
+                        // name the decoded file by removing common .b64 extension if present
+                        let decodedName = file.name;
+                        if (decodedName.endsWith('.b64')) decodedName = decodedName.slice(0, -4);
+                        if (decodedName.endsWith('.txt')) decodedName = decodedName.slice(0, -4);
+                        downloadLink.download = decodedName || ('decoded-' + Date.now());
+                        downloadLink.textContent = 'Download ' + downloadLink.download;
+                        downloadLink.classList.remove('hidden');
+
+                        outputField.value = 'Decoded ' + bytes.length + ' bytes. Use the download link to save the file.';
+                    } catch (e) {
+                        outputField.value = 'Error: Invalid Base64 content or corrupted input.';
+                    }
+                };
+                reader.onerror = function() {
+                    outputField.value = 'Error reading file.';
+                };
+                reader.readAsText(file);
+            }
         }
 
         function copyOutput() {
             const output = document.getElementById('output');
             output.select();
-            document.execCommand('copy');
-            alert('Copied to clipboard!');
+            try {
+                document.execCommand('copy');
+                alert('Copied to clipboard!');
+            } catch (e) {
+                alert('Unable to copy.');
+            }
         }
     </script>
 </body>
