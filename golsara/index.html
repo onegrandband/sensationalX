@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golsara Article Hub</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --accent-color: #319795; /* A vibrant, modern teal */
+            --accent-hover: #2c7a7b;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header & Search Section */
+        .hub-header {
+            background-color: var(--card-bg);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hub-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hub-header p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(49, 151, 149, 0.2);
+        }
+
+        /* Article Grid */
+        .hub-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Article Cards */
+        .article-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .article-category {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .article-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .article-excerpt {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .article-link {
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.2s ease;
+        }
+
+        .article-link:hover {
+            color: var(--accent-hover);
+        }
+
+        .article-link::after {
+            content: '→';
+            margin-left: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .article-link:hover::after {
+            transform: translateX(4px);
+        }
+
+        /* No Results Message */
+        .no-results {
+            display: none;
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hub-header">
+        <h1>Golsara Articles</h1>
+        <p>Explore our latest insights, tutorials, and company news.</p>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search for articles, topics, or keywords...">
+        </div>
+    </header>
+
+    <main class="hub-container">
+        <div class="article-grid" id="articleGrid">
+            
+            <!-- Card 1 -->
+            <!-- The data-tags attribute helps the search find keywords not explicitly in the title -->
+            <article class="article-card" data-tags="technology future ai automation innovation">
+                <span class="article-category">Technology</span>
+                <h2 class="article-title">The Future of Automation in Modern Business</h2>
+                <p class="article-excerpt">Discover how automated workflows are streamlining daily operations and saving hundreds of hours a week for small teams.</p>
+                <a href="#" class="article-link">Read Article</a>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="article-card" data-tags="design ui ux web branding typography">
+                <span class="article-category">Design</span>
+                <h2 class="article-title">Essential Principles for Minimalist Web Design</h2>
+                <p class="article-excerpt">Less is often more. Learn how to use whitespace, bold typography, and simple color palettes to create impactful web experiences.</p>
+                <a href="#" class="article-link">Read Article</a>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="article-card" data-tags="business growth marketing strategy sales">
+                <span class="article-category">Business</span>
+                <h2 class="article-title">Scaling Your Agency Without Losing Quality</h2>
+                <p class="article-excerpt">A comprehensive guide on maintaining your standards while rapidly expanding your client base and hiring new talent.</p>
+                <a href="#" class="article-link">Read Article</a>
+            </article>
+
+            <!-- Card 4 -->
+            <article class="article-card" data-tags="culture remote work leadership team building">
+                <span class="article-category">Culture</span>
+                <h2 class="article-title">Fostering Connection in a Remote-First World</h2>
+                <p class="article-excerpt">Practical strategies for keeping your distributed team engaged, motivated, and aligned with company goals.</p>
+                <a href="#" class="article-link">Read Article</a>
+            </article>
+
+            <!-- Card 5 -->
+            <article class="article-card" data-tags="development code coding frontend react vue">
+                <span class="article-category">Development</span>
+                <h2 class="article-title">Choosing the Right Frontend Framework in 2026</h2>
+                <p class="article-excerpt">An objective breakdown of the current framework ecosystem to help you decide which technology fits your next major project.</p>
+                <a href="#" class="article-link">Read Article</a>
+            </article>
+
+            <!-- Card 6 -->
+            <article class="article-card" data-tags="news company goals update launch">
+                <span class="article-category">Company News</span>
+                <h2 class="article-title">Golsara Platform Version 2.0 Now Live</h2>
+                <p class="article-excerpt">We are thrilled to announce the rollout of our massive new update, featuring enhanced security and a brand new dashboard.</p>
+                <a href="#" class="article-link">Read Article</a>
+            </article>
+
+            <div class="no-results" id="noResultsMsg">
+                No articles found matching your search. Try different keywords!
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const articleCards = document.querySelectorAll('.article-card');
+            const noResultsMsg = document.getElementById('noResultsMsg');
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                articleCards.forEach(card => {
+                    // Extract text content and tags
+                    const title = card.querySelector('.article-title').textContent.toLowerCase();
+                    const category = card.querySelector('.article-category').textContent.toLowerCase();
+                    const excerpt = card.querySelector('.article-excerpt').textContent.toLowerCase();
+                    const tags = card.getAttribute('data-tags').toLowerCase();
+
+                    // Check if the search term exists in any of the above
+                    if (title.includes(searchTerm) || 
+                        category.includes(searchTerm) || 
+                        excerpt.includes(searchTerm) || 
+                        tags.includes(searchTerm)) {
+                        
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Toggle "No Results" message based on visibility count
+                if (visibleCount === 0) {
+                    noResultsMsg.style.display = 'block';
+                } else {
+                    noResultsMsg.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
