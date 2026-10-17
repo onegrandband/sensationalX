@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentality</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Compact table styling */
+        .version-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: sans-serif;
+        }
+        .version-table th, .version-table td {
+            border: 1px solid #ddd;
+            padding: 6px 10px; /* Reduced vertical padding for a smaller chart height */
+            text-align: left;
+        }
+        .version-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        .version-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* Styles for the sorting dropdown */
+        .sort-container {
+            margin-bottom: 12px;
+            font-family: sans-serif;
+        }
+        select#osSort {
+            padding: 6px 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            cursor: pointer;
+            outline: none;
+        }
+        select#osSort:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Styles the download buttons inside the table */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px; /* Space between image and text */
+            padding: 4px 10px; /* Slimmer button padding */
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            color: black;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .download-btn:hover {
+            background-color: #d4d4d4;
+        }
+        .download-btn img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+        }
+
+        /* Disabled button styling for "Coming Soon" */
+        .disabled-btn {
+            background-color: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+            border-color: #e0e0e0;
+        }
+        .disabled-btn:hover {
+            background-color: #f0f0f0;
+        }
+        .disabled-btn img {
+            opacity: 0.5;
+        }
+        
+        code {
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <dialog id="entryGate" aria-labelledby="entryTitle" aria-describedby="entryDescription">
+        <h2 id="entryTitle">Welcome to Mentality</h2>
+        <p id="entryDescription">Select Enter to access the site. Your choice is remembered in this browser until site data is cleared.</p>
+        <button id="enterSite" type="button" autofocus>Enter</button>
+    </dialog>
+    <h2>Download Mentality</h2>
+    <p>Download the latest model of Mentality!</p>
+
+    <!-- Platform Sorting Dropdown -->
+    <div class="sort-container">
+        <label for="osSort"><strong>Sort by Platform: </strong></label>
+        <select id="osSort" onchange="sortPlatform(this.value)">
+            <option value="auto-default">Auto-detect (Default)</option>
+            <option value="auto">Auto-detect</option>
+            <option value="Windows">Windows</option>
+            <option value="Mac">MacOS</option>
+            <option value="Linux">Linux</option>
+            <option value="All">Show All</option>
+        </select>
+    </div>
+
+    <!-- Versions List Table -->
+    <table class="version-table">
+        <thead>
+            <tr>
+                <th>Executable Name</th>
+                <th>Size</th>
+                <th>Version</th>
+                <th>Compatibility</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>GitHub Commit</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody id="versionsTableBody">
+            <!-- Version 1.3.4 (Latest) -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>TBD</td>
+                <td>1.3.4</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Fixed migration issues, bug fixes, and accordions off the screen a tiny bit.</td>
+                <td><code>TBD</code></td>
+                <td><a href="/tools/apps/programs/Mentality_v1.3.4.exe" download="Mentality_v1.3.4.exe" class="download-btn" onclick="logDownload('1.3.4', 'Windows')"><img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows</a></td>
+            </tr>
+            <!-- Version 1.3.3 -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>TBD</td>
+                <td>1.3.3</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Fixed miscellaneous settings appearing off-screen.</td>
+                <td><code>TBD</code></td>
+                <td><a href="/tools/apps/programs/Mentality_v1.3.3.exe" download="Mentality_v1.3.3.exe" class="download-btn" onclick="logDownload('1.3.3', 'Windows')"><img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows</a></td>
+            </tr>
+            <!-- Version 1.3.2 -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>TBD</td>
+                <td>1.3.2</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Added PrtScr hotkey support. <a href="release-notes-1.3.2.md">Release notes</a></td>
+                <td><code>TBD</code></td>
+                <td><a href="/tools/apps/programs/Mentality_v1.3.2.exe" download="Mentality_v1.3.2.exe" class="download-btn" onclick="logDownload('1.3.2', 'Windows')"><img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows</a></td>
+            </tr>
+            <!-- Version 1.3.1 -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>TBD</td>
+                <td>1.3.1</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Miscellaneous bug fixes. <a href="release-notes-1.3.1.md">Release notes</a></td>
+                <td><code>TBD</code></td>
+                <td><a href="/tools/apps/programs/Mentality_v1.3.1.exe" download="Mentality_v1.3.1.exe" class="download-btn" onclick="logDownload('1.3.1', 'Windows')"><img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows</a></td>
+            </tr>
+            <!-- Version 1.3.0 -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>58 KB</td>
+                <td>1.3.0</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Misc bug fixes, update migration to update to new versions!</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <a href="/tools/apps/programs/Mentality_v1.3.0.exe" download class="download-btn" onclick="logDownload('1.3.0', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+            <tr data-os="Mac">
+                <td>Mentality.dmg</td>
+                <td>TBD</td>
+                <td>1.3.4</td>
+                <td>MacOS 12+</td>
+                <td>In Development</td>
+                <td>Mac release is currently being worked on.</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <span class="download-btn disabled-btn">
+                        <img src="/tools/apps/img/mac.png" alt="MacOS logo"> Coming Soon
+                    </span>
+                </td>
+            </tr>
+            <tr data-os="Linux">
+                <td>Mentality.tar.gz</td>
+                <td>TBD</td>
+                <td>1.3.4</td>
+                <td>Ubuntu 20.04+</td>
+                <td>In Development</td>
+                <td>Linux release is currently being worked on.</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <span class="download-btn disabled-btn">
+                        <img src="/tools/apps/img/linux.png" alt="Linux logo"> Coming Soon
+                    </span>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <p><a href="#more-versions" id="viewMore" aria-controls="more-versions">View More</a></p>
+    <details id="more-versions">
+        <summary>Older Mentality versions</summary>
+        <table class="version-table">
+            <thead>
+                <tr>
+                    <th>Executable Name</th><th>Size</th><th>Version</th>
+                    <th>Compatibility</th><th>Type</th><th>Description</th>
+                    <th>GitHub Commit</th><th>Download</th>
+                </tr>
+            </thead>
+            <tbody id="olderVersionsTableBody">
+                <!-- Version 1.2.2 -->
+                <tr data-os="Windows">
+                    <td>Mentality.exe</td>
+                    <td>42 KB</td>
+                    <td>1.2.2</td>
+                    <td>Windows 10/11</td>
+                    <td>Stable</td>
+                    <td>Fixed broken hotkey registers, fixed mod-win support issues! <a href="release-notes-1.2.2.md">Release notes</a></td>
+                    <td><code>TBD</code></td>
+                    <td>
+                        <a href="/tools/apps/programs/Mentality_v1.2.2.exe" download class="download-btn" onclick="logDownload('1.2.2', 'Windows')">
+                            <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                        </a>
+                    </td>
+                </tr>
+                <tr data-os="Windows">
+                    <td>Mentality.exe</td>
+                    <td>41 KB</td>
+                    <td>1.2.1</td>
+                    <td>Windows 10/11</td>
+                    <td>Stable</td>
+                    <td>Fixed bug where hotkey setting did nothing.</td>
+                    <td><code>TBD</code></td>
+                    <td>
+                        <a href="/tools/apps/programs/Mentality_v1.2.1.exe" download class="download-btn" onclick="logDownload('1.2.1', 'Windows')">
+                            <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                        </a>
+                    </td>
+                </tr>
+         <!-- Version 1.2 -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>37 KB</td>
+                <td>1.2.0</td>
+                <td>Windows 10 & 11</td>
+                <td>Stable</td>
+                <td>Profile presets, per-app rulesets, scheduled timers, interval jitter, smart pause, and coordinate locking. Additionally, it also adds plugin sandboxing, and UI accessibility enhancements :)</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <a href="/tools/apps/programs/Mentality_1.2.0.exe" download class="download-btn" onclick="logDownload('1.2.0 SX', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+            
+            <!-- Version 1.1.1 SX -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>27 KB</td>
+                <td>1.1.1</td>
+                <td>Windows 10 & 11</td>
+                <td>Stable</td>
+                <td>Misc bug fixes, clear hotkey setting, hotkey selection saving, and win-key (MOD_WIN) support</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <a href="/tools/apps/programs/Mentality_SX_1.1.1.exe" download class="download-btn" onclick="logDownload('1.2.0', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+            
+            <!-- Version 1.1.0 -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>25.5 KB</td>
+                <td>1.1.0</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Select multiple hotkeys (e.g Ctrl+Shift), hotkey bug fix, remove passphrase</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <a href="/tools/apps/programs/Mentality_1.1.0.exe" download class="download-btn" onclick="logDownload('1.1.0', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+            
+            <!-- Version 1.0.0 -->
+            <tr data-os="Windows">
+                <td>Mentality.exe</td>
+                <td>17.5 KB</td>
+                <td>1.0.0</td>
+                <td>Windows 10 & 11</td>
+                <td>Legacy</td>
+                <td>Initial release. Auto-clicker with many bugs, but this was/is just the start!!!!!</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <a href="/tools/apps/programs/Mentality.exe" download class="download-btn" onclick="logDownload('1.0.0', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </details>
+
+    <p id="notificationStatus" hidden></p>
+    <script src="script.js" defer></script>
+
+    <script>
+        // Simple OS detection based on user agent
+        function detectOS() {
+            const ua = window.navigator.userAgent.toLowerCase();
+            if (ua.includes('win')) return 'Windows';
+            if (ua.includes('mac')) return 'Mac';
+            if (ua.includes('linux')) return 'Linux';
+            return 'All'; // Fallback if OS cannot be determined
+        }
+
+        // Logic to filter/sort the table rows
+        function sortPlatform(platform) {
+            let targetOS = platform;
+            
+            // Handle both Auto-detect options
+            if (platform === 'auto-default' || platform === 'auto') {
+                targetOS = detectOS();
+            } 
+
+            // Loop through table rows and only display the matching platform
+            const rows = document.querySelectorAll('#versionsTableBody tr, #olderVersionsTableBody tr');
+            rows.forEach(row => {
+                // Check the data-os attribute added to every row
+                if (targetOS === 'All' || row.getAttribute('data-os') === targetOS) {
+                    row.style.display = ''; // Show row
+                } else {
+                    row.style.display = 'none'; // Hide row
+                }
+            });
+        }
+
+        // Keep the fun facts alive!
+        function logDownload(version, platform) {
+            if (version === '1.1.1' && (platform === 'Windows' || platform === 'Mac')) {
+                console.log(`Downloading latest version on ${platform}... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)`);
+            } else {
+                console.log(`Downloading Mentality version ${version} for ${platform}...`);
+            }
+        }
+
+        // Run auto-detect sorting as soon as the DOM loads
+        window.addEventListener('DOMContentLoaded', () => {
+            // Ensure the dropdown is set to Auto-detect (Default) on page load
+            document.getElementById('osSort').value = 'auto-default';
+            sortPlatform('auto-default');
+        });
+    </script>
+</body>
+</html>
