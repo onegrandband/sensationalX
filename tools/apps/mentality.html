@@ -121,6 +121,21 @@
             </tr>
         </thead>
         <tbody id="versionsTableBody">
+            <!-- Version 1.2.2 (Latest) -->
+            <tr data-os="Windows">
+                <td>Mentality_1.2.2.exe</td>
+                <td>42 KB</td>
+                <td>1.2.2</td>
+                <td>Windows 10/11</td>
+                <td>Stable</td>
+                <td>Fixed broken hotkey registers, fixed mod-win support issues!</td>
+                <td><code>TBD</code></td>
+                <td>
+                    <a href="/tools/apps/programs/Mentality_v1.2.2.exe" download class="download-btn" onclick="logDownload('1.2.2', 'Windows')">
+                        <img src="/tools/apps/img/windows.png" alt="Windows logo"> Windows
+                    </a>
+                </td>
+            </tr>
             <!-- Version 1.2.1 (Latest) -->
             <tr data-os="Windows">
                 <td>Mentality_1.2.1.exe</td>
@@ -262,7 +277,7 @@
             });
         }
 
-        // Keep your fun facts alive!
+        // Keep the fun facts alive!
         function logDownload(version, platform) {
             if (version === '1.1.1' && (platform === 'Windows' || platform === 'Mac')) {
                 console.log(`Downloading latest version on ${platform}... While you wait, here's a fun fact! Did you know that ACM can stand for Automated Clicker Machinery? :)`);
