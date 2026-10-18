@@ -226,7 +226,6 @@
         const playerTrackTitle = document.getElementById('playerTrackTitle');
         const playerTrackMeta = document.getElementById('playerTrackMeta');
         const visualizerContainer = document.getElementById('visualizerContainer');
-        const playerPlayIcon = document.getElementById('playerPlayIcon');
         const volumeSlider = document.getElementById('volumeSlider');
         const albumModal = document.getElementById('albumModal');
 
@@ -242,16 +241,14 @@
         function handlePlayRequest(queueJSONString, trackIndex) {
             const queue = JSON.parse(decodeURIComponent(queueJSONString));
             const track = queue[trackIndex];
-            
+
             if (!track || track.streamUrl === "") {
-                alert("This track hasn't been uploaded yet!");
                 return;
             }
 
             const currentActiveTrack = state.activeQueue[state.activeTrackIndex];
 
-            if (currentActiveTrack && currentActiveTrack.id === track.id) {
-                // Toggle play/pause condition state context rules match exactly
+            if (currentActiveTrack && currentActiveTrack.id === track.id && audio.src) {
                 if (state.isPlaying) {
                     audio.pause();
                     state.isPlaying = false;
@@ -290,17 +287,17 @@
 
         function skipTrack(direction) {
             if (state.activeQueue.length === 0) return;
-            const newIndex = state.activeTrackIndex + direction;
+            let newIndex = state.activeTrackIndex + direction;
+            while (newIndex >= 0 && newIndex < state.activeQueue.length && state.activeQueue[newIndex].streamUrl === "") {
+                newIndex += direction;
+            }
             if (newIndex >= 0 && newIndex < state.activeQueue.length) {
-                const nextTrack = state.activeQueue[newIndex];
-                if (nextTrack && nextTrack.streamUrl !== "") {
-                    state.activeTrackIndex = newIndex;
-                    audio.src = nextTrack.streamUrl;
-                    audio.load();
-                    audio.play();
-                    state.isPlaying = true;
-                    updateUI();
-                }
+                state.activeTrackIndex = newIndex;
+                audio.src = state.activeQueue[newIndex].streamUrl;
+                audio.load();
+                audio.play();
+                state.isPlaying = true;
+                updateUI();
             }
         }
 
@@ -333,7 +330,10 @@
         audio.addEventListener('timeupdate', () => {
             const current = audio.currentTime || 0;
             const total = audio.duration || 1;
-            progressSlider.value = (current / total) * 100;
+            const progress = total ? (current / total) * 100 : 0;
+            if (document.activeElement !== progressSlider) {
+                progressSlider.value = progress;
+            }
             currentTimeDisplay.textContent = formatTime(current);
         });
 
@@ -343,23 +343,38 @@
 
         audio.addEventListener('ended', () => {
             if (state.activeTrackIndex < state.activeQueue.length - 1) {
-                const nextTrack = state.activeQueue[state.activeTrackIndex + 1];
-                if (nextTrack && nextTrack.streamUrl !== "") {
-                    state.activeTrackIndex += 1;
-                    audio.src = nextTrack.streamUrl;
+                const nextIndex = state.activeQueue.findIndex((t, i) => i > state.activeTrackIndex && t.streamUrl !== "");
+                if (nextIndex !== -1) {
+                    state.activeTrackIndex = nextIndex;
+                    audio.src = state.activeQueue[nextIndex].streamUrl;
                     audio.load();
                     audio.play();
                     state.isPlaying = true;
                 } else {
                     state.isPlaying = false;
                     progressSlider.value = 0;
+                    audio.currentTime = 0;
                 }
             } else {
                 state.isPlaying = false;
                 progressSlider.value = 0;
+                audio.currentTime = 0;
             }
             updateUI();
         });
+
+        function updatePlayerIcons() {
+            const iconId = state.isPlaying ? 'pause' : 'play';
+            const iconNode = document.getElementById('playerPlayIcon');
+            if (iconNode) {
+                iconNode.setAttribute('data-lucide', iconId);
+                if (iconId === 'play') {
+                    iconNode.classList.add('ml-0.5');
+                } else {
+                    iconNode.classList.remove('ml-0.5');
+                }
+            }
+        }
 
         // --- RENDER ROUTINES ---
         function renderCatalog() {
@@ -368,12 +383,12 @@
 
             catalog.forEach((item, index) => {
                 const queueString = encodeURIComponent(JSON.stringify(item.tracks));
-                const isItemActive = state.activeQueue.some(t => item.tracks.some(it => it.id === t.id));
                 const activeTrack = state.activeQueue[state.activeTrackIndex];
-                
+
                 let interfaceOverlayHtml = '';
                 if (item.type === 'single' && item.tracks[0]) {
-                    const isTrackPlaying = activeTrack && activeTrack.id === item.tracks[0].id && state.isPlaying;
+                    const isThisTrack = activeTrack && activeTrack.id === item.tracks[0].id;
+                    const isTrackPlaying = isThisTrack && state.isPlaying;
                     const dlButtonHtml = item.tracks[0].downloadUrl === "" 
                         ? `<div class="flex h-16 w-16 items-center justify-center rounded-full bg-[#2a2a2e] text-gray-500 shadow-lg cursor-not-allowed"><i data-lucide="download" class="w-[26px] h-[26px]"></i></div>`
                         : `<a href="${item.tracks[0].downloadUrl}" download target="_blank" rel="noreferrer" class="flex h-16 w-16 items-center justify-center rounded-full bg-[#2a2a2e] text-white shadow-lg transition-all hover:scale-105 hover:bg-blue-500"><i data-lucide="download" class="w-[26px] h-[26px]"></i></a>`;
@@ -393,6 +408,7 @@
                     `;
                 }
 
+                const isItemActive = activeTrack && item.tracks.some(t => t.id === activeTrack.id);
                 const borderClass = isItemActive ? 'border-[#ff3366] shadow-[0_0_15px_rgba(255,51,102,0.15)]' : 'border-[#2a2a2e] hover:border-[#ff3366]/50';
                 const artIcon = item.type === 'album' ? 'list-music' : 'music';
 
@@ -427,10 +443,11 @@
             const activeTrack = state.activeQueue[state.activeTrackIndex];
 
             state.selectedAlbum.tracks.forEach((track, index) => {
-                const isThisPlaying = activeTrack && activeTrack.id === track.id && state.isPlaying;
+                const isThisTrack = activeTrack && activeTrack.id === track.id;
+                const isThisPlaying = isThisTrack && state.isPlaying;
                 const isPlaceholder = track.streamUrl === "";
                 
-                const playBtnBg = isThisPlaying ? 'bg-[#ff3366] text-white' : 'bg-[#2a2a2e] text-gray-400 group-hover:bg-[#ff3366] group-hover:text-white';
+                const playBtnBg = isThisTrack ? 'bg-[#ff3366] text-white' : 'bg-[#2a2a2e] text-gray-400 group-hover:bg-[#ff3366] group-hover:text-white';
                 const dlNode = track.downloadUrl === ""
                     ? `<div class="flex h-10 w-10 shrink-0 items-center justify-center text-transparent bg-transparent cursor-not-allowed"><i data-lucide="download" class="w-[18px] h-[18px]"></i></div>`
                     : `<a href="${track.downloadUrl}" download target="_blank" rel="noreferrer" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2a2a2e] text-gray-400 transition-all hover:bg-blue-500 hover:text-white"><i data-lucide="download" class="w-[18px] h-[18px]"></i></a>`;
@@ -442,7 +459,7 @@
                                 <i data-lucide="${isThisPlaying ? 'pause' : 'play'}" class="w-[18px] h-[18px] ${isThisPlaying ? '' : 'ml-0.5'}"></i>
                             </button>
                             <div class="text-left">
-                                <p class="font-medium ${isThisPlaying ? 'text-[#ff3366]' : 'text-white'}">${track.title}</p>
+                                <p class="font-medium ${isThisTrack ? 'text-[#ff3366]' : 'text-white'}">${track.title}</p>
                                 <div class="mt-1 flex flex-wrap gap-2 text-[10px] font-medium sm:text-xs">
                                     <span class="rounded bg-[#0b0b0c] px-2 py-0.5 text-gray-400">${track.bpm}</span>
                                     <span class="rounded bg-[#0b0b0c] px-2 py-0.5 text-blue-400/80">${track.musicKey}</span>
@@ -464,28 +481,25 @@
             renderCatalog();
             if (state.selectedAlbum) renderModalTracklist();
 
-            if (activeTrack) {
+            if (activeTrack && activeTrack.streamUrl) {
                 // Show player bar interface frame
                 bottomPlayer.classList.remove('translate-y-full');
                 playerTrackTitle.textContent = activeTrack.title;
                 playerTrackMeta.textContent = `${activeTrack.genre} • ${activeTrack.bpm} • ${activeTrack.musicKey}`;
                 
                 // Toggle play icon state metrics representation accurately
+                updatePlayerIcons();
                 if (state.isPlaying) {
-                    playerPlayIcon.setAttribute('data-lucide', 'pause');
-                    playerPlayIcon.classList.remove('ml-0.5');
                     visualizerContainer.classList.remove('hidden');
                     visualizerContainer.classList.add('flex');
                 } else {
-                    playerPlayIcon.setAttribute('data-lucide', 'play');
-                    playerPlayIcon.classList.add('ml-0.5');
                     visualizerContainer.classList.remove('flex');
                     visualizerContainer.classList.add('hidden');
                 }
 
                 // Adjust disabled values across buttons explicitly
                 document.getElementById('btnPrev').disabled = (state.activeTrackIndex === 0);
-                document.getElementById('btnNext').disabled = (state.activeTrackIndex === state.activeQueue.length - 1);
+                document.getElementById('btnNext').disabled = (state.activeTrackIndex >= state.activeQueue.length - 1);
             } else {
                 bottomPlayer.classList.add('translate-y-full');
             }
@@ -495,6 +509,7 @@
         // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
             renderCatalog();
+            lucide.createIcons();
         });
     </script>
 </body>
