@@ -174,86 +174,147 @@
         <h1>Book a Demo</h1>
         <p>Think you have what it takes? Send us your unreleased tracks. We listen to everything.</p>
         
-        <form id="demoForm" onsubmit="handleFormSubmit(event)">
+        <form id="demoForm" novalidate>
             <input type="text" id="artistName" placeholder="Artist / Band Name" required>
             <input type="email" id="artistEmail" placeholder="Contact Email" required>
             <input type="url" id="demoLink" placeholder="Streaming Link (SoundCloud, Spotify, Private link)" required>
             
             <div id="captcha-container">
-                <label for="captcha-input" style="font-size: 0.9rem;">Verify you're human:</label>
-                <input type="text" id="captcha-input" placeholder="Enter captcha code" required>
+                <label for="captcha-input" style="font-size: 0.9rem;">
+                    Verify you're human, type this code:
+                    <strong id="captcha-code" style="letter-spacing: 4px; user-select: none; margin-left: 0.5rem;"></strong>
+                    <button type="button" id="captcha-refresh" aria-label="New code" style="background: none; border: none; color: var(--accent-color); cursor: pointer; font-size: 1rem;">↻</button>
+                </label>
+                <input type="text" id="captcha-input" placeholder="Enter captcha code" autocomplete="off" required>
             </div>
             
-            <div id="form-messages"></div>
+            <div id="form-messages" aria-live="polite"></div>
             <button type="submit">Submit Demo</button>
         </form>
     </main>
 
     <script>
-        // Dark Mode
+        // ---------- Theme ----------
+        const root = document.documentElement;
         const themeBtn = document.getElementById('themeBtn');
-        themeBtn.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                themeBtn.textContent = 'Dark Mode';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeBtn.textContent = 'Light Mode';
+
+        function readSavedTheme() {
+            try { return localStorage.getItem('theme'); } catch { return null; }
+        }
+
+        function applyTheme(theme, save = false) {
+            const isDark = theme === 'dark';
+            if (isDark) root.setAttribute('data-theme', 'dark');
+            else root.removeAttribute('data-theme');
+            themeBtn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+            if (save) {
+                try { localStorage.setItem('theme', theme); } catch { /* storage unavailable */ }
             }
+        }
+
+        // Saved choice first, otherwise follow the OS preference
+        applyTheme(
+            readSavedTheme() ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        );
+
+        themeBtn.addEventListener('click', () => {
+            applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
         });
 
-        // Authentication Modal
+        // ---------- Authentication Modal ----------
         function openAuthModal() {
-            alert("Account feature coming soon!");
+            alert('Account feature coming soon!');
             // TODO: Implement authentication modal
         }
 
-        // Form Handling
+        // ---------- Captcha (client-side only) ----------
+        const captchaCodeEl = document.getElementById('captcha-code');
+        const captchaInputEl = document.getElementById('captcha-input');
+        let captchaCode = '';
+
+        function generateCaptcha() {
+            // Skip look-alike characters (0/O, 1/I/L)
+            const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+            const values = crypto.getRandomValues(new Uint32Array(5));
+            captchaCode = Array.from(values, v => chars[v % chars.length]).join('');
+            captchaCodeEl.textContent = captchaCode;
+            captchaInputEl.value = '';
+        }
+
+        document.getElementById('captcha-refresh').addEventListener('click', generateCaptcha);
+        generateCaptcha();
+
+        // ---------- Form handling ----------
+        const form = document.getElementById('demoForm');
+        const messagesDiv = document.getElementById('form-messages');
+        let clearTimer = null;
+
+        function showMessage(type, text) {
+            clearTimeout(clearTimer);
+            messagesDiv.replaceChildren();
+            const div = document.createElement('div');
+            div.className = type === 'success' ? 'success-message' : 'error-message';
+            div.textContent = text; // textContent avoids HTML injection
+            messagesDiv.appendChild(div);
+        }
+
+        function isValidEmail(value) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        function isValidHttpUrl(value) {
+            try {
+                const url = new URL(value);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch {
+                return false;
+            }
+        }
+
         function handleFormSubmit(event) {
             event.preventDefault();
-            
-            const artistName = document.getElementById('artistName').value.trim();
-            const artistEmail = document.getElementById('artistEmail').value.trim();
-            const demoLink = document.getElementById('demoLink').value.trim();
-            const captchaInput = document.getElementById('captcha-input').value.trim();
-            const messagesDiv = document.getElementById('form-messages');
-            
-            // Clear previous messages
-            messagesDiv.innerHTML = '';
-            
-            // Validate inputs
-            if (!artistName) {
-                messagesDiv.innerHTML = '<div class="error-message">Artist name is required.</div>';
+
+            const nameEl = document.getElementById('artistName');
+            const emailEl = document.getElementById('artistEmail');
+            const linkEl = document.getElementById('demoLink');
+
+            const artistName = nameEl.value.trim();
+            const artistEmail = emailEl.value.trim();
+            const demoLink = linkEl.value.trim();
+            const captchaValue = captchaInputEl.value.trim().toUpperCase();
+
+            // Each check: [failed?, message, field to focus]
+            const checks = [
+                [!artistName, 'Artist name is required.', nameEl],
+                [!artistEmail, 'Email is required.', emailEl],
+                [artistEmail && !isValidEmail(artistEmail), 'Please enter a valid email address.', emailEl],
+                [!demoLink, 'Streaming link is required.', linkEl],
+                [demoLink && !isValidHttpUrl(demoLink), 'Please enter a valid link starting with http:// or https://.', linkEl],
+                [!captchaValue, 'Please complete the captcha.', captchaInputEl],
+                [captchaValue && captchaValue !== captchaCode, 'Captcha code is incorrect. Try the new code.', captchaInputEl]
+            ];
+
+            const failed = checks.find(([bad]) => bad);
+            if (failed) {
+                showMessage('error', failed[1]);
+                failed[2].focus();
+                if (failed[2] === captchaInputEl && captchaValue) generateCaptcha();
                 return;
             }
-            
-            if (!artistEmail) {
-                messagesDiv.innerHTML = '<div class="error-message">Email is required.</div>';
-                return;
-            }
-            
-            if (!demoLink) {
-                messagesDiv.innerHTML = '<div class="error-message">Streaming link is required.</div>';
-                return;
-            }
-            
-            if (!captchaInput) {
-                messagesDiv.innerHTML = '<div class="error-message">Please complete the captcha.</div>';
-                return;
-            }
-            
-            // TODO: Validate captcha against backend
+
+            // TODO: Validate captcha on the backend
             // TODO: Send form data to backend API
-            
-            messagesDiv.innerHTML = '<div class="success-message">✓ Demo submitted successfully! We\'ll review your track and be in touch soon.</div>';
-            event.target.reset();
-            
+
+            showMessage('success', "✓ Demo submitted successfully! We'll review your track and be in touch soon.");
+            form.reset();
+            generateCaptcha();
+
             // Clear success message after 5 seconds
-            setTimeout(() => {
-                messagesDiv.innerHTML = '';
-            }, 5000);
+            clearTimer = setTimeout(() => messagesDiv.replaceChildren(), 5000);
         }
+
+        form.addEventListener('submit', handleFormSubmit);
     </script>
 </body>
 </html>
