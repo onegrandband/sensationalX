@@ -266,6 +266,7 @@
         async function triggerDownload(url, filename) {
             try {
                 const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -274,32 +275,52 @@
                 a.download = filename;
                 document.body.appendChild(a);
                 a.click();
-                window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(blobUrl);
+                    document.body.removeChild(a);
+                }, 1000);
             } catch (err) {
                 console.error("Download failed, falling back.", err);
-                window.open(url, '_blank');
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => document.body.removeChild(a), 100);
             }
         }
 
         // --- AUDIO PREVIEW LOGIC ---
-        function playPreview(title, url) {
+        async function playPreview(title, url) {
+            if (audio.src !== url || audio.error) {
+                audio.src = url;
+                audio.load();
+            }
+            try {
+                await audio.play();
+            } catch (err) {
+                return;
+            }
+            if (audio.paused || audio.src !== url) return;
             document.getElementById('nowPlayingTitle').textContent = title;
-            audio.src = url;
-            audio.play();
             document.getElementById('miniPlayer').classList.remove('translate-y-full');
             document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
             lucide.createIcons();
         }
 
-        function togglePlay() {
+        async function togglePlay() {
             if (audio.paused) {
-                audio.play();
-                document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+                if (audio.error) audio.load();
+                try {
+                    await audio.play();
+                } catch (err) {
+                    return;
+                }
             } else {
                 audio.pause();
-                document.getElementById('playIcon').setAttribute('data-lucide', 'play');
             }
+            document.getElementById('playIcon').setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
             lucide.createIcons();
         }
 
