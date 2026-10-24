@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Song Vibe Randomizer</title>
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:linear-gradient(135deg, #120e1d, #1d243b); color:#f8fafc; display:grid; place-items:center; min-height:100vh; }
+    .box { width:min(640px,90vw); background:rgba(17,24,39,.85); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:28px; }
+    h1 { margin-top:0; }
+    .tag {
+      display:inline-block; background:linear-gradient(135deg,#ec4899,#8b5cf6); margin:8px 8px 0 0; border-radius:999px; padding:10px 14px; font-weight:bold;
+    }
+    button { margin-top:20px; padding:12px 18px; border:none; border-radius:12px; background:linear-gradient(135deg,#f97316,#f43f5e); color:white; font-weight:bold; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Song Vibe Randomizer</h1>
+    <div id="vibes" class="tags"></div>
+    <button id="shuffleBtn">Shuffle Vibe</button>
+  </div>
+
+  <script>
+    const pools = [
+      ['Warm', 'Neon', 'Dreamy', 'Dark', 'Lo-fi', 'Cinematic', 'Breezy', 'Futuristic'],
+      ['Chill', 'Energetic', 'Midnight', 'Moody', 'High-energy', 'Driving', 'Mellow', 'Atmospheric'],
+      ['Synthwave', 'Indie', 'Jazz', 'Rock', 'Soul', 'Alt Pop', 'Hyperpop', 'Blues']
+    ];
+
+    function randomMix() {
+      const vibeList = pools.map(pool => pool[Math.floor(Math.random() * pool.length)]);
+      document.getElementById('vibes').innerHTML = vibeList.map(tag => `<span class="tag">${tag}</span>`).join('');
+    }
+
+    document.getElementById('shuffleBtn').addEventListener('click', randomMix);
+    randomMix();
+  </script>
+</body>
+</html>

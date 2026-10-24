@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beat Length Calculator</title>
+  <style>
+    :root {
+      --bg: #0d0d12;
+      --panel: #171821;
+      --panel-2: #20222d;
+      --text: #f5f7ff;
+      --muted: #adbad1;
+      --accent: #ff3366;
+      --accent-2: #22d3ee;
+      --good: #34d399;
+      --shadow: rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin:0; font-family: Arial, sans-serif; background: radial-gradient(circle at top, #1d2030 0%, var(--bg) 42%);
+      color: var(--text); min-height: 100vh; display: grid; place-items: center; padding: 24px;
+    }
+    .card {
+      width: min(760px, 100%); background: rgba(23,24,33,0.9); border:1px solid rgba(255,255,255,0.08); border-radius: 20px;
+      box-shadow: 0 24px 60px var(--shadow); padding: 28px;
+    }
+    h1 { margin-top:0; font-size: clamp(2rem, 4vw, 2.7rem); }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 24px; }
+    label { display:block; color: var(--muted); font-size: 0.9rem; margin-bottom: 8px; }
+    input { width:100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #2b3140; background: var(--panel-2); color: var(--text); font-size: 1rem; }
+    .result {
+      margin-top: 26px; background: linear-gradient(135deg, rgba(255,51,102,0.12), rgba(34,211,238,0.1)); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px; }
+    .result strong { font-size: 1.8rem; color: var(--accent-2); }
+    .meta { color: var(--muted); margin-top: 8px; }
+    button {
+      background: linear-gradient(135deg, var(--accent), #ff6a7a); border: 0; border-radius: 12px; color: white; padding: 12px 18px; font-weight: bold; cursor: pointer; margin-top: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Beat Length Calculator</h1>
+    <div class="grid">
+      <div>
+        <label for="tempo">Tempo (BPM)</label>
+        <input id="tempo" type="number" value="120" min="40" max="220" />
+      </div>
+      <div>
+        <label for="beats">Beats per bar</label>
+        <input id="beats" type="number" value="4" min="1" max="16" />
+      </div>
+      <div>
+        <label for="bars">Bars</label>
+        <input id="bars" type="number" value="8" min="1" max="256" />
+      </div>
+    </div>
+
+    <button id="calcBtn">Calculate</button>
+
+    <div class="result">
+      <div>Length:</div>
+      <strong id="result">00:00.00</strong>
+      <div class="meta" id="meta">1 bar = 2.00s</div>
+    </div>
+  </div>
+
+  <script>
+    function formatSeconds(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = Math.floor(totalSeconds % 60);
+      const ms = Math.round((totalSeconds % 1) * 100);
+      return `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;
+    }
+
+    function calculate() {
+      const tempo = Number(document.getElementById('tempo').value || 120);
+      const beats = Number(document.getElementById('beats').value || 4);
+      const bars = Number(document.getElementById('bars').value || 8);
+      const secondsPerBeat = 60 / tempo;
+      const secondsPerBar = secondsPerBeat * beats;
+      const total = secondsPerBar * bars;
+      document.getElementById('result').textContent = formatSeconds(total);
+      document.getElementById('meta').textContent = `1 bar = ${secondsPerBar.toFixed(2)}s • ${beats} beats @ ${tempo} BPM`;
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calculate);
+    ['tempo', 'beats', 'bars'].forEach(id => document.getElementById(id).addEventListener('input', calculate));
+    calculate();
+  </script>
+</body>
+</html>

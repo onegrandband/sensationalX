@@ -24,14 +24,11 @@
         </div>
         <nav class="flex items-center gap-6">
             <a href="../index.html" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors">Home</a>
-            <!-- Community Tab -->
             <a href="../tools/community" class="text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[#ff3366] transition-colors flex items-center gap-1.5">
                 <i data-lucide="users" class="w-4 h-4"></i>
                 Community
             </a>
-            <button id="themeToggleBtn" onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
-                <!-- Icon injected by JS on load -->
-            </button>
+            <button id="themeToggleBtn" onclick="toggleTheme()" class="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors"></button>
         </nav>
     </header>
 
@@ -44,18 +41,16 @@
         <div class="flex flex-col sm:flex-row gap-4 mb-10">
             <div class="relative flex-1">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                <input type="text" id="searchInput" oninput="handleSearchAndSort()" placeholder="Search tools (e.g., audio, text, image, flashlight, blues)..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:border-[#ff3366] transition-colors">
+                <input type="text" id="searchInput" oninput="handleSearchAndSort()" placeholder="Search tools (e.g., audio, text, image, flashlight, blues)" class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:ring-2 focus:ring-[#ff3366]/40">
             </div>
-            <select id="sortSelect" onchange="handleSearchAndSort()" class="px-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:border-[#ff3366] transition-colors">
+            <select id="sortSelect" onchange="handleSearchAndSort()" class="px-4 py-3 rounded-xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] focus:outline-none focus:ring-2 focus:ring-[#ff3366]/40">
                 <option value="az">Sort: A-Z</option>
                 <option value="za">Sort: Z-A</option>
             </select>
         </div>
 
         <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <!-- NEW: Bath Reminder -->
-            <a href="../tools/bath-reminder/" data-title="Bath Reminder (NEW)" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/bath-reminder/" data-title="Bath Reminder (NEW)" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="bath" class="w-6 h-6"></i>
                 </div>
@@ -63,8 +58,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Set reminders and timers for your bath routine and relaxation.</p>
             </a>
 
-            <!-- NEW: AI Blues -->
-            <a href="../tools/blues/" data-title="AI Blues" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/blues/" data-title="AI Blues" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="disc" class="w-6 h-6"></i>
                 </div>
@@ -72,17 +66,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate classic, soulful blues backing tracks and audio jams.</p>
             </a>
 
-            <!-- NEW: SensationalX App Hub | Windows Desktop Program -->
-            <a href="../tools/apps/hub" data-title="SX App Hub" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
-                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
-                    <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">SensationalX App Hub</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Do everything in just your desktop program!</p>
-            </a>
-
-            <!-- NEW: Generator AI ( Blues ) -->
-            <a href="../tools/blues-song-generator" data-title="[NEW1]!Generator AI (Blues)" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/blues-song-generator/" data-title="Generator AI (Blues)" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="sparkles" class="w-6 h-6"></i>
                 </div>
@@ -90,8 +74,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Advanced AI composition engine tailored for blues music generation.</p>
             </a>
 
-            <!-- NEW: SensationalX Audio Editor -->
-            <a href="../tools/audio-editor" data-title="SensationalX Audio Editor (NEW!)" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/audio-editor/" data-title="SensationalX Audio Editor (NEW!)" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="sliders" class="w-6 h-6"></i>
                 </div>
@@ -99,15 +82,63 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Edit waveforms, trim tracks, and apply audio processing effortlessly.</p>
             </a>
 
-            <a href="../tools/pop-song-generator.html" data-title="AI Pop Song Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/beat-length-calculator.html" data-title="Beat Length Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                    <i data-lucide="clock-3" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Beat Length Calculator</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Measure bar lengths, tempo, and pocket timing fast.</p>
+            </a>
+
+            <a href="../tools/hex-rgb-converter.html" data-title="Hex RGB Converter" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                    <i data-lucide="palette" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Hex RGB Converter</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Flip a color between hex codes and RGB values instantly.</p>
+            </a>
+
+            <a href="../tools/midi-note-finder.html" data-title="MIDI Note Finder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                    <i data-lucide="music-4" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">MIDI Note Finder</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Translate MIDI numbers into note names and frequencies.</p>
+            </a>
+
+            <a href="../tools/morse-code.html" data-title="Morse Code Encoder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                    <i data-lucide="message-square-code" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Morse Code Encoder</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Encode and decode secret messages like a pro.</p>
+            </a>
+
+            <a href="../tools/song-vibe-randomizer.html" data-title="Song Vibe Randomizer" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                    <i data-lucide="shuffle" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Song Vibe Randomizer</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate instantly fresh creative mood combinations.</p>
+            </a>
+
+            <a href="../tools/studio-timer.html" data-title="Studio Timer" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
+                <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
+                    <i data-lucide="timer-reset" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Studio Timer</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Keep creative sessions tight with a quick countdown.</p>
+            </a>
+
+            <a href="../tools/pop-song-generator.html" data-title="AI Pop Song Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="mic-vocal" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">AI Pop Song Generator</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate fast and ready-to-go pop beats with AI.</p>
             </a>
-        
-            <a href="../tools/rock-song-generator.html" data-title="AI Rock Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/rock-song-generator.html" data-title="AI Rock Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="guitar" class="w-6 h-6"></i>
                 </div>
@@ -115,23 +146,23 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate fast and ready-to-go rock beats with AI.</p>
             </a>
 
-            <a href="../tools/measurement-cooking-calc.html" data-title="Cooking Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/measurement-cooking-calc.html" data-title="Cooking Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="scale" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Cooking Calculator</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Convert cups, teaspoons, tablespoons, and fluid volumes.</p>
             </a>
-          
-            <a href="../tools/crescendo" data-title="CRESCENDO" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/crescendo" data-title="CRESCENDO" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="music" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">CRESCENDO</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Music theory learner!</p>
             </a>
-            
-            <a href="../tools/downloader.html" data-title="Downloader" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/downloader.html" data-title="Downloader" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="download" class="w-6 h-6"></i>
                 </div>
@@ -139,15 +170,15 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Audio previewing and batch download center.</p>
             </a>
 
-            <a href="../tools/calculator.html" data-title="Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/calculator.html" data-title="Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="calculator" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Calculator</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Calculate math instantly with precision.</p>
             </a>
-            
-            <a href="../tools/tempo-tapper.html" data-title="Tempo Tapper" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/tempo-tapper.html" data-title="Tempo Tapper" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="mouse-pointer-click" class="w-6 h-6"></i>
                 </div>
@@ -155,7 +186,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Calculate BPM and track timing precisely.</p>
             </a>
 
-            <a href="../tools/size-estimator.html" data-title="Size Estimator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/size-estimator.html" data-title="Size Estimator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="hard-drive" class="w-6 h-6"></i>
                 </div>
@@ -163,7 +194,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Estimate audio size before exporting.</p>
             </a>
 
-            <a href="../tools/siesta/" data-title="Siesta" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/siesta/" data-title="Siesta" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="moon" class="w-6 h-6"></i>
                 </div>
@@ -171,7 +202,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Sleep timer for calculating time of sleep.</p>
             </a>
 
-            <a href="../tools/metronome.html" data-title="Metronome" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/metronome.html" data-title="Metronome" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="bell-ring" class="w-6 h-6"></i>
                 </div>
@@ -179,7 +210,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Customizable click-track and rhythm guide.</p>
             </a>
 
-            <a href="../tools/4ChooseTools.html" data-title="4CHOOSE" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/4ChooseTools.html" data-title="4CHOOSE" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="dices" class="w-6 h-6"></i>
                 </div>
@@ -187,7 +218,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate headlines, price ROI, build with an HTML checklist, and manage SEO.</p>
             </a>
 
-            <a href="../tools/video-recorder" data-title="Video Recorder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/video-recorder" data-title="Video Recorder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="video" class="w-6 h-6"></i>
                 </div>
@@ -195,23 +226,23 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Record videos.</p>
             </a>
 
-            <a href="../tools/audio-recorder" data-title="Audio Recorder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/audio-recorder" data-title="Audio Recorder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="audio-lines" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Audio Recorder</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Record audio.</p>
             </a>
-            
-            <a href="../tools/chord-generator.html" data-title="Chord Progression Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/chord-generator.html" data-title="Chord Progression Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="list-music" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Chord Progression Generator</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Create chord progressions ;)</p>
             </a>
-            
-            <a href="../tools/delay-calculator.html" data-title="Delay Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/delay-calculator.html" data-title="Delay Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="history" class="w-6 h-6"></i>
                 </div>
@@ -219,7 +250,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Convert BPM to milliseconds for reverb & delay.</p>
             </a>
 
-            <a href="../tools/aspect-ratio.html" data-title="Aspect Ratio Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/aspect-ratio.html" data-title="Aspect Ratio Calculator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="crop" class="w-6 h-6"></i>
                 </div>
@@ -227,7 +258,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Calculate dimensions for videos and covers.</p>
             </a>
 
-            <a href="../tools/tone-generator.htm" data-title="Tone Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/tone-generator.htm" data-title="Tone Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="audio-waveform" class="w-6 h-6"></i>
                 </div>
@@ -235,7 +266,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate pure sine waves for audio testing.</p>
             </a>
 
-            <a href="../tools/word-counter.html" data-title="Word Counter" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/word-counter.html" data-title="Word Counter" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="type" class="w-6 h-6"></i>
                 </div>
@@ -243,7 +274,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Count characters and words for metadata.</p>
             </a>
 
-            <a href="../tools/ai-beat-generator.html" data-title="AI Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/ai-beat-generator.html" data-title="AI Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="drum" class="w-6 h-6"></i>
                 </div>
@@ -251,23 +282,23 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate fast and ready-to-go beats with AI.</p>
             </a>
 
-            <a href="../tools/audio-recorder.html" data-title="Audio Recorder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/audio-recorder.html" data-title="Audio Recorder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="mic" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Audio Recorder</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Create fast and ready-to-go voice recordings.</p>
             </a>
-            
-            <a href="../tools/hyperpop-song-generator.html" data-title="Hyperpop Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/hyperpop-song-generator.html" data-title="Hyperpop Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="zap" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Hyperpop Beat Generator</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate hyperpop beats with AI.</p>
             </a>
-            
-            <a href="../tools/digicorebeatgen.html" data-title="AI Digicore Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/digicorebeatgen.html" data-title="AI Digicore Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="cpu" class="w-6 h-6"></i>
                 </div>
@@ -275,23 +306,23 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate fast and ready-to-go digicore beats with AI.</p>
             </a>
 
-            <a href="../tools/kpop-beat-generator.html" data-title="K-Pop Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/kpop-beat-generator.html" data-title="K-Pop Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="sparkles" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">K-Pop Beat Generator</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate energetic K-Pop style beats.</p>
             </a>
-            
-            <a href="../tools/cutecore-generator.html" data-title="Cutecore Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/cutecore-generator.html" data-title="Cutecore Beat Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="heart" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Cutecore Beat Generator</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate cutecore and ready-to-go beats with AI.</p>
             </a>
-        
-            <a href="../tools/color-palette.html" data-title="Palette Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+
+            <a href="../tools/color-palette.html" data-title="Palette Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="palette" class="w-6 h-6"></i>
                 </div>
@@ -299,7 +330,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate complimentary hex codes instantly.</p>
             </a>
 
-            <a href="../tools/img-base64-encoder.html" data-title="Base64 Encoder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/img-base64-encoder.html" data-title="Base64 Encoder" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="binary" class="w-6 h-6"></i>
                 </div>
@@ -307,7 +338,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Convert images to raw code for web dev.</p>
             </a>
 
-            <a href="../tools/lorem-ipsum.html" data-title="Lorem Ipsum" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/lorem-ipsum.html" data-title="Lorem Ipsum" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="align-left" class="w-6 h-6"></i>
                 </div>
@@ -315,7 +346,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Generate placeholder text for design drafts.</p>
             </a>
 
-            <a href="../tools/password-gen.html" data-title="Secure Key Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/password-gen.html" data-title="Secure Key Generator" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="key" class="w-6 h-6"></i>
                 </div>
@@ -323,7 +354,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Create strong passwords and API keys.</p>
             </a>
 
-            <a href="../tools/case-converter.html" data-title="Case Converter" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/case-converter.html" data-title="Case Converter" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="case-upper" class="w-6 h-6"></i>
                 </div>
@@ -331,26 +362,23 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Format text instantly (UPPER, lower, etc).</p>
             </a>
 
-       <a href="../tools/mentality" data-title="Mentality Autoclicker" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] dark:hover:border-[#ff3366] transition-colors">
+            <a href="../tools/mentality" data-title="Mentality" class="tool-card group p-8 rounded-2xl border border-gray-200 dark:border-[#2a2a2e] bg-white dark:bg-[#1c1c1f] hover:border-[#ff3366] duration-200">
                 <div class="w-12 h-12 bg-[#ff3366]/10 text-[#ff3366] rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110">
                     <i data-lucide="mouse" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white tool-title">Mentality</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 tool-desc">Very fast, and rapid autoclicker. Only supports Windows though.</p>
             </a>
-
         </div>
-        
+
         <div id="noResults" class="hidden text-center py-20">
             <i data-lucide="search-x" class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4"></i>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white">No tools found</h3>
             <p class="text-gray-500 dark:text-gray-400">Try adjusting your search terms.</p>
         </div>
-
     </main>
 
     <script>
-        // --- THEME LOGIC ---
         function renderThemeIcon() {
             const isDark = document.documentElement.classList.contains('dark');
             const btn = document.getElementById('themeToggleBtn');
@@ -365,39 +393,31 @@
             renderThemeIcon();
         }
 
-        // --- SEARCH & SORT LOGIC ---
         function handleSearchAndSort() {
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const sortOrder = document.getElementById('sortSelect').value;
             const grid = document.getElementById('toolsGrid');
             const noResults = document.getElementById('noResults');
-            
+
             let cards = Array.from(grid.querySelectorAll('.tool-card'));
             let visibleCount = 0;
 
-            // Sort cards
             cards.sort((a, b) => {
-                const titleA = a.getAttribute('data-title').toLowerCase();
-                const titleB = b.getAttribute('data-title').toLowerCase();
+                const titleA = (a.getAttribute('data-title') || '').toLowerCase();
+                const titleB = (b.getAttribute('data-title') || '').toLowerCase();
                 if (sortOrder === 'az') return titleA.localeCompare(titleB);
                 if (sortOrder === 'za') return titleB.localeCompare(titleA);
                 return 0;
             });
 
-            // Re-append sorted cards to grid
             cards.forEach(card => grid.appendChild(card));
 
-            // Filter and display
             cards.forEach(card => {
                 const title = card.querySelector('.tool-title').textContent.toLowerCase();
                 const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
-                
-                if (title.includes(searchQuery) || desc.includes(searchQuery)) {
-                    card.style.display = 'block'; 
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+                const matches = title.includes(searchQuery) || desc.includes(searchQuery);
+                card.style.display = matches ? 'block' : 'none';
+                if (matches) visibleCount++;
             });
 
             if (visibleCount === 0) {
@@ -411,7 +431,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderThemeIcon();
-            handleSearchAndSort(); 
+            handleSearchAndSort();
         });
     </script>
 </body>

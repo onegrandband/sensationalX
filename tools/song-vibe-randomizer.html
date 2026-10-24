@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morse Code Encoder</title>
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:#09090f; color:#f8fafc; display:grid; place-items:center; min-height:100vh; }
+    .box { width:min(720px,90vw); background:#111827; border:1px solid #273244; border-radius:18px; padding:24px; }
+    h1 { margin-top:0; }
+    textarea { width:100%; min-height:120px; resize:vertical; padding:14px; border-radius:12px; background:#0d1320; color:white; border:1px solid #374151; }
+    .buttons { display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; }
+    button { padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(135deg,#14b8a6,#3b82f6); color:white; font-weight:bold; cursor:pointer; }
+    .result { margin-top:20px; background:#0b1220; border:1px solid #374151; border-radius:14px; padding:16px; min-height:70px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Morse Code Encoder</h1>
+    <textarea id="inputText">SX RULES</textarea>
+    <div class="buttons">
+      <button id="encodeBtn">Encode</button>
+      <button id="decodeBtn">Decode</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const morseMap = {
+      A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.', G: '--.', H: '....', I: '..', J: '.---',
+      K: '-.-', L: '.-..', M: '--', N: '-.', O: '---', P: '.--.', Q: '--.-', R: '.-.', S: '...', T: '-',
+      U: '..-', V: '...-', W: '.--', X: '-..-', Y: '-.--', Z: '--..',
+      0: '-----', 1: '.----', 2: '..---', 3: '...--', 4: '....-', 5: '.....', 6: '-....', 7: '--...', 8: '---..', 9: '----.',
+      ' ': '/'
+    };
+    const reverseMap = Object.fromEntries(Object.entries(morseMap).map(([key, val]) => [val, key]));
+
+    function encodeText(text) {
+      return text.toUpperCase().split('').map(ch => morseMap[ch] || '').join(' ').trim();
+    }
+
+    function decodeText(text) {
+      return text.split(' ').map(token => reverseMap[token] || token).join('');
+    }
+
+    document.getElementById('encodeBtn').addEventListener('click', () => {
+      const value = document.getElementById('inputText').value;
+      document.getElementById('result').textContent = encodeText(value);
+    });
+
+    document.getElementById('decodeBtn').addEventListener('click', () => {
+      const value = document.getElementById('inputText').value;
+      document.getElementById('result').textContent = decodeText(value);
+    });
+  </script>
+</body>
+</html>

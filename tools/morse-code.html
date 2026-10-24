@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIDI Note Finder</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#0f172a; color:#e2e8f0; display:grid; place-items:center; min-height:100vh; }
+    .box { width:min(620px,90vw); background:#111827; border:1px solid #334155; border-radius:18px; padding:24px; }
+    h1 { margin-top:0; }
+    .row { display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:end; }
+    input { width:100%; padding: 12px 14px; border:none; border-radius:12px; background:#0b1220; color:white; border:1px solid #374151; }
+    button { padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(135deg,#8b5cf6,#ec4899); color:white; font-weight:bold; cursor:pointer; }
+    .result { margin-top:24px; background:#0b1220; border:1px solid #374151; border-radius:14px; padding:16px; }
+    .big { font-size: 2rem; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>MIDI Note Finder</h1>
+    <div class="row">
+      <div>
+        <label for="midi">MIDI number</label>
+        <input id="midi" type="number" value="60" min="0" max="127" />
+      </div>
+      <button id="lookup">Lookup</button>
+    </div>
+    <div class="result">
+      <div>Note</div>
+      <div class="big" id="note">C4</div>
+      <div id="freq">261.63 Hz</div>
+    </div>
+  </div>
+
+  <script>
+    const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const midiInput = document.getElementById('midi');
+    const noteOutput = document.getElementById('note');
+    const freqOutput = document.getElementById('freq');
+
+    function lookup() {
+      const midi = Number(midiInput.value || 60);
+      const safe = Math.min(127, Math.max(0, midi));
+      const noteIndex = safe % 12;
+      const octave = Math.floor(safe / 12) - 1;
+      const note = notes[noteIndex] + octave;
+      const frequency = (2 ** ((safe - 69) / 12)) * 440;
+      noteOutput.textContent = note;
+      freqOutput.textContent = `${frequency.toFixed(2)} Hz`;
+    }
+
+    document.getElementById('lookup').addEventListener('click', lookup);
+    midiInput.addEventListener('input', lookup);
+    lookup();
+  </script>
+</body>
+</html>
