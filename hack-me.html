@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hack me</title>
+    <!-- Tailwind CSS for layout and styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Smooth transition for the background color change */
+        body {
+            transition: background-color 0.5s ease;
+        }
+
+        /* Styling for the fake terminal text to look like classic green phosphor displays */
+        .terminal-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #00FF00;
+            text-shadow: 0 0 4px #00FF00;
+        }
+
+        /* Blinking cursor effect */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: #00FF00;
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+            box-shadow: 0 0 4px #00FF00;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body id="main-body" class="h-screen w-screen flex items-center justify-center bg-gray-100 overflow-hidden m-0">
+
+    <!-- Container for the initial button -->
+    <div id="button-container" class="flex flex-col items-center justify-center">
+        <button id="hack-btn" class="bg-red-600 hover:bg-red-700 text-white font-mono font-bold py-4 px-10 rounded shadow-[0_10px_20px_rgba(220,38,38,0.4)] text-3xl transition-transform transform hover:scale-105 active:scale-95 tracking-widest uppercase">
+            Hack Me
+        </button>
+    </div>
+
+    <!-- Container for the fake terminal (hidden initially) -->
+    <div id="terminal-container" class="hidden w-full h-full p-6 overflow-y-auto flex-col justify-start items-start box-border absolute top-0 left-0">
+        <div class="terminal-text text-sm md:text-lg w-full break-words">
+            <span id="output"></span><span id="cursor" class="cursor hidden"></span>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const btn = document.getElementById('hack-btn');
+        const btnContainer = document.getElementById('button-container');
+        const terminalContainer = document.getElementById('terminal-container');
+        const output = document.getElementById('output');
+        const cursor = document.getElementById('cursor');
+        const body = document.getElementById('main-body');
+
+        // Sequence of fake hacking phrases
+        const phrases = [
+            "Initializing exploit framework...",
+            "Establishing secure connection to target server...",
+            "Connection established.",
+            "Initiating breach protocol...",
+            "Bypassing level 1 firewall...",
+            "Bypassing level 2 firewall...",
+            "Warning: Intrusion detection system triggered.",
+            "Rerouting connection through proxy network...",
+            "Intrusion detection evaded.",
+            "Accessing main frame...",
+            "Decrypting administrative credentials...",
+            "Brute-forcing password hashes...",
+            "[||||||||||||||||||||] 100% complete",
+            "Downloading saved passwords...",
+            "Extracting browser history...",
+            "Cloning user database...",
+            "Injecting remote access trojan payload...",
+            "Disabling local security protocols...",
+            "Gaining root access...",
+            "Root access granted.",
+            "System compromised! xD",
+            "Have a nice day!"
+        ];
+
+        let phraseIndex = 0;
+        let charIndex = 0;
+
+        // Start the "hack" when the button is clicked
+        btn.addEventListener('click', () => {
+            // Hide the button
+            btnContainer.classList.add('hidden');
+            
+            // Change layout to suit the terminal
+            body.classList.remove('items-center', 'justify-center', 'bg-gray-100');
+            body.classList.add('bg-black');
+            
+            // Show the terminal container and cursor
+            terminalContainer.classList.remove('hidden');
+            terminalContainer.classList.add('flex');
+            cursor.classList.remove('hidden');
+            
+            // Slight delay before typing starts for dramatic effect
+            setTimeout(typeWriter, 600);
+        });
+
+        // Function to simulate typing text character by character
+        function typeWriter() {
+            if (phraseIndex < phrases.length) {
+                if (charIndex < phrases[phraseIndex].length) {
+                    // Append next character
+                    output.innerHTML += phrases[phraseIndex].charAt(charIndex);
+                    charIndex++;
+                    
+                    // Auto-scroll to bottom as text fills the screen
+                    terminalContainer.scrollTop = terminalContainer.scrollHeight;
+                    
+                    // Randomize typing speed for realism (10ms to 40ms per keystroke)
+                    let typeSpeed = Math.random() * 30 + 10;
+                    setTimeout(typeWriter, typeSpeed);
+                } else {
+                    // End of current phrase, add a line break
+                    output.innerHTML += "<br><br>";
+                    phraseIndex++;
+                    charIndex = 0;
+                    
+                    // Randomize pause between phrases (200ms to 700ms)
+                    let pauseDuration = Math.random() * 500 + 200;
+                    
+                    // Add extra pause for the "100% complete" line to build tension
+                    if (phraseIndex === 13) pauseDuration = 1000; 
+
+                    setTimeout(typeWriter, pauseDuration);
+                }
+            } else {
+                // Keep the cursor blinking at the end, but stop typing
+                // You can optionally do something else here when it finishes!
+            }
+        }
+    </script>
+</body>
+</html>
